@@ -6,6 +6,7 @@ import { Navbar } from "@/components/navigation/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { TerminalModal } from "@/components/ui/TerminalModal";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
+import { CustomCursor } from "@/components/ui/CustomCursor";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -97,7 +98,7 @@ const jsonLd = {
       "alternateName": ["SABBiR", "thesabbirbd", "iamthesabbir"],
       "url": "https://sabbir.nav.bd",
       "image": "https://sabbir.nav.bd/assets/sabbir-portrait.png",
-      "jobTitle": "Backend & DevOps Systems Architect",
+      "jobTitle": "Backend & DevOps Engineering Focus | BBA Management",
       "worksFor": {
         "@type": "Organization",
         "name": "Omnidesk BD",
@@ -195,6 +196,9 @@ export default function RootLayout({
 
           {/* Interactive Easter Egg Terminal */}
           <TerminalModal />
+
+          {/* Subtle Custom Cursor */}
+          <CustomCursor />
         </ThemeProvider>
       </body>
     </html>

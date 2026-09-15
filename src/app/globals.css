@@ -13,8 +13,14 @@
   --accent-blue: #0066ff;
   --accent-cyan: #00a8cc;
   --accent-purple: #7928ca;
+  --accent-emerald: #10b981;
   --badge-bg: rgba(0, 102, 255, 0.06);
   --badge-border: rgba(0, 102, 255, 0.2);
+
+  /* Three-Color System Design Tokens */
+  --color-primary: #0066ff;
+  --color-secondary: #7928ca;
+  --color-accent: #10b981;
 }
 
 .dark {
@@ -30,8 +36,14 @@
   --accent-blue: #0072ff;
   --accent-cyan: #00f0ff;
   --accent-purple: #9333ea;
+  --accent-emerald: #00c49f;
   --badge-bg: rgba(0, 240, 255, 0.08);
   --badge-border: rgba(0, 240, 255, 0.25);
+
+  /* Three-Color System Design Tokens (Dark) */
+  --color-primary: #00f0ff;
+  --color-secondary: #9333ea;
+  --color-accent: #00c49f;
 }
 
 html {
@@ -47,7 +59,82 @@ body {
   min-height: 100vh;
 }
 
-/* Glassmorphism Classes */
+/* 4 Surface Levels of Glassmorphism */
+/* Level 01: Subtle Glass */
+.glass-subtle {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+.dark .glass-subtle {
+  background: rgba(17, 24, 39, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Level 02: Interactive Glass */
+.glass-interactive {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  box-shadow: var(--shadow-glass);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-interactive:hover {
+  border-color: var(--border-glass-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px -15px rgba(0, 114, 255, 0.15), var(--shadow-glass);
+}
+
+/* Level 03: Featured Glass */
+.glass-featured {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(240, 245, 255, 0.7));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 102, 255, 0.2);
+  box-shadow: 0 20px 45px -15px rgba(0, 102, 255, 0.12), 0 0 1px 1px rgba(255, 255, 255, 0.95) inset;
+}
+.dark .glass-featured {
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.8), rgba(15, 23, 42, 0.65));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(255, 255, 255, 0.1) inset;
+}
+
+/* Level 04: Hero / Special Spatial Surface */
+.glass-spatial {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(245, 248, 255, 0.75));
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(0, 102, 255, 0.25);
+  box-shadow: 0 25px 60px -20px rgba(0, 114, 255, 0.2), 0 0 2px 1px rgba(255, 255, 255, 1) inset;
+}
+.dark .glass-spatial {
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.85), rgba(10, 15, 30, 0.75));
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  box-shadow: 0 25px 60px -20px rgba(0, 240, 255, 0.15), 0 0 2px 1px rgba(255, 255, 255, 0.15) inset;
+}
+
+/* Greenify Glassmorphism (Google Maps & Volunteering) */
+.glass-emerald {
+  background: rgba(16, 185, 129, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  box-shadow: 0 16px 36px -12px rgba(16, 185, 129, 0.12);
+}
+.glass-emerald:hover {
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 20px 45px -12px rgba(16, 185, 129, 0.2);
+}
+
+/* Legacy Glass Classes (Mapped to New Levels for Backward Compatibility) */
 .glass-panel {
   background: var(--bg-card);
   backdrop-filter: blur(16px);

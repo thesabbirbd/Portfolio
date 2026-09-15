@@ -2,58 +2,65 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { PROFILE_DATA } from "@/data/profile";
-import { ChevronRight, CheckCircle2, Compass, Shield, Terminal, Brain, Server, Cloud } from "lucide-react";
+import { TIMELINE_STEPS, TimelineStep } from "@/data/timeline";
+import { Compass, Shield, Terminal, Brain, Server, Cloud, Cpu, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { sound } from "@/lib/sound";
 
 const STAGE_ICONS: Record<string, React.ReactNode> = {
-  FOUNDATION: <Compass className="w-4 h-4 text-blue-500" />,
-  SYSTEMS: <Shield className="w-4 h-4 text-cyan-500" />,
-  COMPUTING: <Terminal className="w-4 h-4 text-amber-500" />,
-  "AI & ML": <Brain className="w-4 h-4 text-purple-500" />,
-  BACKEND: <Server className="w-4 h-4 text-emerald-500" />,
-  "DEVOPS & FUTURE": <Cloud className="w-4 h-4 text-blue-400" />,
+  "Stage 01": <Compass className="w-4 h-4 text-blue-500" />,
+  "Stage 02": <Cpu className="w-4 h-4 text-emerald-500" />,
+  "Stage 03": <Shield className="w-4 h-4 text-cyan-500" />,
+  "Stage 04": <Terminal className="w-4 h-4 text-purple-500" />,
+  "Stage 05": <Brain className="w-4 h-4 text-pink-500" />,
+  "Stage 06": <Server className="w-4 h-4 text-blue-500" />,
+  "Stage 07": <Sparkles className="w-4 h-4 text-cyan-400" />,
+  "Stage 08": <Cloud className="w-4 h-4 text-emerald-400" />,
 };
 
 export function JourneyTimeline() {
-  const [selectedMilestone, setSelectedMilestone] = useState(0);
+  const [selectedIdx, setSelectedIdx] = useState(0);
+  const currentStep = TIMELINE_STEPS[selectedIdx] || TIMELINE_STEPS[0];
 
   return (
-    <div className="w-full space-y-8">
+    <div className="w-full space-y-6">
       {/* Visual Progression Steps */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
-        {PROFILE_DATA.journey.map((item, idx) => {
-          const isSelected = selectedMilestone === idx;
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-2.5">
+        {TIMELINE_STEPS.map((item: TimelineStep, idx: number) => {
+          const isSelected = selectedIdx === idx;
           return (
             <motion.button
-              key={item.period}
+              key={item.id}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => setSelectedMilestone(idx)}
+              onClick={() => {
+                setSelectedIdx(idx);
+                sound.click();
+              }}
               className={cn(
-                "p-3 rounded-xl text-left transition-all relative overflow-hidden border",
+                "p-3 rounded-2xl text-left transition-all relative overflow-hidden border",
                 isSelected
-                  ? "glass-panel border-cyan-400/50 dark:border-cyan-400/40 bg-blue-50/50 dark:bg-cyan-950/20 shadow-md"
-                  : "bg-white/40 dark:bg-slate-900/40 border-slate-200/60 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/15"
+                  ? "glass-featured border-[var(--color-primary)] shadow-md"
+                  : "glass-subtle border-[var(--border-glass)] hover:border-[var(--border-glass-hover)]"
               )}
             >
-              <div className="flex items-center justify-between gap-1 mb-1">
-                <span className="text-[10px] font-mono tracking-wider font-semibold text-slate-500 dark:text-slate-400">
-                  0{idx + 1}
+              <div className="flex items-center justify-between gap-1 mb-1.5">
+                <span className="text-[10px] font-mono tracking-wider font-semibold text-[var(--text-muted)]">
+                  {item.stage}
                 </span>
-                {STAGE_ICONS[item.period]}
+                {STAGE_ICONS[item.stage]}
               </div>
-              <p className="text-xs font-bold font-mono text-slate-800 dark:text-slate-200 truncate">
-                {item.period}
+              <p className="text-xs font-bold font-mono text-[var(--text-primary)] truncate">
+                {item.title}
               </p>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
-                {item.stage}
+              <p className="text-[10px] text-[var(--text-muted)] truncate mt-0.5">
+                {item.period}
               </p>
 
               {isSelected && (
                 <motion.div
                   layoutId="timelineHighlight"
-                  className="absolute bottom-0 inset-x-0 h-0.5 bg-gradient-to-r from-blue-500 to-cyan-400"
+                  className="absolute bottom-0 inset-x-0 h-0.5 bg-gradient-to-r from-blue-500 via-cyan-400 to-purple-500"
                 />
               )}
             </motion.button>
@@ -63,37 +70,37 @@ export function JourneyTimeline() {
 
       {/* Expanded Active Stage Detail Card */}
       <motion.div
-        key={selectedMilestone}
+        key={currentStep.id}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35 }}
-        className="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-200/70 dark:border-white/10 shadow-lg relative overflow-hidden"
+        transition={{ duration: 0.3 }}
+        className="glass-spatial rounded-3xl p-6 sm:p-8 border border-[var(--border-glass)] shadow-xl relative overflow-hidden"
       >
-        <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-cyan-500/10 via-transparent to-transparent rounded-bl-full pointer-events-none" />
+        <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-[var(--color-primary)]/10 via-transparent to-transparent rounded-bl-full pointer-events-none" />
 
         <div className="max-w-3xl space-y-4">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-1 rounded-full text-xs font-mono font-semibold bg-blue-500/10 dark:bg-cyan-400/10 text-blue-600 dark:text-cyan-300 border border-blue-500/20 dark:border-cyan-400/20">
-              STAGE {selectedMilestone + 1} // {PROFILE_DATA.journey[selectedMilestone].period}
+            <span className="px-3 py-1 rounded-full text-xs font-mono font-semibold bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20">
+              {currentStep.stage} // {currentStep.period}
             </span>
-            <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
-              {PROFILE_DATA.journey[selectedMilestone].stage}
+            <span className="text-xs font-mono text-[var(--text-muted)]">
+              {currentStep.subtitle}
             </span>
           </div>
 
-          <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
-            {PROFILE_DATA.journey[selectedMilestone].title}
+          <h3 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
+            {currentStep.title}
           </h3>
 
-          <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed">
-            {PROFILE_DATA.journey[selectedMilestone].description}
+          <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
+            {currentStep.description}
           </p>
 
           <div className="flex flex-wrap items-center gap-2 pt-2">
-            {PROFILE_DATA.journey[selectedMilestone].tags.map((tag) => (
+            {currentStep.tags.map((tag) => (
               <span
                 key={tag}
-                className="px-2.5 py-1 rounded-md text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
+                className="px-2.5 py-1 rounded-md text-xs font-mono glass-subtle text-[var(--text-secondary)] border border-[var(--border-glass)]"
               >
                 #{tag}
               </span>

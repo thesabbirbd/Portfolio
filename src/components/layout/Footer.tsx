@@ -3,7 +3,8 @@
 import React from "react";
 import Link from "next/link";
 import { PROFILE_DATA } from "@/data/profile";
-import { Mail, ArrowUp } from "lucide-react";
+import { SOCIAL_LINKS } from "@/data/socials";
+import { Mail, ArrowUp, MapPin } from "lucide-react";
 import { 
   GithubIcon, 
   LinkedinIcon, 
@@ -11,19 +12,32 @@ import {
   InstagramIcon, 
   TwitterIcon 
 } from "@/components/ui/BrandIcons";
+import { sound } from "@/lib/sound";
 
 export function Footer() {
   const scrollToTop = () => {
+    sound.click();
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const socialIcons: Record<string, React.ReactNode> = {
-    Github: <GithubIcon className="w-4 h-4" />,
-    Linkedin: <LinkedinIcon className="w-4 h-4" />,
-    Facebook: <FacebookIcon className="w-4 h-4" />,
-    Instagram: <InstagramIcon className="w-4 h-4" />,
-    Twitter: <TwitterIcon className="w-4 h-4" />,
-    Mail: <Mail className="w-4 h-4" />,
+  const getSocialIcon = (icon: string) => {
+    switch (icon) {
+      case "github":
+        return <GithubIcon className="w-4 h-4" />;
+      case "linkedin":
+        return <LinkedinIcon className="w-4 h-4" />;
+      case "facebook":
+        return <FacebookIcon className="w-4 h-4" />;
+      case "instagram":
+        return <InstagramIcon className="w-4 h-4" />;
+      case "x":
+        return <TwitterIcon className="w-4 h-4" />;
+      case "maps":
+        return <MapPin className="w-4 h-4" />;
+      case "gmail":
+      default:
+        return <Mail className="w-4 h-4" />;
+    }
   };
 
   return (
@@ -44,26 +58,27 @@ export function Footer() {
               .
             </h2>
             <p className="text-xs sm:text-sm font-mono text-slate-600 dark:text-slate-400 tracking-wide">
-              Business × Engineering × AI × Systems
+              Business × Engineering × AI × Systems × Creativity
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-500">
-              Built to Architect • Deploy • Learn • Scale
+              Built to Learn • Build • Deploy • Explore
             </p>
           </div>
 
           {/* Social Links & Back to Top */}
           <div className="flex flex-col items-center md:items-end gap-4">
-            <div className="flex items-center gap-2">
-              {PROFILE_DATA.socials.slice(0, 6).map((social) => (
+            <div className="flex flex-wrap items-center justify-center md:justify-end gap-2">
+              {SOCIAL_LINKS.map((social) => (
                 <a
-                  key={social.name}
+                  key={social.id}
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.name}
+                  onClick={() => sound.click()}
                   className="p-2.5 rounded-full glass-panel hover:border-cyan-400/50 hover:text-cyan-500 transition-all hover:scale-110 text-slate-600 dark:text-slate-300"
                 >
-                  {socialIcons[social.icon] || <Mail className="w-4 h-4" />}
+                  {getSocialIcon(social.icon)}
                 </a>
               ))}
             </div>
@@ -84,7 +99,7 @@ export function Footer() {
             <span className="font-mono">SYSTEM ONLINE • sabbir.nav.bd</span>
           </div>
           <div>
-            &copy; {new Date().getFullYear()} Md Sabbirul Islam Khan. All rights reserved.
+            &copy; 2026 {PROFILE_DATA.fullName}. All rights reserved.
           </div>
         </div>
       </div>

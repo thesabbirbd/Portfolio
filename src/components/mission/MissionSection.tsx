@@ -15,9 +15,11 @@ import {
   Award
 } from "lucide-react";
 import { PROFILE_DATA } from "@/data/profile";
+import { COMMUNITY_DATA } from "@/data/community";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { GlowButton } from "@/components/ui/GlowButton";
 import { GithubIcon } from "@/components/ui/BrandIcons";
+import { sound } from "@/lib/sound";
 
 export function MissionSection() {
   return (
@@ -183,18 +185,18 @@ export function MissionSection() {
           </h3>
 
           <div className="space-y-3">
-            {PROFILE_DATA.verifiedActivities.map((act) => (
-              <GlassCard key={act.org} glow="none" className="p-4 space-y-1.5">
+            {COMMUNITY_DATA.activities.slice(0, 4).map((act) => (
+              <GlassCard key={act.id} glow="none" className="p-4 space-y-1.5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                   <h4 className="text-sm font-bold text-slate-900 dark:text-white">
-                    {act.org}
+                    {act.organization}
                   </h4>
                   <span className="text-xs font-mono font-medium text-blue-600 dark:text-cyan-400">
                     {act.role}
                   </span>
                 </div>
                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                  {act.desc}
+                  {act.description}
                 </p>
               </GlassCard>
             ))}

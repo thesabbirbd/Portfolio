@@ -56,27 +56,39 @@ export function TerminalModal() {
     switch (cmd) {
       case "help":
         output =
-          "Available Commands:\n- whoami       : Identity & background\n- status       : Live system telemetry\n- omnidesk     : Flagship project briefing\n- mission      : 100-day engineering sprint\n- contact      : Official communication channels\n- clear        : Clear terminal output\n- exit         : Terminate session";
+          "Available Commands:\n- whoami       : Identity & background\n- status       : Live system telemetry\n- omnidesk     : Flagship build overview\n- lab          : Engineering Lab experiments\n- maps         : Google Local Guide & 360° VR details\n- mission      : 100-day engineering sprint\n- community    : Campus leadership & volunteering\n- contact      : Official communication channels\n- clear        : Clear terminal output\n- exit         : Terminate session";
         break;
       case "whoami":
         output =
-          "Md Sabbirul Islam Khan (SABBiR)\nBBA Management (Rajshahi College) × Backend & DevOps Systems Architect\nLocation: Rajshahi, Bangladesh";
+          "Md Sabbirul Islam Khan (SABBiR)\nBBA Management (Rajshahi College) × Backend & DevOps Engineering Focus\nLocation: Rajshahi, Bangladesh\nMission: Building resilient software architectures & local AI pipelines.";
         break;
       case "status":
         output =
-          "[OK] All services nominal.\nSubdomain: sabbir.nav.bd\nRuntime: Next.js + Vercel Edge\nDatabase: PostgreSQL\nAI: Ollama Local Inference";
+          "[OK] All systems nominal.\nPlatform: sabbir.nav.bd\nRuntime: Next.js + React 19 + Turbopack\nDevOps: Docker + Linux Ubuntu\nLocal AI: Ollama Inference Active\nAudio System: Web Audio API Synthesizer";
         break;
       case "omnidesk":
         output =
-          "Omnidesk BD: Universal Engineering Study Operating System\nStack: FastAPI, PostgreSQL, Docker, Ollama, Tauri\nRepo: github.com/thesabbirbd/Omnidesk-BD";
+          "Omnidesk BD: Local-First Universal Learning Engine & AI Study Workspace\nStack: FastAPI, PostgreSQL, Docker, Ollama, PWA\nRepo: github.com/thesabbirbd/Omnidesk-BD";
+        break;
+      case "lab":
+        output =
+          "Engineering Lab Disciplines:\n1. Infrastructure Lab (Headless displays, SSH tunnels)\n2. AI Lab (Offline LLMs, VRAM tuning)\n3. Systems Lab (Linux virtual drivers)\n4. Hardware Lab (DIY UPS, DC power circuits)\n5. Creative Lab (OBS streaming, 360° Street View)";
+        break;
+      case "maps":
+        output =
+          "Google Maps Local Guide & 360° Street View Photographer:\nStatus: Top Contributor\nRecognition: Direct Google Headquarters Recognition & Gifts Recipient 🎁\nLocal Guides Bangladesh Member & 360° VR contributor.";
         break;
       case "mission":
         output =
           "100-Day Engineering Mission:\nFocus: Asynchronous FastAPI endpoints, Docker containerization, Linux hardening, and NOC monitoring.";
         break;
+      case "community":
+        output =
+          "Collegiate Leadership & Volunteering:\n- RCPC: IT Executive\n- RCBC: Official Member\n- VBD: Youth Volunteer\n- BFFR: Blood Donor";
+        break;
       case "contact":
         output =
-          "Email: iamthesabbir@gmail.com\nGitHub: github.com/thesabbirbd\nLinkedIn: linkedin.com/in/thesabbirbd\nFacebook: facebook.com/iamthesabbir";
+          "Email: iamthesabbir@gmail.com\nGitHub: github.com/thesabbirbd\nLinkedIn: linkedin.com/in/thesabbirbd\nFacebook: facebook.com/iamthesabbir\nGoogle Maps: google.com/maps/contrib/115922089427483699024";
         break;
       case "clear":
         setHistory([]);

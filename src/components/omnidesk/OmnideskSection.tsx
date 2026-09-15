@@ -15,7 +15,7 @@ import {
   Activity,
   Maximize2
 } from "lucide-react";
-import { PROFILE_DATA } from "@/data/profile";
+import { PROJECTS_DATA } from "@/data/projects";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { GlowButton } from "@/components/ui/GlowButton";
 import { GithubIcon } from "@/components/ui/BrandIcons";
@@ -26,25 +26,25 @@ const SCREENS = [
     id: "dashboard",
     title: "Spatial Glass Dashboard",
     desc: "Clean desktop workspace with distraction-free modules and focus timer telemetry.",
-    src: PROFILE_DATA.flagshipProject.images.dashboard,
+    src: "/assets/omnidesk-glass-dashboard.png",
   },
   {
     id: "mindmap",
     title: "DAG Knowledge Mindmap",
     desc: "Graph-theoretic visual nodes connecting cross-disciplinary engineering concepts.",
-    src: PROFILE_DATA.flagshipProject.images.mindmap,
+    src: "/assets/omnidesk-dag-mindmap.png",
   },
   {
     id: "materials",
     title: "Materials & Ingestion Engine",
     desc: "Local-first ingestion pipeline indexing PDFs, notes, and technical textbooks.",
-    src: PROFILE_DATA.flagshipProject.images.materials,
+    src: "/assets/omnidesk-materials-engine.png",
   },
   {
     id: "focus",
     title: "Focus Telemetry & Presence",
     desc: "Real-time state tracking and deep-work study telemetry sessions.",
-    src: PROFILE_DATA.flagshipProject.images.focusTimer,
+    src: "/assets/omnidesk-focus-timer-presence.png",
   },
 ];
 
@@ -59,6 +59,7 @@ const ARCHITECTURE_NODES = [
 export function OmnideskSection() {
   const [activeScreenIndex, setActiveScreenIndex] = useState(0);
   const [showArchModal, setShowArchModal] = useState(false);
+  const omnidesk = PROJECTS_DATA[0];
 
   return (
     <section
@@ -78,20 +79,20 @@ export function OmnideskSection() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white flex items-center justify-center sm:justify-start gap-3">
-              <span>{PROFILE_DATA.flagshipProject.name}</span>
+              <span>{omnidesk.title}</span>
               <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-mono font-normal">
-                {PROFILE_DATA.flagshipProject.status}
+                {omnidesk.status}
               </span>
             </h2>
             <p className="text-base sm:text-xl font-medium text-slate-600 dark:text-slate-300 mt-1">
-              {PROFILE_DATA.flagshipProject.subtitle}
+              Universal Learning Engine &amp; AI-Powered Study Workspace
             </p>
           </div>
 
           {/* Action CTAs */}
           <div className="flex items-center justify-center sm:justify-start gap-3">
             <GlowButton
-              href={PROFILE_DATA.flagshipProject.githubUrl}
+              href={omnidesk.githubUrl}
               external
               variant="primary"
               size="md"
@@ -111,7 +112,7 @@ export function OmnideskSection() {
         </div>
 
         <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-3xl leading-relaxed">
-          {PROFILE_DATA.flagshipProject.description}
+          {omnidesk.longDescription}
         </p>
       </div>
 
@@ -230,7 +231,7 @@ export function OmnideskSection() {
           <div className="p-3 sm:p-4 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600 dark:text-slate-400">
             <p>{SCREENS[activeScreenIndex].desc}</p>
             <div className="flex flex-wrap gap-1.5 font-mono text-[11px]">
-              {PROFILE_DATA.flagshipProject.tags.map((tag) => (
+              {omnidesk.technologies.map((tag) => (
                 <span key={tag} className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                   {tag}
                 </span>

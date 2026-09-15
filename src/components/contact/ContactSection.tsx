@@ -14,6 +14,7 @@ import {
   Check
 } from "lucide-react";
 import { PROFILE_DATA } from "@/data/profile";
+import { SOCIAL_LINKS } from "@/data/socials";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { GlowButton } from "@/components/ui/GlowButton";
 import { 
@@ -23,6 +24,7 @@ import {
   InstagramIcon, 
   TwitterIcon 
 } from "@/components/ui/BrandIcons";
+import { sound } from "@/lib/sound";
 import confetti from "canvas-confetti";
 
 export function ContactSection() {
@@ -31,12 +33,14 @@ export function ContactSection() {
     email: "",
     topic: "Backend & Systems",
     message: "",
+    website_trap: "",
   });
 
   const [submitted, setSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const handleCopyEmail = () => {
+    sound.click();
     navigator.clipboard.writeText("iamthesabbir@gmail.com");
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
@@ -44,7 +48,10 @@ export function ContactSection() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (formData.website_trap) return; // bot trapped
     if (!formData.name || !formData.email || !formData.message) return;
+
+    sound.click();
 
     // Trigger visual celebration
     try {
@@ -197,6 +204,16 @@ export function ContactSection() {
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Anti-bot honeypot */}
+                  <input
+                    type="text"
+                    name="website_trap"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    className="hidden"
+                    value={formData.website_trap}
+                    onChange={(e) => setFormData({ ...formData, website_trap: e.target.value })}
+                  />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-xs font-mono font-medium text-slate-700 dark:text-slate-300">
