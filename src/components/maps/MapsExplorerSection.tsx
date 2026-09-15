@@ -9,7 +9,7 @@ export function MapsExplorerSection() {
   const { maps } = COMMUNITY_DATA;
 
   return (
-    <section id="maps" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+    <section id="maps" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full overflow-hidden">
       {/* Section Header */}
       <div className="flex flex-col items-center text-center mb-12">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-4">

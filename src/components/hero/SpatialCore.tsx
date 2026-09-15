@@ -6,30 +6,34 @@ import Image from "next/image";
 import { Terminal, Database, Server, Cpu, Cloud, Shield } from "lucide-react";
 
 const ORBITING_NODES = [
-  { label: "FastAPI", icon: Server, color: "#009688", angle: 0, distance: 135 },
-  { label: "Docker", icon: Cloud, color: "#2496ED", angle: 60, distance: 145 },
-  { label: "PostgreSQL", icon: Database, color: "#4169E1", angle: 120, distance: 135 },
-  { label: "Ollama / AI", icon: Cpu, color: "#9333EA", angle: 180, distance: 140 },
-  { label: "Ubuntu / Linux", icon: Terminal, color: "#E95420", angle: 240, distance: 135 },
-  { label: "NOC & Mikrotik", icon: Shield, color: "#00B4D8", angle: 300, distance: 140 },
+  { label: "FastAPI", icon: Server, color: "#00f0ff", angle: 0 },
+  { label: "Docker", icon: Cloud, color: "#2496ED", angle: 60 },
+  { label: "PostgreSQL", icon: Database, color: "#4169E1", angle: 120 },
+  { label: "Ollama / AI", icon: Cpu, color: "#a855f7", angle: 180 },
+  { label: "Ubuntu / Linux", icon: Terminal, color: "#E95420", angle: 240 },
+  { label: "NOC & Network", icon: Shield, color: "#00f5a0", angle: 300 },
 ];
 
 export function SpatialCore() {
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Mouse Parallax Physics
+  // 3D Parallax & Gyro Physics
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const springConfig = { damping: 25, stiffness: 150 };
+  const springConfig = { damping: 22, stiffness: 180 };
   const smoothX = useSpring(mouseX, springConfig);
   const smoothY = useSpring(mouseY, springConfig);
 
-  const rotateX = useTransform(smoothY, [-200, 200], [10, -10]);
-  const rotateY = useTransform(smoothX, [-200, 200], [-10, 10]);
+  const rotateX = useTransform(smoothY, [-180, 180], [16, -16]);
+  const rotateY = useTransform(smoothX, [-180, 180], [-16, 16]);
 
   useEffect(() => {
     setMounted(true);
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+
     const handleMouseMove = (e: MouseEvent) => {
       const { innerWidth, innerHeight } = window;
       const x = e.clientX - innerWidth / 2;
@@ -38,65 +42,95 @@ export function SpatialCore() {
       mouseY.set(y);
     };
 
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        const { innerWidth, innerHeight } = window;
+        const touch = e.touches[0];
+        const x = touch.clientX - innerWidth / 2;
+        const y = touch.clientY - innerHeight / 2;
+        mouseX.set(x * 0.7);
+        mouseY.set(y * 0.7);
+      }
+    };
+
+    window.addEventListener("resize", checkMobile);
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("touchmove", handleTouchMove);
+    };
   }, [mouseX, mouseY]);
 
   const shouldReduceMotion = useReducedMotion();
 
   if (!mounted) {
-    return <div className="w-72 h-72 rounded-full bg-blue-500/10 animate-pulse mx-auto" />;
+    return <div className="w-56 h-56 sm:w-72 sm:h-72 rounded-full bg-cyan-500/10 animate-pulse mx-auto" />;
   }
 
+  const orbitRadius = isMobile ? 95 : 140;
+
   return (
-    <div className="relative w-full max-w-[380px] sm:max-w-[440px] aspect-square mx-auto flex items-center justify-center select-none perspective-1000">
-      {/* Ambient Core Radial Glows */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 via-cyan-400/20 to-purple-600/20 rounded-full blur-3xl -z-10 animate-pulse-soft pointer-events-none" />
+    <div className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[420px] aspect-square mx-auto flex items-center justify-center select-none perspective-1000">
+      {/* 3 Vibrant Ambient Glow Backdrops */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/25 via-cyan-400/20 to-purple-600/25 rounded-full blur-2xl sm:blur-3xl -z-10 animate-pulse-soft pointer-events-none" />
 
       <motion.div
         style={shouldReduceMotion ? undefined : { rotateX, rotateY, transformStyle: "preserve-3d" }}
         className="relative w-full h-full flex items-center justify-center"
       >
-        {/* Outer Orbiting Ring 1 */}
-        <div className="absolute w-[300px] sm:w-[340px] h-[300px] sm:h-[340px] rounded-full border border-dashed border-cyan-500/20 dark:border-cyan-400/15 animate-[spin_40s_linear_infinite]" />
+        {/* ================= 3D GYROSCOPIC GIMBAL RINGS ================= */}
+        {/* Ring 1: Electric Cyan (XY Plane) */}
+        <div className="absolute w-[220px] sm:w-[320px] h-[220px] sm:h-[320px] rounded-full border border-dashed border-cyan-400/30 animate-[spin_36s_linear_infinite]" />
 
-        {/* Outer Orbiting Ring 2 (Counter-rotation) */}
-        <div className="absolute w-[240px] sm:w-[280px] h-[240px] sm:h-[280px] rounded-full border border-blue-500/20 dark:border-blue-400/15 animate-[spin_25s_linear_infinite_reverse]" />
+        {/* Ring 2: Neon Purple (Tilted Gimbal 3D) */}
+        <div
+          style={{ transform: "rotateX(68deg)" }}
+          className="absolute w-[230px] sm:w-[340px] h-[230px] sm:h-[340px] rounded-full border border-purple-500/30 animate-[spin_24s_linear_infinite_reverse]"
+        />
 
-        {/* Central Glass Sphere / Core Shield */}
+        {/* Ring 3: Radiant Emerald (Opposite Tilted Gimbal 3D) */}
+        <div
+          style={{ transform: "rotateY(68deg)" }}
+          className="absolute w-[210px] sm:w-[310px] h-[210px] sm:h-[310px] rounded-full border border-emerald-400/30 animate-[spin_30s_linear_infinite]"
+        />
+
+        {/* ================= CENTRAL SPATIAL GLASS SPHERE ================= */}
         <motion.div
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          className="relative z-10 w-44 sm:w-52 h-44 sm:h-52 rounded-full p-2 glass-panel border border-white/40 dark:border-white/20 shadow-[0_20px_50px_rgba(0,114,255,0.3)] dark:shadow-[0_20px_60px_rgba(0,240,255,0.25)] flex items-center justify-center overflow-hidden group"
+          animate={{ y: [0, -8, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          className="relative z-10 w-36 sm:w-52 h-36 sm:h-52 rounded-full p-2 glass-spatial border border-white/50 dark:border-cyan-400/35 shadow-[0_20px_50px_rgba(0,114,255,0.25)] dark:shadow-[0_20px_60px_rgba(0,240,255,0.25)] flex items-center justify-center overflow-hidden group glass-specular-top"
         >
-          {/* Internal Specular Highlight */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-white/30 via-transparent to-cyan-400/20 pointer-events-none rounded-full" />
-          <div className="absolute -top-10 -left-10 w-24 h-24 bg-white/40 dark:bg-white/20 blur-xl rounded-full pointer-events-none" />
+          {/* Specular Edge Highlight Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/30 via-transparent to-cyan-400/25 pointer-events-none rounded-full" />
+          <div className="absolute -top-8 -left-8 w-20 sm:w-28 h-20 sm:h-28 bg-white/40 dark:bg-cyan-400/20 blur-xl rounded-full pointer-events-none" />
 
           {/* Authentic Portrait Image of SABBiR */}
-          <div className="relative w-full h-full rounded-full overflow-hidden border border-slate-200/50 dark:border-white/10 bg-slate-100 dark:bg-slate-900">
+          <div className="relative w-full h-full rounded-full overflow-hidden border border-slate-200/50 dark:border-white/10 bg-slate-950">
             <Image
               src="/assets/sabbir-portrait.png"
               alt="Md Sabbirul Islam Khan (SABBiR)"
               fill
               priority
-              sizes="(max-width: 640px) 176px, 208px"
+              sizes="(max-width: 640px) 144px, 208px"
               className="object-cover object-top filter contrast-105 group-hover:scale-105 transition-transform duration-500"
             />
           </div>
 
           {/* Floating Status Pill on Center Core */}
-          <div className="absolute bottom-2 inset-x-0 mx-auto w-fit px-3 py-0.5 rounded-full glass-panel border border-white/30 dark:border-cyan-400/30 text-[10px] font-mono font-semibold tracking-wider text-slate-800 dark:text-cyan-300 shadow-md flex items-center gap-1.5 backdrop-blur-md">
+          <div className="absolute bottom-2 inset-x-0 mx-auto w-fit px-2.5 sm:px-3 py-0.5 rounded-full glass-spatial border border-white/40 dark:border-cyan-400/40 text-[9px] sm:text-[10px] font-mono font-bold tracking-wider text-slate-800 dark:text-cyan-300 shadow-md flex items-center gap-1.5 backdrop-blur-md">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
             <span>SABBiR // CORE</span>
           </div>
         </motion.div>
 
-        {/* Orbiting Telemetry Tech Nodes */}
+        {/* ================= 3D ORBITING TECH NODES ================= */}
         {ORBITING_NODES.map((node, i) => {
           const rad = (node.angle * Math.PI) / 180;
-          const x = Math.cos(rad) * node.distance;
-          const y = Math.sin(rad) * node.distance;
+          const x = Math.cos(rad) * orbitRadius;
+          const y = Math.sin(rad) * orbitRadius;
           const Icon = node.icon;
 
           return (
@@ -104,12 +138,12 @@ export function SpatialCore() {
               key={node.label}
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
+              transition={{ delay: 0.15 + i * 0.08, duration: 0.5 }}
               style={{
                 transform: `translate(${x}px, ${y}px)`,
               }}
               whileHover={{ scale: 1.15 }}
-              className="absolute z-20 hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full glass-panel border border-slate-200/70 dark:border-white/15 shadow-md hover:border-cyan-400/60 transition-all cursor-default group"
+              className="absolute z-20 hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full glass-spatial border border-slate-200/70 dark:border-white/20 shadow-md hover:border-cyan-400/70 transition-all cursor-default group"
             >
               <span
                 className="w-2 h-2 rounded-full"

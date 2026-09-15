@@ -23,7 +23,7 @@ export function EngineeringLabSection() {
     : LAB_EXPERIMENTS.filter((exp) => exp.category === selectedCategory);
 
   return (
-    <section id="lab" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+    <section id="lab" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full overflow-hidden">
       {/* Section Header */}
       <div className="flex flex-col items-center text-center mb-12">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-subtle border border-[var(--border-glass)] text-xs font-semibold uppercase tracking-wider text-[var(--color-primary)] mb-4">

@@ -69,10 +69,10 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full space-y-16"
+      className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full space-y-16 overflow-hidden"
     >
       {/* Background Ambience */}
-      <div className="absolute bottom-0 right-1/4 w-[500px] h-[300px] bg-gradient-to-tl from-cyan-500/10 via-blue-500/10 to-transparent blur-3xl pointer-events-none -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[300px] sm:w-[500px] h-[300px] bg-gradient-to-tl from-cyan-500/10 via-blue-500/10 to-transparent blur-3xl pointer-events-none -z-10" />
 
       {/* Heading */}
       <div className="text-center space-y-3 max-w-3xl mx-auto">

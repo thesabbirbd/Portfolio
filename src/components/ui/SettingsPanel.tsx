@@ -49,7 +49,7 @@ export function SettingsPanel() {
           sound.click();
         }}
         aria-label="Open System Settings"
-        className="fixed bottom-6 right-6 z-40 p-3 rounded-full glass-interactive shadow-lg text-[var(--text-secondary)] hover:text-[var(--color-primary)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+        className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-40 p-3 rounded-full glass-interactive shadow-lg text-[var(--text-secondary)] hover:text-[var(--color-primary)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
       >
         <Settings className="w-5 h-5 animate-spin-slow" />
       </button>

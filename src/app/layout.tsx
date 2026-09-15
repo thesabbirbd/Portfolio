@@ -7,6 +7,8 @@ import { Footer } from "@/components/layout/Footer";
 import { TerminalModal } from "@/components/ui/TerminalModal";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { CustomCursor } from "@/components/ui/CustomCursor";
+import { FloatingGlassBackground } from "@/components/ui/FloatingGlassBackground";
+import { ScrollMotionHUD } from "@/components/ui/ScrollMotionHUD";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -181,6 +183,12 @@ export default function RootLayout({
           {/* Fast visionOS initializing loading screen */}
           <LoadingScreen />
 
+          {/* Omnidesk Spatial Glass Dynamic Floating Background (3 Vibrant Theme Colors) */}
+          <FloatingGlassBackground />
+
+          {/* Modern Scroll Motion Loading & Telemetry HUD */}
+          <ScrollMotionHUD />
+
           {/* Ambient Background Gradients */}
           <div className="fixed inset-0 bg-grid-pattern pointer-events-none -z-20 opacity-70" />
           <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 ambient-radial-glow pointer-events-none -z-10" />
@@ -189,7 +197,7 @@ export default function RootLayout({
           <Navbar />
 
           {/* Main Content Viewport */}
-          <main className="flex-1 w-full relative pt-16 md:pt-24">{children}</main>
+          <main className="flex-1 w-full max-w-full relative pt-16 md:pt-24 overflow-x-clip">{children}</main>
 
           {/* Footer */}
           <Footer />

@@ -21,7 +21,7 @@ export function AboutSection() {
   ];
 
   return (
-    <section id="about" className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full space-y-20">
+    <section id="about" className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full space-y-20 overflow-hidden">
       {/* Section Heading & Spiritual Greeting */}
       <div className="space-y-4 text-center sm:text-left">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-semibold tracking-wider text-[var(--color-primary)] bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20">
@@ -64,7 +64,7 @@ export function AboutSection() {
         <div className="lg:col-span-5 flex flex-col items-center">
           <div className="w-full max-w-sm">
             {/* Mode Switcher */}
-            <div className="flex items-center justify-center gap-1.5 p-1 mb-4 rounded-full glass-subtle border border-[var(--border-glass)]">
+            <div className="flex flex-wrap items-center justify-center gap-1.5 p-1 mb-4 rounded-2xl sm:rounded-full glass-subtle border border-[var(--border-glass)]">
               {photoModes.map((m) => (
                 <button
                   key={m.id}
@@ -72,7 +72,7 @@ export function AboutSection() {
                     setPhotoMode(m.id);
                     sound.click();
                   }}
-                  className={`px-3 py-1 text-xs font-medium rounded-full transition-all ${
+                  className={`px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-medium rounded-full transition-all ${
                     photoMode === m.id
                       ? "bg-[var(--color-primary)] text-white shadow-sm"
                       : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
