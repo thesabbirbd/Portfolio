@@ -6,6 +6,7 @@ import { Navbar } from "@/components/navigation/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { TerminalModal } from "@/components/ui/TerminalModal";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
+import { Analytics } from '@vercel/analytics/next';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -196,6 +197,7 @@ export default function RootLayout({
           {/* Interactive Easter Egg Terminal */}
           <TerminalModal />
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
