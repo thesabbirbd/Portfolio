@@ -1,5 +1,6 @@
 import { HeroSection } from "@/components/hero/HeroSection";
 import { AboutSection } from "@/components/about/AboutSection";
+import { OmnideskSection } from "@/components/omnidesk/OmnideskSection";
 import { SkillsSection } from "@/components/skills/SkillsSection";
 
 export default function Home() {
@@ -7,6 +8,7 @@ export default function Home() {
     <div className="flex flex-col w-full">
       <HeroSection />
       <AboutSection />
+      <OmnideskSection />
       <SkillsSection />
     </div>
   );
