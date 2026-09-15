@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { Navbar } from "@/components/navigation/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { TerminalModal } from "@/components/ui/TerminalModal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -70,6 +71,9 @@ export default function RootLayout({
 
           {/* Footer */}
           <Footer />
+
+          {/* Interactive Easter Egg Terminal */}
+          <TerminalModal />
         </ThemeProvider>
       </body>
     </html>
