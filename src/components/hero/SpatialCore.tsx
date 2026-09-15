@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { Terminal, Database, Server, Cpu, Cloud, Shield } from "lucide-react";
 
@@ -42,6 +42,8 @@ export function SpatialCore() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [mouseX, mouseY]);
 
+  const shouldReduceMotion = useReducedMotion();
+
   if (!mounted) {
     return <div className="w-72 h-72 rounded-full bg-blue-500/10 animate-pulse mx-auto" />;
   }
@@ -52,7 +54,7 @@ export function SpatialCore() {
       <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 via-cyan-400/20 to-purple-600/20 rounded-full blur-3xl -z-10 animate-pulse-soft pointer-events-none" />
 
       <motion.div
-        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        style={shouldReduceMotion ? undefined : { rotateX, rotateY, transformStyle: "preserve-3d" }}
         className="relative w-full h-full flex items-center justify-center"
       >
         {/* Outer Orbiting Ring 1 */}
