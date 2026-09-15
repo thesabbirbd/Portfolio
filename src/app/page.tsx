@@ -4,6 +4,7 @@ import { OmnideskSection } from "@/components/omnidesk/OmnideskSection";
 import { SkillsSection } from "@/components/skills/SkillsSection";
 import { ProjectsSection } from "@/components/projects/ProjectsSection";
 import { MissionSection } from "@/components/mission/MissionSection";
+import { ContactSection } from "@/components/contact/ContactSection";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <SkillsSection />
       <ProjectsSection />
       <MissionSection />
+      <ContactSection />
     </div>
   );
 }
