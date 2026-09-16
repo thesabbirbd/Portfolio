@@ -48,7 +48,7 @@ export function LoadingScreen() {
                 SYSTEM INITIALIZING...
               </p>
               <h1 className="text-lg font-bold tracking-tight text-slate-100">
-                SABBiR // PORTFOLIO
+                THE SABBiR // PORTFOLIO
               </h1>
               <p className="text-[10px] text-slate-500">
                 sabbir.nav.bd • Edge Network

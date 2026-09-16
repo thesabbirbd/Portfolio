@@ -15,7 +15,7 @@ export function TerminalModal() {
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<LogEntry[]>([
     {
-      output: "SABBiR CORE TERMINAL v1.2.0\nType 'help' to inspect available system commands.",
+      output: "THE SABBiR CORE TERMINAL v1.2.0\nType 'help' to inspect available system commands.",
     },
   ]);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -60,7 +60,7 @@ export function TerminalModal() {
         break;
       case "whoami":
         output =
-          "Md Sabbirul Islam Khan (SABBiR)\nBBA Management (Rajshahi College) × Backend & DevOps Engineering Focus\nLocation: Rajshahi, Bangladesh\nMission: Building resilient software architectures & local AI pipelines.";
+          "Md Sabbirul Islam Khan (THE SABBiR)\nBBA Management (Rajshahi College) × Backend & DevOps Engineering Focus\nLocation: Rajshahi, Bangladesh\nMission: Building resilient software architectures & local AI pipelines.";
         break;
       case "status":
         output =

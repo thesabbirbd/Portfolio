@@ -12,13 +12,13 @@
   --shadow-glass: 0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 0 1px 1px rgba(255, 255, 255, 0.9) inset;
 
   /* Three Vibrant Colors (Omnidesk Standard) */
-  --vibrant-cyan: #00f0ff;
-  --vibrant-purple: #a855f7;
-  --vibrant-emerald: #00f5a0;
+  --vibrant-cyan: #ff6a00;
+  --vibrant-purple: #ffb800;
+  --vibrant-emerald: #ff3300;
 
-  --color-primary: #0066ff;
-  --color-secondary: #7928ca;
-  --color-accent: #059669;
+  --color-primary: #ff6a00;
+  --color-secondary: #ffb800;
+  --color-accent: #ff3300;
 
   --badge-bg: rgba(0, 102, 255, 0.06);
   --badge-border: rgba(0, 102, 255, 0.2);
@@ -36,9 +36,9 @@
   --shadow-glass: 0 16px 40px -12px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(255, 255, 255, 0.1) inset;
 
   /* Three Vibrant Colors (Dark Neon) */
-  --vibrant-cyan: #00f0ff;
-  --vibrant-purple: #c084fc;
-  --vibrant-emerald: #00f5a0;
+  --vibrant-cyan: #ff6a00;
+  --vibrant-purple: #ffb800;
+  --vibrant-emerald: #ff3300;
 
   --color-primary: #00f0ff;
   --color-secondary: #a855f7;

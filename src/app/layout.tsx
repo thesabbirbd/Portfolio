@@ -24,12 +24,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://sabbir.nav.bd"),
-  title: "Md Sabbirul Islam Khan — SABBiR | Backend • DevOps • AI • Systems",
+  title: "Md Sabbirul Islam Khan — THE SABBiR | Backend • DevOps • AI • Systems",
   description:
-    "Official digital platform of Md Sabbirul Islam Khan (SABBiR). Bridging Business Management economics with Backend Architecture (FastAPI), DevOps (Docker, Linux), Local AI (Ollama), and NOC Infrastructure. Creator of Omnidesk BD.",
+    "Official digital platform of Md Sabbirul Islam Khan (THE SABBiR). Bridging Business Management economics with Backend Architecture (FastAPI), DevOps (Docker, Linux), Local AI (Ollama), and NOC Infrastructure. Creator of Omnidesk BD.",
   keywords: [
     "Md Sabbirul Islam Khan",
-    "SABBiR",
+    "THE SABBiR",
     "thesabbirbd",
     "iamthesabbir",
     "Omnidesk BD",
@@ -50,22 +50,22 @@ export const metadata: Metadata = {
     "sabbir.nav.bd",
   ],
   authors: [{ name: "Md Sabbirul Islam Khan", url: "https://github.com/thesabbirbd" }],
-  creator: "Md Sabbirul Islam Khan (SABBiR)",
-  publisher: "SABBiR",
+  creator: "Md Sabbirul Islam Khan (THE SABBiR)",
+  publisher: "THE SABBiR",
   alternates: {
     canonical: "https://sabbir.nav.bd",
   },
   openGraph: {
-    title: "Md Sabbirul Islam Khan — SABBiR | Backend • DevOps • AI • Systems",
+    title: "Md Sabbirul Islam Khan — THE SABBiR | Backend • DevOps • AI • Systems",
     description: "Bridging Business Management with Hardcore Systems Engineering. Creator of Omnidesk BD.",
     url: "https://sabbir.nav.bd",
-    siteName: "Md Sabbirul Islam Khan (SABBiR)",
+    siteName: "Md Sabbirul Islam Khan (THE SABBiR)",
     images: [
       {
-        url: "/assets/sabbir-portrait.png",
+        url: "/assets/sabbir-portrait-v2.png",
         width: 800,
         height: 800,
-        alt: "Md Sabbirul Islam Khan (SABBiR) - Systems Architect",
+        alt: "Md Sabbirul Islam Khan (THE SABBiR) - Systems Architect",
       },
     ],
     locale: "en_US",
@@ -73,10 +73,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Md Sabbirul Islam Khan — SABBiR",
+    title: "Md Sabbirul Islam Khan — THE SABBiR",
     description: "Bridging Business Management with Systems, DevOps, AI & Infrastructure.",
     creator: "@thesabbirbd",
-    images: ["/assets/sabbir-portrait.png"],
+    images: ["/assets/sabbir-portrait-v2.png"],
   },
   robots: {
     index: true,
@@ -99,9 +99,9 @@ const jsonLd = {
       "@type": "Person",
       "@id": "https://sabbir.nav.bd/#person",
       "name": "Md Sabbirul Islam Khan",
-      "alternateName": ["SABBiR", "thesabbirbd", "iamthesabbir"],
+      "alternateName": ["THE SABBiR", "thesabbirbd", "iamthesabbir"],
       "url": "https://sabbir.nav.bd",
-      "image": "https://sabbir.nav.bd/assets/sabbir-portrait.png",
+      "image": "https://sabbir.nav.bd/assets/sabbir-portrait-v2.png",
       "jobTitle": "Backend & DevOps Engineering Focus | BBA Management",
       "worksFor": {
         "@type": "Organization",
@@ -149,8 +149,8 @@ const jsonLd = {
       "@type": "WebSite",
       "@id": "https://sabbir.nav.bd/#website",
       "url": "https://sabbir.nav.bd",
-      "name": "Md Sabbirul Islam Khan (SABBiR) — Official Platform",
-      "description": "Personal digital identity platform of Md Sabbirul Islam Khan (SABBiR).",
+      "name": "Md Sabbirul Islam Khan (THE SABBiR) — Official Platform",
+      "description": "Personal digital identity platform of Md Sabbirul Islam Khan (THE SABBiR).",
       "publisher": {
         "@id": "https://sabbir.nav.bd/#person"
       }

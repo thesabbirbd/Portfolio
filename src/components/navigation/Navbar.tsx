@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { 
   User, 
@@ -94,8 +95,10 @@ export function Navbar() {
             onClick={() => sound.click()}
             className="flex items-center gap-2 pl-2 pr-3 py-1 rounded-full hover:bg-slate-100/70 dark:hover:bg-slate-800/70 transition-colors group"
           >
-            <div className="relative flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-tr from-blue-600 via-cyan-500 to-indigo-600 text-white font-mono font-bold text-xs shadow-sm">
-              S
+            <div className="relative flex items-center justify-center w-7 h-7">
+              <div className="relative w-full h-full rounded-full overflow-hidden">
+                <Image src="/assets/sabbir-portrait-v2.png" alt="Profile" fill className="object-cover" />
+              </div>
               <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-950 animate-pulse" />
             </div>
             <span className="font-bold tracking-wider text-sm text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">
@@ -161,8 +164,8 @@ export function Navbar() {
       {/* ================= MOBILE COMPACT TOP BAR ================= */}
       <div className="fixed top-0 inset-x-0 z-50 flex md:hidden items-center justify-between px-4 py-3 glass-spatial border-b border-slate-200/50 dark:border-white/10 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl">
         <Link href="#hero" onClick={() => sound.click()} className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 text-white flex items-center justify-center font-bold text-xs">
-            S
+          <div className="relative w-7 h-7 rounded-full overflow-hidden border-2 border-transparent">
+            <Image src="/assets/sabbir-portrait-v2.png" alt="Profile" fill className="object-cover" />
           </div>
           <span className="font-bold text-sm tracking-wider text-slate-900 dark:text-white">
             {PROFILE_DATA.shortName}

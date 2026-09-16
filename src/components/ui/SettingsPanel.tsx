@@ -197,7 +197,7 @@ export function SettingsPanel() {
 
               {/* Footer status */}
               <div className="pt-3 border-t border-[var(--border-glass)] text-center text-xs text-[var(--text-muted)]">
-                Preferences persisted locally &bull; SABBiR Digital Space v2.0
+                Preferences persisted locally &bull; THE SABBiR Digital Space v2.0
               </div>
             </motion.div>
           </div>

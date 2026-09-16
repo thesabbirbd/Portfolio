@@ -1,6 +1,6 @@
 export const PROFILE_DATA = {
   fullName: "Md Sabbirul Islam Khan",
-  shortName: "SABBiR",
+  shortName: "THE SABBiR",
   badgeStatus: "OPEN TO BUILD • LEARN • COLLABORATE",
   spiritualEthos: {
     greeting: "Aʂʂαʅαɱυ - Aʅαιƙυɱ🤍",

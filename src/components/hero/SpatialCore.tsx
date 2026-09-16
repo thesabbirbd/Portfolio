@@ -6,12 +6,12 @@ import Image from "next/image";
 import { Terminal, Database, Server, Cpu, Cloud, Shield } from "lucide-react";
 
 const ORBITING_NODES = [
-  { label: "FastAPI", icon: Server, color: "#00f0ff", angle: 0 },
-  { label: "Docker", icon: Cloud, color: "#2496ED", angle: 60 },
-  { label: "PostgreSQL", icon: Database, color: "#4169E1", angle: 120 },
-  { label: "Ollama / AI", icon: Cpu, color: "#a855f7", angle: 180 },
-  { label: "Ubuntu / Linux", icon: Terminal, color: "#E95420", angle: 240 },
-  { label: "NOC & Network", icon: Shield, color: "#00f5a0", angle: 300 },
+  { label: "FastAPI", icon: Server, color: "#00f0ff", angle: 30 },
+  { label: "Docker", icon: Cloud, color: "#2496ED", angle: 90 },
+  { label: "PostgreSQL", icon: Database, color: "#4169E1", angle: 150 },
+  { label: "Ollama / AI", icon: Cpu, color: "#a855f7", angle: 210 },
+  { label: "Ubuntu / Linux", icon: Terminal, color: "#E95420", angle: 270 },
+  { label: "NOC & Network", icon: Shield, color: "#00f5a0", angle: 330 },
 ];
 
 export function SpatialCore() {
@@ -107,11 +107,11 @@ export function SpatialCore() {
           <div className="absolute inset-0 bg-gradient-to-tr from-white/30 via-transparent to-cyan-400/25 pointer-events-none rounded-full" />
           <div className="absolute -top-8 -left-8 w-20 sm:w-28 h-20 sm:h-28 bg-white/40 dark:bg-cyan-400/20 blur-xl rounded-full pointer-events-none" />
 
-          {/* Authentic Portrait Image of SABBiR */}
+          {/* Authentic Portrait Image of THE SABBiR */}
           <div className="relative w-full h-full rounded-full overflow-hidden border border-slate-200/50 dark:border-white/10 bg-slate-950">
             <Image
-              src="/assets/sabbir-portrait.png"
-              alt="Md Sabbirul Islam Khan (SABBiR)"
+              src="/assets/sabbir-portrait-v2.png"
+              alt="Md Sabbirul Islam Khan (THE SABBiR)"
               fill
               priority
               sizes="(max-width: 640px) 144px, 208px"
@@ -122,7 +122,7 @@ export function SpatialCore() {
           {/* Floating Status Pill on Center Core */}
           <div className="absolute bottom-2 inset-x-0 mx-auto w-fit px-2.5 sm:px-3 py-0.5 rounded-full glass-spatial border border-white/40 dark:border-cyan-400/40 text-[9px] sm:text-[10px] font-mono font-bold tracking-wider text-slate-800 dark:text-cyan-300 shadow-md flex items-center gap-1.5 backdrop-blur-md">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
-            <span>SABBiR // CORE</span>
+            <span>THE SABBiR // CORE</span>
           </div>
         </motion.div>
 

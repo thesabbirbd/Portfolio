@@ -110,7 +110,7 @@ export function AboutSection() {
                   </div>
                   <h3 className="text-xl font-bold tracking-tight text-white">Md Sabbirul Islam Khan</h3>
                   <div className="text-xs font-mono font-semibold tracking-widest text-cyan-300 uppercase">
-                    SABBiR &bull; Digital Space
+                    THE SABBiR &bull; Digital Space
                   </div>
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[11px] font-mono text-emerald-300">
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -122,7 +122,7 @@ export function AboutSection() {
               {/* Editorial Mode Badge */}
               {photoMode === "editorial" && (
                 <div className="pt-3 px-2 flex items-center justify-between text-xs text-[var(--text-muted)] font-mono">
-                  <span>SABBiR DIGITAL IDENTITY</span>
+                  <span>THE SABBiR DIGITAL IDENTITY</span>
                   <span>EST. 2026</span>
                 </div>
               )}
