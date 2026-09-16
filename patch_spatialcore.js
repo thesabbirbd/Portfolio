@@ -1,35 +1,63 @@
 const fs = require('fs');
-const file = 'src/components/hero/SpatialCore.tsx';
-let content = fs.readFileSync(file, 'utf8');
+let content = fs.readFileSync('src/components/hero/SpatialCore.tsx', 'utf8');
 
-// 1. Increase orbitRadius
+// Remove window event listeners for mousemove/touchmove
 content = content.replace(
-  'const orbitRadius = isMobile ? 95 : 140;',
-  'const orbitRadius = isMobile ? 115 : 175;'
+  /const handleMouseMove = \(e: MouseEvent\) => {[\s\S]*?};/,
+  ''
+);
+content = content.replace(
+  /const handleTouchMove = \(e: TouchEvent\) => {[\s\S]*?};/,
+  ''
+);
+content = content.replace(
+  /window\.addEventListener\("mousemove", handleMouseMove, { passive: true }\);\s*window\.addEventListener\("touchmove", handleTouchMove, { passive: true }\);/,
+  ''
+);
+content = content.replace(
+  /window\.removeEventListener\("mousemove", handleMouseMove\);\s*window\.removeEventListener\("touchmove", handleTouchMove\);/,
+  ''
 );
 
-// 2. Increase container max-w
+// Fix the return div to handle onMouseMove and onMouseLeave
+const mouseEvents = `
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    // Fix direction: usually moving mouse right should tilt it to the right (rotateY positive)
+    mouseX.set(x);
+    mouseY.set(y);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  return (
+    <div 
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[500px] aspect-square mx-auto flex items-center justify-center select-none perspective-1000"
+    >
+`;
+
 content = content.replace(
-  'sm:max-w-[420px]',
-  'sm:max-w-[500px]'
+  'return (\n    <div className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[500px] aspect-square mx-auto flex items-center justify-center select-none perspective-1000">\n      {/* 3 Vibrant Ambient Glow Backdrops */}',
+  mouseEvents + '\n      {/* 3 Vibrant Ambient Glow Backdrops */}'
 );
 
-// 3. Fix Image sizes and quality
+// Fix direction mapping. 
+// If mouse is at top (negative Y), we want the top to tilt backwards (positive rotateX).
+// If mouse is at right (positive X), we want the right to tilt backwards (positive rotateY).
 content = content.replace(
-  'sizes="(max-width: 640px) 144px, 208px"',
-  'sizes="(max-width: 768px) 300px, 600px"\n              quality={100}'
+  'const rotateX = useTransform(smoothY, [-180, 180], [16, -16]);',
+  'const rotateX = useTransform(smoothY, [-250, 250], [-16, 16]);'
+);
+content = content.replace(
+  'const rotateY = useTransform(smoothX, [-180, 180], [-16, 16]);',
+  'const rotateY = useTransform(smoothX, [-250, 250], [16, -16]);'
 );
 
-// 4. Center orbital nodes
-content = content.replace(
-  'transform: `translate(${x}px, ${y}px)`,',
-  'left: "50%",\n                top: "50%",\n                marginLeft: x,\n                marginTop: y,\n                x: "-50%",\n                y: "-50%ädt",'
-);
-
-// Ah wait, I added an 'ädt' typo. Let me fix the replace string.
-content = content.replace(
-  'y: "-50%ädt",',
-  'y: "-50%",'
-);
-
-fs.writeFileSync(file, content);
+fs.writeFileSync('src/components/hero/SpatialCore.tsx', content);

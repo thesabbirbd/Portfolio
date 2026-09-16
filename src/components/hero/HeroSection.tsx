@@ -30,9 +30,9 @@ export function HeroSection() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-panel border border-emerald-500/30 bg-emerald-500/5 text-emerald-600 dark:text-emerald-400 text-xs font-mono tracking-wider shadow-sm"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-panel border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 text-[var(--color-accent)] dark:text-[var(--color-accent)] text-xs font-mono tracking-wider shadow-sm"
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] animate-pulse" />
             <span>{PROFILE_DATA.badgeStatus}</span>
           </motion.div>
 
@@ -68,9 +68,9 @@ export function HeroSection() {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: -24, opacity: 0 }}
                 transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 rounded-xl bg-blue-500/10 dark:bg-cyan-500/10 border border-blue-500/20 dark:border-cyan-500/20 text-blue-700 dark:text-cyan-300 font-mono text-xs sm:text-base md:text-xl font-bold tracking-tight max-w-full truncate"
+                className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 rounded-xl bg-blue-500/10 dark:bg-[var(--color-secondary)]/10 border border-blue-500/20 dark:border-[var(--color-secondary)]/20 text-blue-700 dark:text-cyan-300 font-mono text-xs sm:text-base md:text-xl font-bold tracking-tight max-w-full truncate"
               >
-                <Terminal className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-500 shrink-0" />
+                <Terminal className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[var(--color-secondary)] shrink-0" />
                 <span className="truncate">{PROFILE_DATA.rotatingRoles[roleIndex]}</span>
               </motion.div>
             </AnimatePresence>

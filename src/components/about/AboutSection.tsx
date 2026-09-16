@@ -37,7 +37,7 @@ export function AboutSection() {
           <div className="text-xs text-[var(--text-muted)] mt-0.5 font-mono">
             {PROFILE_DATA.spiritualEthos.smile}
           </div>
-          <div className="text-sm font-bold text-emerald-600 dark:text-emerald-400 mt-1">
+          <div className="text-sm font-bold text-[var(--color-accent)] dark:text-[var(--color-accent)] mt-1">
             {PROFILE_DATA.spiritualEthos.alhamdulillah}
           </div>
           <div className="text-xs text-[var(--text-muted)] font-mono">
@@ -100,20 +100,20 @@ export function AboutSection() {
               <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 flex flex-col items-center justify-end p-6 text-center text-white">
                 {/* Visual Ambient Rings */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(0,180,216,0.35),transparent_70%)]" />
-                <div className="absolute top-1/3 w-36 h-36 rounded-full border border-cyan-400/30 animate-spin-slow" />
+                <div className="absolute top-1/3 w-36 h-36 rounded-full border border-[var(--color-secondary)]/30 animate-spin-slow" />
                 <div className="absolute top-1/3 w-48 h-48 rounded-full border border-purple-500/20" />
 
                 {/* Portrait Core Branding Badge */}
                 <div className="relative z-10 space-y-2">
-                  <div className="w-16 h-16 mx-auto rounded-2xl glass-spatial border border-cyan-400/40 flex items-center justify-center text-2xl font-black text-cyan-300 shadow-lg">
+                  <div className="w-16 h-16 mx-auto rounded-2xl glass-spatial border border-[var(--color-secondary)]/40 flex items-center justify-center text-2xl font-black text-cyan-300 shadow-lg">
                     S
                   </div>
                   <h3 className="text-xl font-bold tracking-tight text-white">Md Sabbirul Islam Khan</h3>
                   <div className="text-xs font-mono font-semibold tracking-widest text-cyan-300 uppercase">
                     THE SABBiR &bull; Digital Space
                   </div>
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[11px] font-mono text-emerald-300">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/40 text-[11px] font-mono text-emerald-300">
+                    <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] animate-pulse" />
                     ONLINE &bull; BUILDING &bull; LEARNING
                   </div>
                 </div>
@@ -153,7 +153,7 @@ export function AboutSection() {
 
           {/* Geographic Base */}
           <div className="p-5 rounded-2xl glass-interactive border border-[var(--border-glass)] space-y-2">
-            <div className="w-9 h-9 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] dark:text-[var(--color-secondary)] flex items-center justify-center">
               <MapPin className="w-5 h-5" />
             </div>
             <h3 className="text-xs font-mono font-semibold text-[var(--text-muted)] uppercase tracking-wider">
@@ -165,7 +165,7 @@ export function AboutSection() {
             <p className="text-xs text-[var(--text-secondary)]">
               Roots: {PROFILE_DATA.academic.origin}
             </p>
-            <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono pt-1">
+            <p className="text-[11px] text-[var(--color-accent)] dark:text-[var(--color-accent)] font-mono pt-1">
               ● Timezone: BST (UTC+6)
             </p>
           </div>
@@ -191,7 +191,7 @@ export function AboutSection() {
 
           {/* Field Recognition */}
           <div className="p-5 rounded-2xl glass-interactive border border-[var(--border-glass)] space-y-2">
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-[var(--color-accent)]/10 text-[var(--color-accent)] dark:text-[var(--color-accent)] flex items-center justify-center">
               <Award className="w-5 h-5" />
             </div>
             <h3 className="text-xs font-mono font-semibold text-[var(--text-muted)] uppercase tracking-wider">

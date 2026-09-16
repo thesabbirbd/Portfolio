@@ -9,13 +9,13 @@ import { sound } from "@/lib/sound";
 
 const STAGE_ICONS: Record<string, React.ReactNode> = {
   "Stage 01": <Compass className="w-4 h-4 text-blue-500" />,
-  "Stage 02": <Cpu className="w-4 h-4 text-emerald-500" />,
-  "Stage 03": <Shield className="w-4 h-4 text-cyan-500" />,
+  "Stage 02": <Cpu className="w-4 h-4 text-[var(--color-accent)]" />,
+  "Stage 03": <Shield className="w-4 h-4 text-[var(--color-secondary)]" />,
   "Stage 04": <Terminal className="w-4 h-4 text-purple-500" />,
   "Stage 05": <Brain className="w-4 h-4 text-pink-500" />,
   "Stage 06": <Server className="w-4 h-4 text-blue-500" />,
-  "Stage 07": <Sparkles className="w-4 h-4 text-cyan-400" />,
-  "Stage 08": <Cloud className="w-4 h-4 text-emerald-400" />,
+  "Stage 07": <Sparkles className="w-4 h-4 text-[var(--color-secondary)]" />,
+  "Stage 08": <Cloud className="w-4 h-4 text-[var(--color-accent)]" />,
 };
 
 export function JourneyTimeline() {

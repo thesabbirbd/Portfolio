@@ -21,7 +21,7 @@ export function GlassCard({
   const glowStyles = {
     none: "",
     blue: "hover:shadow-[0_12px_40px_-10px_rgba(0,114,255,0.22)] hover:border-blue-500/30",
-    cyan: "hover:shadow-[0_12px_40px_-10px_rgba(0,240,255,0.22)] hover:border-cyan-400/30",
+    cyan: "hover:shadow-[0_12px_40px_-10px_rgba(0,240,255,0.22)] hover:border-[var(--color-secondary)]/30",
     purple: "hover:shadow-[0_12px_40px_-10px_rgba(121,40,202,0.22)] hover:border-purple-500/30",
   };
 

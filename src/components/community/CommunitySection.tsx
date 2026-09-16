@@ -76,7 +76,7 @@ export function CommunitySection() {
         {/* Column 2: Social Impact & Volunteering */}
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2.5 pb-2 border-b border-[var(--border-glass)]">
-            <HeartHandshake className="w-5 h-5 text-emerald-500" />
+            <HeartHandshake className="w-5 h-5 text-[var(--color-accent)]" />
             <h3 className="text-lg font-bold text-[var(--text-primary)]">Social Impact &amp; Volunteer</h3>
           </div>
 
@@ -87,7 +87,7 @@ export function CommunitySection() {
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-[var(--color-accent)]/10 text-[var(--color-accent)] dark:text-[var(--color-accent)]">
                     {act.role}
                   </span>
                   {act.badge && (
@@ -108,7 +108,7 @@ export function CommunitySection() {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => sound.click()}
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:underline"
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-accent)] dark:text-[var(--color-accent)] hover:underline"
                   >
                     View Organization <ExternalLink className="w-3 h-3" />
                   </a>

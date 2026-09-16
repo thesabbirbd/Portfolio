@@ -62,6 +62,7 @@ const CATEGORY_MAP = [
 export function ProjectsSection() {
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const [activeScreenIndex, setActiveScreenIndex] = useState(0);
+  const [viewerOpen, setViewerOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("all");
 
   const omnidesk = PROJECTS_DATA.find((p) => p.id === "omnidesk-bd") || PROJECTS_DATA[0];
@@ -86,7 +87,7 @@ export function ProjectsSection() {
 
       {/* Section Header */}
       <div className="space-y-4 text-center sm:text-left">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-semibold tracking-wider text-blue-600 dark:text-cyan-400 bg-blue-500/10 border border-blue-500/20">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-semibold tracking-wider text-blue-600 dark:text-[var(--color-secondary)] bg-blue-500/10 border border-blue-500/20">
           <FolderGit2 className="w-3.5 h-3.5" />
           <span>03 // SELECTED BUILDS</span>
         </div>
@@ -113,11 +114,11 @@ export function ProjectsSection() {
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="space-y-3 max-w-2xl">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-blue-500/15 text-blue-600 dark:text-cyan-400 border border-blue-500/30">
+                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-blue-500/15 text-blue-600 dark:text-[var(--color-secondary)] border border-blue-500/30">
                   FLAGSHIP MASTERWORK
                 </span>
-                <span className="px-3 py-1 rounded-full text-xs font-mono font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="px-3 py-1 rounded-full text-xs font-mono font-semibold bg-[var(--color-accent)]/10 text-[var(--color-accent)] dark:text-[var(--color-accent)] border border-[var(--color-accent)]/30 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] animate-pulse" />
                   {omnidesk.status}
                 </span>
                 <span className="text-xs font-mono text-slate-400 dark:text-slate-500">
@@ -184,11 +185,11 @@ export function ProjectsSection() {
                   className={cn(
                     "px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-2 border",
                     activeScreenIndex === idx
-                      ? "glass-spatial border-blue-500/50 dark:border-cyan-400/50 bg-blue-50/50 dark:bg-slate-900/90 text-blue-700 dark:text-cyan-300 font-bold shadow-md"
+                      ? "glass-spatial border-blue-500/50 dark:border-[var(--color-secondary)]/50 bg-blue-50/50 dark:bg-slate-900/90 text-blue-700 dark:text-cyan-300 font-bold shadow-md"
                       : "glass-subtle border-slate-200/60 dark:border-white/5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                   )}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-secondary)]" />
                   <span>{screen.title}</span>
                 </button>
               ))}
@@ -206,7 +207,7 @@ export function ProjectsSection() {
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 inline-block" />
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[var(--color-accent)]/10 inline-block" />
                   <span className="ml-2 text-xs font-mono text-slate-500 dark:text-slate-400">
                     Omnidesk BD // {SCREENS[activeScreenIndex].title}
                   </span>
@@ -217,7 +218,7 @@ export function ProjectsSection() {
               </div>
 
               {/* Screen Mockup */}
-              <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] rounded-xl overflow-hidden mt-2 bg-slate-950">
+              <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] rounded-xl overflow-hidden mt-2 bg-slate-950 cursor-pointer" onClick={() => { setViewerOpen(true); sound.click(); }}>
                 <Image
                   src={SCREENS[activeScreenIndex].src}
                   alt={SCREENS[activeScreenIndex].title}
@@ -233,7 +234,7 @@ export function ProjectsSection() {
                 <p>{SCREENS[activeScreenIndex].desc}</p>
                 <button
                   onClick={() => handleOpenModal(omnidesk)}
-                  className="text-blue-600 dark:text-cyan-400 font-medium hover:underline flex items-center gap-1"
+                  className="text-blue-600 dark:text-[var(--color-secondary)] font-medium hover:underline flex items-center gap-1"
                 >
                   <span>View Specifications</span>
                   <ChevronRight className="w-3 h-3" />
@@ -268,7 +269,7 @@ export function ProjectsSection() {
                 className={cn(
                   "px-3 py-1 rounded-full text-xs font-medium transition-all relative",
                   activeCategory === cat.key
-                    ? "text-blue-600 dark:text-cyan-400 font-bold"
+                    ? "text-blue-600 dark:text-[var(--color-secondary)] font-bold"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 )}
               >
@@ -276,7 +277,7 @@ export function ProjectsSection() {
                 {activeCategory === cat.key && (
                   <motion.div
                     layoutId="activeFilterBuilds"
-                    className="absolute inset-0 rounded-full bg-blue-500/10 dark:bg-cyan-400/10 border border-blue-500/20 dark:border-cyan-400/20 -z-10"
+                    className="absolute inset-0 rounded-full bg-blue-500/10 dark:bg-[var(--color-secondary)]/10 border border-blue-500/20 dark:border-[var(--color-secondary)]/20 -z-10"
                   />
                 )}
               </button>
@@ -300,7 +301,7 @@ export function ProjectsSection() {
                   <div className="space-y-4">
                     {/* Top Bar with Category & Status */}
                     <div className="flex items-center justify-between">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-blue-500/10 text-blue-600 dark:text-cyan-400 border border-blue-500/20 dark:border-cyan-400/20">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-blue-500/10 text-blue-600 dark:text-[var(--color-secondary)] border border-blue-500/20 dark:border-[var(--color-secondary)]/20">
                         {project.category}
                       </span>
                       <span className="text-[11px] font-mono text-slate-400 dark:text-slate-500">
@@ -309,7 +310,7 @@ export function ProjectsSection() {
                     </div>
 
                     <div>
-                      <h4 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">
+                      <h4 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-[var(--color-secondary)] transition-colors">
                         {project.title}
                       </h4>
                       <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
@@ -334,7 +335,7 @@ export function ProjectsSection() {
                   <div className="pt-4 border-t border-slate-200/60 dark:border-white/5 flex items-center justify-between">
                     <button
                       onClick={() => handleOpenModal(project)}
-                      className="text-xs font-mono text-blue-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
+                      className="text-xs font-mono text-blue-600 dark:text-[var(--color-secondary)] hover:underline flex items-center gap-1"
                     >
                       <span>Architecture</span>
                       <ChevronRight className="w-3 h-3" />

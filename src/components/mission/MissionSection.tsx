@@ -28,7 +28,7 @@ export function MissionSection() {
       className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full space-y-16 overflow-hidden"
     >
       {/* Background Ambience */}
-      <div className="absolute top-1/2 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-blue-500/10 dark:bg-cyan-500/10 blur-3xl pointer-events-none -z-10" />
+      <div className="absolute top-1/2 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-blue-500/10 dark:bg-[var(--color-secondary)]/10 blur-3xl pointer-events-none -z-10" />
 
       {/* Header */}
       <div className="space-y-3">
@@ -52,9 +52,9 @@ export function MissionSection() {
       <GlassCard glow="cyan" className="p-6 sm:p-8 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/60 dark:border-white/10 pb-6">
           <div className="flex items-center gap-3">
-            <div className="w-3.5 h-3.5 rounded-full bg-emerald-500 animate-ping" />
+            <div className="w-3.5 h-3.5 rounded-full bg-[var(--color-accent)] animate-ping" />
             <div>
-              <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 uppercase tracking-wider font-bold">
+              <span className="text-[11px] font-mono text-[var(--color-accent)] dark:text-[var(--color-accent)] uppercase tracking-wider font-bold">
                 {PROFILE_DATA.mission.status}
               </span>
               <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
@@ -63,7 +63,7 @@ export function MissionSection() {
             </div>
           </div>
           <div className="flex items-center gap-2 font-mono text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-200/80 dark:border-slate-700">
-            <Terminal className="w-3.5 h-3.5 text-cyan-500" />
+            <Terminal className="w-3.5 h-3.5 text-[var(--color-secondary)]" />
             <span>SPRINT_TARGET: PRODUCTION_GRADE</span>
           </div>
         </div>
@@ -80,7 +80,7 @@ export function MissionSection() {
               className="p-4 rounded-xl bg-white/40 dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 space-y-2"
             >
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                <span className="text-[10px] font-mono font-bold text-[var(--color-secondary)] dark:text-[var(--color-secondary)]">
                   #0{i + 1}
                 </span>
                 <h4 className="text-xs font-bold text-slate-900 dark:text-white">
@@ -132,7 +132,7 @@ export function MissionSection() {
 
             <div className="grid grid-cols-2 gap-3 font-mono text-center">
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800">
-                <p className="text-xl font-bold text-blue-600 dark:text-cyan-400">
+                <p className="text-xl font-bold text-blue-600 dark:text-[var(--color-secondary)]">
                   Omnidesk BD
                 </p>
                 <p className="text-[10px] text-slate-500 uppercase mt-0.5">
@@ -140,7 +140,7 @@ export function MissionSection() {
                 </p>
               </div>
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800">
-                <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
+                <p className="text-xl font-bold text-[var(--color-accent)] dark:text-[var(--color-accent)]">
                   Active
                 </p>
                 <p className="text-[10px] text-slate-500 uppercase mt-0.5">
@@ -160,7 +160,7 @@ export function MissionSection() {
               </div>
               <div className="flex items-center justify-between py-1">
                 <span>Commit Flow</span>
-                <span className="text-emerald-500 font-semibold">100-Day Sprint</span>
+                <span className="text-[var(--color-accent)] font-semibold">100-Day Sprint</span>
               </div>
             </div>
 
@@ -180,7 +180,7 @@ export function MissionSection() {
         {/* Verified Activities & Operations (7 cols) */}
         <div className="lg:col-span-7 space-y-4">
           <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Building className="w-4 h-4 text-emerald-500" />
+            <Building className="w-4 h-4 text-[var(--color-accent)]" />
             <span>Verified Engagements &amp; Operations</span>
           </h3>
 
@@ -191,7 +191,7 @@ export function MissionSection() {
                   <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                     {act.organization}
                   </h4>
-                  <span className="text-xs font-mono font-medium text-blue-600 dark:text-cyan-400">
+                  <span className="text-xs font-mono font-medium text-blue-600 dark:text-[var(--color-secondary)]">
                     {act.role}
                   </span>
                 </div>

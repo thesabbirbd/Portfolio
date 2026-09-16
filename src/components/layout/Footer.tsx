@@ -44,7 +44,7 @@ export function Footer() {
     <footer className="relative border-t border-slate-200/60 dark:border-white/10 bg-white/40 dark:bg-slate-950/40 backdrop-blur-md pt-16 pb-24 md:pb-16 overflow-hidden">
       {/* Background ambient lighting */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
-      <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-blue-500/10 dark:bg-cyan-500/10 blur-3xl pointer-events-none" />
+      <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-blue-500/10 dark:bg-[var(--color-secondary)]/10 blur-3xl pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
@@ -76,7 +76,7 @@ export function Footer() {
                   rel="noopener noreferrer"
                   aria-label={social.name}
                   onClick={() => sound.click()}
-                  className="p-2.5 rounded-full glass-panel hover:border-cyan-400/50 hover:text-cyan-500 transition-all hover:scale-110 text-slate-600 dark:text-slate-300"
+                  className="p-2.5 rounded-full glass-panel hover:border-[var(--color-secondary)]/50 hover:text-[var(--color-secondary)] transition-all hover:scale-110 text-slate-600 dark:text-slate-300"
                 >
                   {getSocialIcon(social.icon)}
                 </a>
@@ -85,7 +85,7 @@ export function Footer() {
 
             <button
               onClick={scrollToTop}
-              className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-blue-600 dark:hover:text-cyan-400 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-blue-600 dark:hover:text-[var(--color-secondary)] transition-colors"
             >
               <span>Back to surface</span>
               <ArrowUp className="w-3.5 h-3.5" />
@@ -95,7 +95,7 @@ export function Footer() {
 
         <div className="mt-12 pt-6 border-t border-slate-200/50 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
           <div className="flex items-center gap-2">
-            <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+            <span className="inline-block w-2 h-2 rounded-full bg-[var(--color-accent)] animate-ping" />
             <span className="font-mono">SYSTEM ONLINE • sabbir.nav.bd</span>
           </div>
           <div>

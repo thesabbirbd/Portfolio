@@ -145,12 +145,10 @@ export function SettingsPanel() {
                         sound.click();
                       }}
                       className={`flex items-center justify-center gap-2 p-2 rounded-xl border transition-all ${
-                        colorTheme === "orange"
-                          ? "border-orange-500 bg-orange-500/10 text-orange-500 font-bold"
-                          : "border-[var(--border-glass)] hover:border-orange-500/50 text-[var(--text-secondary)]"
+                        colorTheme === "orange" ? "border-[#ff6a00] bg-[#ff6a00]/10 text-[#ff6a00] font-bold" : "border-[var(--border-glass)] hover:border-[#ff6a00]/50 text-[var(--text-secondary)]"
                       }`}
                     >
-                      <div className="w-3 h-3 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(255,106,0,0.8)]" /> Orange
+                      <div className="w-3 h-3 rounded-full bg-[#ff6a00] shadow-[0_0_8px_rgba(255,106,0,0.8)]" /> Orange
                     </button>
                     <button
                       onClick={() => {
@@ -158,12 +156,10 @@ export function SettingsPanel() {
                         sound.click();
                       }}
                       className={`flex items-center justify-center gap-2 p-2 rounded-xl border transition-all ${
-                        colorTheme === "blue"
-                          ? "border-cyan-400 bg-cyan-400/10 text-cyan-500 font-bold dark:text-cyan-400"
-                          : "border-[var(--border-glass)] hover:border-cyan-400/50 text-[var(--text-secondary)]"
+                        colorTheme === "blue" ? "border-[#00f0ff] bg-[#00f0ff]/10 text-[#00f0ff] font-bold" : "border-[var(--border-glass)] hover:border-[#00f0ff]/50 text-[var(--text-secondary)]"
                       }`}
                     >
-                      <div className="w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(0,240,255,0.8)]" /> Blue
+                      <div className="w-3 h-3 rounded-full bg-[#00f0ff] shadow-[0_0_8px_rgba(0,240,255,0.8)]" /> Blue
                     </button>
                     <button
                       onClick={() => {
@@ -171,12 +167,10 @@ export function SettingsPanel() {
                         sound.click();
                       }}
                       className={`flex items-center justify-center gap-2 p-2 rounded-xl border transition-all ${
-                        colorTheme === "green"
-                          ? "border-emerald-400 bg-emerald-400/10 text-emerald-500 font-bold dark:text-emerald-400"
-                          : "border-[var(--border-glass)] hover:border-emerald-400/50 text-[var(--text-secondary)]"
+                        colorTheme === "green" ? "border-[#10b981] bg-[#10b981]/10 text-[#10b981] font-bold" : "border-[var(--border-glass)] hover:border-[#10b981]/50 text-[var(--text-secondary)]"
                       }`}
                     >
-                      <div className="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.8)]" /> Green
+                      <div className="w-3 h-3 rounded-full bg-[#10b981] shadow-[0_0_8px_rgba(16,185,129,0.8)]" /> Green
                     </button>
                   </div>
                 </div>
@@ -198,7 +192,7 @@ export function SettingsPanel() {
                     onClick={toggleSound}
                     className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all ${
                       soundEnabled
-                        ? "bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400"
+                        ? "bg-[var(--color-accent)]/10 border-[var(--color-accent)] text-[var(--color-accent)] dark:text-[var(--color-accent)]"
                         : "border-[var(--border-glass)] text-[var(--text-muted)]"
                     }`}
                   >

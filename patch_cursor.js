@@ -1,4 +1,5 @@
-
+const fs = require('fs');
+let content = `
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -22,7 +23,7 @@ export function CustomCursor() {
     if (window.matchMedia("(pointer: coarse)").matches) return;
     if (localStorage.getItem("sabbir_reduced_motion") === "true") return;
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMouseMove = (e) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
       if (!isVisible) setIsVisible(true);
@@ -31,8 +32,8 @@ export function CustomCursor() {
     const handleMouseLeave = () => setIsVisible(false);
     const handleMouseEnter = () => setIsVisible(true);
 
-    const handleElementHover = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
+    const handleElementHover = (e) => {
+      const target = e.target;
       if (
         target.closest("button") ||
         target.closest("a") ||
@@ -69,7 +70,7 @@ export function CustomCursor() {
         className="fixed top-0 left-0 z-[100] flex items-center justify-center mix-blend-difference text-white"
         style={{ x: cursorX, y: cursorY, translateX: "-50%", translateY: "-50%" }}
       >
-        <Plus className={`transition-all duration-300 ${isHovering ? 'w-4 h-4 opacity-100 rotate-90' : 'w-2 h-2 opacity-50'}`} strokeWidth={3} />
+        <Plus className={\`transition-all duration-300 \${isHovering ? 'w-4 h-4 opacity-100 rotate-90' : 'w-2 h-2 opacity-50'}\`} strokeWidth={3} />
       </motion.div>
 
       {/* 2. Smooth trailing digital ring */}
@@ -86,3 +87,6 @@ export function CustomCursor() {
     </div>
   );
 }
+`;
+
+fs.writeFileSync('src/components/ui/CustomCursor.tsx', content);

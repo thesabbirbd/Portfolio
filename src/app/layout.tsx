@@ -175,7 +175,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-[var(--bg-primary)] text-[var(--text-primary)] selection:bg-cyan-500/20 selection:text-cyan-500">
+      <body className="min-h-screen flex flex-col bg-[var(--bg-primary)] text-[var(--text-primary)] selection:bg-[var(--color-secondary)]/10 selection:text-[var(--color-secondary)]">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

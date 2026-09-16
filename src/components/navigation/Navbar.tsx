@@ -99,9 +99,9 @@ export function Navbar() {
               <div className="relative w-full h-full rounded-full overflow-hidden">
                 <Image src="/assets/sabbir-portrait-v2.png" alt="Profile" fill sizes="10vw" className="object-cover" />
               </div>
-              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-950 animate-pulse" />
+              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[var(--color-accent)] border-2 border-white dark:border-slate-950 animate-pulse" />
             </div>
-            <span className="font-bold tracking-wider text-sm text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">
+            <span className="font-bold tracking-wider text-sm text-slate-900 dark:text-white group-hover:text-[var(--color-primary)] dark:group-hover:text-[var(--color-primary)] transition-colors">
               {PROFILE_DATA.shortName}
             </span>
           </Link>
@@ -118,7 +118,7 @@ export function Navbar() {
                   className={cn(
                     "px-3 py-1.5 rounded-full text-xs font-medium transition-all relative",
                     isActive
-                      ? "text-blue-600 dark:text-cyan-400 font-semibold"
+                      ? "text-[var(--color-primary)] dark:text-[var(--color-primary)] font-semibold"
                       : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/50 dark:hover:bg-slate-800/50"
                   )}
                 >
@@ -126,7 +126,7 @@ export function Navbar() {
                   {isActive && (
                     <motion.div
                       layoutId="activePill"
-                      className="absolute inset-0 rounded-full bg-blue-500/10 dark:bg-cyan-400/10 -z-10"
+                      className="absolute inset-0 rounded-full bg-blue-500/10 dark:bg-[var(--color-secondary)]/10 -z-10"
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -153,7 +153,7 @@ export function Navbar() {
             <Link
               href="#contact"
               onClick={() => sound.click()}
-              className="hidden xl:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium shadow-sm transition-all hover:scale-105"
+              className="hidden xl:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--color-primary)] opacity-90 hover:opacity-100 text-white text-xs font-medium shadow-sm transition-all hover:scale-105"
             >
               <span>Connect</span>
             </Link>
@@ -199,7 +199,7 @@ export function Navbar() {
               className={cn(
                 "flex flex-col items-center gap-0.5 p-1 rounded-full text-[10px] font-medium transition-colors",
                 isActive
-                  ? "text-blue-600 dark:text-cyan-400 font-bold"
+                  ? "text-[var(--color-primary)] dark:text-[var(--color-primary)] font-bold"
                   : "text-slate-500 dark:text-slate-400"
               )}
             >

@@ -21,12 +21,12 @@ import { cn } from "@/lib/utils";
 
 const ICONS_MAP: Record<string, React.ReactNode> = {
   Server: <Server className="w-5 h-5 text-blue-500" />,
-  Container: <Container className="w-5 h-5 text-cyan-500" />,
-  Network: <Network className="w-5 h-5 text-emerald-500" />,
+  Container: <Container className="w-5 h-5 text-[var(--color-secondary)]" />,
+  Network: <Network className="w-5 h-5 text-[var(--color-accent)]" />,
   Brain: <Brain className="w-5 h-5 text-purple-500" />,
   Cloud: <Cloud className="w-5 h-5 text-blue-400" />,
   Video: <Video className="w-5 h-5 text-pink-500" />,
-  Cpu: <Cpu className="w-5 h-5 text-cyan-400" />,
+  Cpu: <Cpu className="w-5 h-5 text-[var(--color-secondary)]" />,
 };
 
 export function SkillsSection() {
@@ -51,7 +51,7 @@ export function SkillsSection() {
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-semibold tracking-wider text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 border border-cyan-500/20">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-semibold tracking-wider text-[var(--color-secondary)] dark:text-[var(--color-secondary)] bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)]/20">
             <Layers className="w-3.5 h-3.5" />
             <span>05 // CAPABILITY ECOSYSTEM</span>
           </div>
@@ -84,7 +84,7 @@ export function SkillsSection() {
               className={cn(
                 "px-3.5 py-1 rounded-full text-xs font-medium transition-all relative",
                 selectedFilter === tab.key
-                  ? "text-blue-600 dark:text-cyan-400 font-bold"
+                  ? "text-blue-600 dark:text-[var(--color-secondary)] font-bold"
                   : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               )}
             >
@@ -92,7 +92,7 @@ export function SkillsSection() {
               {selectedFilter === tab.key && (
                 <motion.div
                   layoutId="activeFilterPill"
-                  className="absolute inset-0 rounded-full bg-blue-500/10 dark:bg-cyan-400/10 border border-blue-500/20 dark:border-cyan-400/20 -z-10"
+                  className="absolute inset-0 rounded-full bg-blue-500/10 dark:bg-[var(--color-secondary)]/10 border border-blue-500/20 dark:border-[var(--color-secondary)]/20 -z-10"
                 />
               )}
             </button>
@@ -128,7 +128,7 @@ export function SkillsSection() {
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-[var(--color-secondary)] transition-colors">
                       {cap.title}
                     </h3>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -142,12 +142,12 @@ export function SkillsSection() {
                       <span
                         key={skill.name}
                         title={skill.context}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 group-hover:border-cyan-400/30 transition-colors"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 group-hover:border-[var(--color-secondary)]/30 transition-colors"
                       >
-                        <span className="w-1 h-1 rounded-full bg-cyan-500" />
+                        <span className="w-1 h-1 rounded-full bg-[var(--color-secondary)]" />
                         <span>{skill.name}</span>
                         {skill.level === "Active Focus" && (
-                          <span className="text-[9px] text-cyan-600 dark:text-cyan-400 font-sans">⚡</span>
+                          <span className="text-[9px] text-[var(--color-secondary)] dark:text-[var(--color-secondary)] font-sans">⚡</span>
                         )}
                       </span>
                     ))}
@@ -156,7 +156,7 @@ export function SkillsSection() {
 
                 <div className="pt-4 border-t border-slate-200/50 dark:border-white/5 flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
                   <span className="flex items-center gap-1">
-                    <Check className="w-3 h-3 text-emerald-500" /> Verified Capability
+                    <Check className="w-3 h-3 text-[var(--color-accent)]" /> Verified Capability
                   </span>
                   <span className="text-xs text-slate-400 dark:text-slate-500">
                     {cap.skills.length} skills

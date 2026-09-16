@@ -3,7 +3,7 @@
 :root {
   --bg-primary: #f8fafc;
   --bg-secondary: #ffffff;
-  --bg-card: rgba(255, 255, 255, 0.75);
+  --bg-card: rgba(255, 255, 255, 0.45);
   --text-primary: #0f172a;
   --text-secondary: #334155;
   --text-muted: #64748b;
@@ -27,7 +27,7 @@
 .dark {
   --bg-primary: #07090e;
   --bg-secondary: #0d121d;
-  --bg-card: rgba(13, 18, 29, 0.7);
+  --bg-card: rgba(13, 18, 29, 0.4);
   --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
   --text-muted: #94a3b8;
@@ -89,22 +89,22 @@ body {
 /* Level 01: Subtle Glass */
 .glass-subtle {
   background: rgba(255, 255, 255, 0.45);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(15, 23, 42, 0.06);
 }
 .dark .glass-subtle {
   background: rgba(17, 24, 39, 0.4);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Level 02: Interactive Glass */
 .glass-interactive {
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border-glass);
   box-shadow: var(--shadow-glass);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -150,8 +150,8 @@ body {
 /* Greenify Glassmorphism (Google Maps & Volunteering) */
 .glass-emerald {
   background: rgba(16, 185, 129, 0.04);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(16, 185, 129, 0.25);
   box-shadow: 0 16px 36px -12px rgba(16, 185, 129, 0.12);
 }
@@ -163,8 +163,8 @@ body {
 /* Legacy Glass Classes (Mapped to New Levels for Backward Compatibility) */
 .glass-panel {
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border-glass);
   box-shadow: var(--shadow-glass);
 }
@@ -357,7 +357,7 @@ body {
 }
 
 /* ==================== COLOR THEMES ==================== */
-[data-theme-color="orange"] {
+:root[data-theme-color="orange"], .dark[data-theme-color="orange"] {
   --vibrant-cyan: #ff6a00;
   --vibrant-purple: #ffb800;
   --vibrant-emerald: #ff3300;
@@ -366,7 +366,7 @@ body {
   --color-accent: #ff3300;
 }
 
-[data-theme-color="blue"] {
+:root[data-theme-color="blue"], .dark[data-theme-color="blue"] {
   --vibrant-cyan: #00f0ff;
   --vibrant-purple: #3b82f6;
   --vibrant-emerald: #8b5cf6;
@@ -375,7 +375,7 @@ body {
   --color-accent: #8b5cf6;
 }
 
-[data-theme-color="green"] {
+:root[data-theme-color="green"], .dark[data-theme-color="green"] {
   --vibrant-cyan: #00f5a0;
   --vibrant-purple: #10b981;
   --vibrant-emerald: #34d399;

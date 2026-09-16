@@ -44,7 +44,7 @@ export function LoadingScreen() {
             </motion.div>
 
             <div className="space-y-1">
-              <p className="text-xs text-cyan-400 font-semibold tracking-wider animate-pulse">
+              <p className="text-xs text-[var(--color-secondary)] font-semibold tracking-wider animate-pulse">
                 SYSTEM INITIALIZING...
               </p>
               <h1 className="text-lg font-bold tracking-tight text-slate-100">

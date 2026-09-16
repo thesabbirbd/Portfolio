@@ -43,7 +43,7 @@ export function GlowButton({
       "bg-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-100/60 dark:hover:bg-slate-800/60",
     
     // New Webflow Glass UI
-    glass: "relative bg-[rgba(255,255,255,0.2)] dark:bg-[rgba(255,255,255,0.05)] backdrop-blur-[6px] border border-[rgba(255,255,255,0.4)] dark:border-[rgba(255,255,255,0.15)] text-slate-800 dark:text-white shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_32px_var(--color-primary)] hover:border-[var(--color-primary)] hover:bg-[rgba(255,255,255,0.3)] dark:hover:bg-[rgba(255,255,255,0.1)] overflow-hidden"
+    glass: "relative bg-[rgba(255,255,255,0.2)] dark:bg-[rgba(255,255,255,0.05)] backdrop-blur-md border border-[rgba(255,255,255,0.4)] dark:border-[rgba(255,255,255,0.15)] text-slate-800 dark:text-white shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_32px_var(--color-primary)] hover:border-[var(--color-primary)] hover:bg-[rgba(255,255,255,0.3)] dark:hover:bg-[rgba(255,255,255,0.1)] overflow-hidden"
   };
 
   const buttonContent = (

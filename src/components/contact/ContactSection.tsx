@@ -76,7 +76,7 @@ export function ContactSection() {
 
       {/* Heading */}
       <div className="text-center space-y-3 max-w-3xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-mono font-semibold tracking-wider text-blue-600 dark:text-cyan-400 bg-blue-500/10 border border-blue-500/20">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-mono font-semibold tracking-wider text-blue-600 dark:text-[var(--color-secondary)] bg-blue-500/10 border border-blue-500/20">
           <Mail className="w-3.5 h-3.5" />
           <span>06 // INITIATE TRANSMISSION</span>
         </div>
@@ -118,7 +118,7 @@ export function ContactSection() {
                 aria-label="Copy email"
               >
                 {copied ? (
-                  <Check className="w-4 h-4 text-emerald-500" />
+                  <Check className="w-4 h-4 text-[var(--color-accent)]" />
                 ) : (
                   <Copy className="w-4 h-4" />
                 )}
@@ -135,7 +135,7 @@ export function ContactSection() {
                   href="https://github.com/thesabbirbd"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 hover:border-cyan-400/40 text-xs font-mono text-slate-700 dark:text-slate-300 transition-colors"
+                  className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 hover:border-[var(--color-secondary)]/40 text-xs font-mono text-slate-700 dark:text-slate-300 transition-colors"
                 >
                   <GithubIcon className="w-4 h-4 text-slate-900 dark:text-white" />
                   <span className="truncate">thesabbirbd</span>
@@ -162,9 +162,9 @@ export function ContactSection() {
                   href="https://www.google.com/maps/contrib/115922089427483699024"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 hover:border-emerald-500/40 text-xs font-mono text-slate-700 dark:text-slate-300 transition-colors"
+                  className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 hover:border-[var(--color-accent)]/40 text-xs font-mono text-slate-700 dark:text-slate-300 transition-colors"
                 >
-                  <MapPin className="w-4 h-4 text-emerald-500" />
+                  <MapPin className="w-4 h-4 text-[var(--color-accent)]" />
                   <span className="truncate">Google Maps</span>
                 </a>
               </div>
@@ -183,7 +183,7 @@ export function ContactSection() {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="py-12 text-center space-y-4"
                 >
-                  <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center mx-auto border border-emerald-500/30">
+                  <div className="w-16 h-16 rounded-full bg-[var(--color-accent)]/10 text-[var(--color-accent)] flex items-center justify-center mx-auto border border-[var(--color-accent)]/30">
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
                   <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
@@ -225,7 +225,7 @@ export function ContactSection() {
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         placeholder="e.g. John Doe"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/10 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-cyan-400 transition-colors"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/10 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-[var(--color-secondary)] transition-colors"
                       />
                     </div>
 
@@ -239,7 +239,7 @@ export function ContactSection() {
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         placeholder="you@example.com"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/10 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-cyan-400 transition-colors"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/10 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-[var(--color-secondary)] transition-colors"
                       />
                     </div>
                   </div>
@@ -251,7 +251,7 @@ export function ContactSection() {
                     <select
                       value={formData.topic}
                       onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/10 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-cyan-400 transition-colors"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/10 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[var(--color-secondary)] transition-colors"
                     >
                       <option value="Backend & Systems">Backend Architecture &amp; APIs</option>
                       <option value="DevOps & Docker">DevOps &amp; Containerization</option>
@@ -272,7 +272,7 @@ export function ContactSection() {
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       placeholder="Share your proposal, technical inquiry, or collaborative idea..."
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/10 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-cyan-400 transition-colors resize-none"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/10 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-[var(--color-secondary)] transition-colors resize-none"
                     />
                   </div>
 

@@ -59,7 +59,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
             <span className="px-3 py-1 text-xs font-semibold tracking-wider uppercase rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20">
               {project.category}
             </span>
-            <span className="px-3 py-1 text-xs font-medium rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            <span className="px-3 py-1 text-xs font-medium rounded-full bg-[var(--color-accent)]/10 text-[var(--color-accent)] dark:text-[var(--color-accent)] border border-[var(--color-accent)]/20">
               {project.status}
             </span>
             <span className="text-xs text-[var(--text-muted)]">&bull; {project.year}</span>
@@ -100,7 +100,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
               <ul className="space-y-2">
                 {project.highlights.map((h, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-[var(--text-secondary)]">
-                    <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <CheckCircle className="w-4 h-4 text-[var(--color-accent)] shrink-0 mt-0.5" />
                     <span>{h}</span>
                   </li>
                 ))}

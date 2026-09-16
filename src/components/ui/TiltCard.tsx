@@ -55,7 +55,7 @@ export function TiltCard({ children, className, glowGradient }: TiltCardProps) {
       }}
       className={cn(
         "relative rounded-2xl glass-panel border border-slate-200/70 dark:border-white/10 p-6 transition-colors duration-300 overflow-hidden group perspective-1000",
-        hovered && "border-blue-500/40 dark:border-cyan-400/40 shadow-[0_20px_40px_-15px_rgba(0,114,255,0.2)]",
+        hovered && "border-blue-500/40 dark:border-[var(--color-secondary)]/40 shadow-[0_20px_40px_-15px_rgba(0,114,255,0.2)]",
         className
       )}
     >

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import SpatialScene from "@/components/spatial/SpatialScene";
 import { Database, Server, Cloud, ShieldAlert, Cpu, Terminal, Layout, Fingerprint, Network } from "lucide-react";
 
 export function FloatingGlassBackground() {
@@ -29,6 +30,11 @@ export function FloatingGlassBackground() {
       aria-hidden="true"
       className="fixed inset-0 pointer-events-none overflow-hidden select-none -z-10 max-w-full"
     >
+      {/* True 3D Spatial Layer (Desktop only) */}
+      <div className="hidden md:block">
+        <SpatialScene />
+      </div>
+
       {/* ================= VIBRANT AMBIENT GLOW ORBS ================= */}
       {/* Fixed ambient glow that doesn't scroll much */}
       <motion.div
@@ -65,7 +71,7 @@ export function FloatingGlassBackground() {
           <div className="flex flex-col">
             <span className="text-[10px] font-mono tracking-wider font-bold" style={{ color: "var(--color-primary)" }}>PGSQL_DB</span>
             <div className="flex items-center gap-1.5 mt-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-pulse" />
               <span className="text-[9px] text-slate-500 dark:text-slate-300">99.9% UP</span>
             </div>
           </div>
