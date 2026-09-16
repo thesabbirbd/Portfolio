@@ -9,6 +9,8 @@ import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { FloatingGlassBackground } from "@/components/ui/FloatingGlassBackground";
 import { ScrollMotionHUD } from "@/components/ui/ScrollMotionHUD";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -207,6 +209,10 @@ export default function RootLayout({
 
           {/* Subtle Custom Cursor */}
           <CustomCursor />
+
+          {/* Vercel Speed Insights & Real User Analytics */}
+          <SpeedInsights />
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
