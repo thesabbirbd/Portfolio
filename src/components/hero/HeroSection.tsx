@@ -111,10 +111,10 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="flex flex-wrap items-center gap-3 sm:gap-4 justify-center lg:justify-start pt-2"
           >
-            <GlowButton href="#work" variant="primary" size="lg" icon={<ArrowRight className="w-4 h-4" />}>
+            <GlowButton href="#work" variant="glass" size="lg" icon={<ArrowRight className="w-4 h-4" />}>
               Explore My Work
             </GlowButton>
-            <GlowButton href="#contact" variant="secondary" size="lg" icon={<Send className="w-4 h-4" />}>
+            <GlowButton href="#contact" variant="glass" size="lg" icon={<Send className="w-4 h-4" />}>
               Connect With Me
             </GlowButton>
           </motion.div>

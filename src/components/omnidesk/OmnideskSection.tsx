@@ -94,7 +94,7 @@ export function OmnideskSection() {
             <GlowButton
               href={omnidesk.githubUrl}
               external
-              variant="primary"
+              variant="glass"
               size="md"
               icon={<GithubIcon className="w-4 h-4" />}
             >
@@ -102,7 +102,7 @@ export function OmnideskSection() {
             </GlowButton>
             <GlowButton
               onClick={() => setShowArchModal(!showArchModal)}
-              variant="secondary"
+              variant="glass"
               size="md"
               icon={<Network className="w-4 h-4" />}
             >
@@ -223,7 +223,9 @@ export function OmnideskSection() {
               src={SCREENS[activeScreenIndex].src}
               alt={SCREENS[activeScreenIndex].title}
               fill
-              sizes="(max-width: 1200px) 100vw, 1200px"
+              sizes="100vw"
+                  quality={100}
+                  unoptimized
               className="object-cover object-top filter contrast-105 group-hover:scale-[1.015] transition-transform duration-700"
             />
           </div>

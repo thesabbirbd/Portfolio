@@ -222,8 +222,10 @@ export function ProjectsSection() {
                   src={SCREENS[activeScreenIndex].src}
                   alt={SCREENS[activeScreenIndex].title}
                   fill
-                  sizes="(max-width: 1200px) 100vw, 1200px"
-                  className="object-cover object-top filter contrast-105"
+                  sizes="100vw"
+                  quality={100}
+                  unoptimized
+                  className="object-cover object-top filter contrast-105 group-hover:scale-105 transition-transform duration-700"
                 />
               </div>
 
