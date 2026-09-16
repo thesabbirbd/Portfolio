@@ -70,10 +70,10 @@ export function SpatialCore() {
     return <div className="w-56 h-56 sm:w-72 sm:h-72 rounded-full bg-cyan-500/10 animate-pulse mx-auto" />;
   }
 
-  const orbitRadius = isMobile ? 95 : 140;
+  const orbitRadius = isMobile ? 115 : 175;
 
   return (
-    <div className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[420px] aspect-square mx-auto flex items-center justify-center select-none perspective-1000">
+    <div className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[500px] aspect-square mx-auto flex items-center justify-center select-none perspective-1000">
       {/* 3 Vibrant Ambient Glow Backdrops */}
       <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/25 via-cyan-400/20 to-purple-600/25 rounded-full blur-2xl sm:blur-3xl -z-10 animate-pulse-soft pointer-events-none" />
 
@@ -114,7 +114,8 @@ export function SpatialCore() {
               alt="Md Sabbirul Islam Khan (THE SABBiR)"
               fill
               priority
-              sizes="(max-width: 640px) 144px, 208px"
+              sizes="(max-width: 768px) 300px, 600px"
+              quality={100}
               className="object-cover object-top filter contrast-105 group-hover:scale-105 transition-transform duration-500"
             />
           </div>
@@ -140,7 +141,12 @@ export function SpatialCore() {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.15 + i * 0.08, duration: 0.5 }}
               style={{
-                transform: `translate(${x}px, ${y}px)`,
+                left: "50%",
+                top: "50%",
+                marginLeft: x,
+                marginTop: y,
+                x: "-50%",
+                y: "-50%",
               }}
               whileHover={{ scale: 1.15 }}
               className="absolute z-20 hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full glass-spatial border border-slate-200/70 dark:border-white/20 shadow-md hover:border-cyan-400/70 transition-all cursor-default group"
