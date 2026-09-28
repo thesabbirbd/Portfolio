@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 import gsap from "gsap";
+import DOMPurify from 'isomorphic-dompurify';
 import { cn } from "@/lib/utils";
 
 // --- Types ---
@@ -679,7 +680,7 @@ export default function LiquidSurface({
                     <h1
                         className="font-bold tracking-tight px-4"
                         style={{ fontFamily: '"Syne", sans-serif', fontSize: "clamp(3.5rem, 9vw, 9rem)" }}
-                        dangerouslySetInnerHTML={{ __html: heading }}
+                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(heading) }}
                     />
                 </div>
             )}
