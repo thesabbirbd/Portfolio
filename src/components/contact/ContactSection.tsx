@@ -80,7 +80,7 @@ export function ContactSection() {
                     className="w-full" 
                     onClick={() => {
                       sound.click();
-                      window.location.href = "mailto:hello@sabbir.nav.bd?subject=Hello from THE SABBiR V2.2&body=I tried to use the contact form, but I'm opening this via mailto since the backend is pending.";
+                      window.location.href = "mailto:iamthesabbir@gmail.com?subject=Hello from THE SABBiR V2.4&body=I tried to use the contact form, but I'm opening this via mailto since the backend is pending.";
                     }}
                   >
                     Open Email Client
@@ -106,7 +106,7 @@ export function ContactSection() {
                     className="w-full" 
                     onClick={() => {
                       sound.click();
-                      window.location.href = "mailto:hello@sabbir.nav.bd?subject=Collaboration Proposal";
+                      window.location.href = "mailto:iamthesabbir@gmail.com?subject=Collaboration Proposal";
                     }}
                   >
                     Open Email Client
