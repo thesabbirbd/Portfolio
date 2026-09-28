@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import { SectionReveal } from "@/components/ui/SectionReveal";
 import { motion, AnimatePresence } from "framer-motion";
 import { FlaskConical, Filter, Terminal, Cpu, Network, Sparkles, Video } from "lucide-react";
 import { LAB_EXPERIMENTS, LabExperiment } from "@/data/experiments";
 import { sound } from "@/lib/sound";
+import { TerminalCard } from "@/components/lab/TerminalCard";
 
 export function EngineeringLabSection() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -24,6 +26,7 @@ export function EngineeringLabSection() {
 
   return (
     <section id="lab" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full overflow-hidden">
+      <SectionReveal className="w-full">
       {/* Section Header */}
       <div className="flex flex-col items-center text-center mb-12">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-subtle border border-[var(--border-glass)] text-xs font-semibold uppercase tracking-wider text-[var(--color-primary)] mb-4">
@@ -37,6 +40,9 @@ export function EngineeringLabSection() {
           An expandable workspace for ongoing bench tests, hardware circuits, offline AI models, and infrastructure prototypes built along the way.
         </p>
       </div>
+
+      {/* Advanced Interactive Terminal */}
+      <TerminalCard />
 
       {/* Category Filter Pills */}
       <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
@@ -126,6 +132,7 @@ export function EngineeringLabSection() {
           ))}
         </AnimatePresence>
       </div>
+    </SectionReveal>
     </section>
   );
 }

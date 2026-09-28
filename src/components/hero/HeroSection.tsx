@@ -1,13 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Terminal, Sparkles, Send, ShieldCheck } from "lucide-react";
 import { PROFILE_DATA } from "@/data/profile";
 import { GlowButton } from "@/components/ui/GlowButton";
 import { SpatialCore } from "@/components/hero/SpatialCore";
 
 export function HeroSection() {
+  const { scrollY } = useScroll();
+  const y = useTransform(scrollY, [0, 800], [0, 150]);
+  const opacity = useTransform(scrollY, [0, 500], [1, 0]);
   const [roleIndex, setRoleIndex] = useState(0);
 
   useEffect(() => {
@@ -22,7 +25,7 @@ export function HeroSection() {
       id="hero"
       className="relative min-h-[90vh] flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 py-12 md:py-20 overflow-hidden"
     >
-      <div className="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+      <motion.div style={{ y, opacity }} className="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
         {/* Left Column: Typography & Dynamic Identity */}
         <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
           {/* Status Badge */}
@@ -91,7 +94,7 @@ export function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="flex flex-wrap gap-1.5 sm:gap-2 justify-center lg:justify-start text-[11px] sm:text-xs font-mono text-slate-600 dark:text-slate-400 pt-1"
+            className="flex flex-wrap gap-1.5 sm:gap-2 justify-center lg:justify-start text-[11px] sm:text-xs font-mono text-slate-600 dark:text-slate-700 dark:text-slate-300 pt-1"
           >
             <span className="px-2.5 py-1 rounded-md bg-slate-200/60 dark:bg-slate-800/60 border border-slate-300/40 dark:border-slate-700/40">
               ⚡ Local AI &amp; Ollama
@@ -129,7 +132,7 @@ export function HeroSection() {
         >
           <SpatialCore />
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 }

@@ -62,7 +62,7 @@ export function MissionSection() {
               </h3>
             </div>
           </div>
-          <div className="flex items-center gap-2 font-mono text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-200/80 dark:border-slate-700">
+          <div className="flex items-center gap-2 font-mono text-xs text-slate-600 dark:text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-200/80 dark:border-slate-700">
             <Terminal className="w-3.5 h-3.5 text-[var(--color-secondary)]" />
             <span>SPRINT_TARGET: PRODUCTION_GRADE</span>
           </div>
@@ -87,7 +87,7 @@ export function MissionSection() {
                   {pillar.title}
                 </h4>
               </div>
-              <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-[11px] text-slate-600 dark:text-slate-700 dark:text-slate-300 leading-relaxed">
                 {pillar.desc}
               </p>
             </div>
@@ -114,7 +114,7 @@ export function MissionSection() {
                   <p className="text-sm font-bold text-slate-900 dark:text-white">
                     thesabbirbd
                   </p>
-                  <p className="text-xs text-slate-500 font-mono">
+                  <p className="text-xs text-slate-700 dark:text-slate-300 font-mono">
                     github.com/thesabbirbd
                   </p>
                 </div>
@@ -123,7 +123,7 @@ export function MissionSection() {
                 href="https://github.com/thesabbirbd"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-blue-500 transition-colors"
+                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-blue-500 transition-colors"
                 aria-label="Visit GitHub"
               >
                 <ExternalLink className="w-4 h-4" />
@@ -135,7 +135,7 @@ export function MissionSection() {
                 <p className="text-xl font-bold text-blue-600 dark:text-[var(--color-secondary)]">
                   Omnidesk BD
                 </p>
-                <p className="text-[10px] text-slate-500 uppercase mt-0.5">
+                <p className="text-[10px] text-slate-700 dark:text-slate-300 uppercase mt-0.5">
                   Flagship System
                 </p>
               </div>
@@ -143,13 +143,13 @@ export function MissionSection() {
                 <p className="text-xl font-bold text-[var(--color-accent)] dark:text-[var(--color-accent)]">
                   Active
                 </p>
-                <p className="text-[10px] text-slate-500 uppercase mt-0.5">
+                <p className="text-[10px] text-slate-700 dark:text-slate-300 uppercase mt-0.5">
                   Deployment Pulse
                 </p>
               </div>
             </div>
 
-            <div className="space-y-2 text-xs font-mono text-slate-600 dark:text-slate-400">
+            <div className="space-y-2 text-xs font-mono text-slate-600 dark:text-slate-700 dark:text-slate-300">
               <div className="flex items-center justify-between py-1 border-b border-slate-100 dark:border-slate-800">
                 <span>Architecture</span>
                 <span className="text-slate-900 dark:text-white font-semibold">FastAPI + Docker</span>

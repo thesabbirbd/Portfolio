@@ -86,12 +86,12 @@ export function SpatialCore() {
       >
         {/* ================= 3D GYROSCOPIC GIMBAL RINGS ================= */}
         {/* Ring 1: Electric Cyan (XY Plane) */}
-        <div className="absolute w-[220px] sm:w-[320px] h-[220px] sm:h-[320px] rounded-full border border-dashed border-[var(--color-secondary)]/30 animate-[spin_36s_linear_infinite]" />
+        <div className="absolute w-[310px] sm:w-[440px] h-[310px] sm:h-[440px] rounded-full border border-dashed border-[var(--color-secondary)]/30 animate-[spin_36s_linear_infinite]" />
 
         {/* Ring 2: Neon Purple (Tilted Gimbal 3D) */}
         <div
           style={{ transform: "rotateX(68deg)" }}
-          className="absolute w-[230px] sm:w-[340px] h-[230px] sm:h-[340px] rounded-full border border-purple-500/30 animate-[spin_24s_linear_infinite_reverse]"
+          className="absolute w-[280px] sm:w-[400px] h-[280px] sm:h-[400px] rounded-full border border-purple-500/30 animate-[spin_24s_linear_infinite_reverse]"
         />
 
         {/* Ring 3: Radiant Emerald (Opposite Tilted Gimbal 3D) */}
@@ -103,8 +103,8 @@ export function SpatialCore() {
         {/* ================= CENTRAL SPATIAL GLASS SPHERE ================= */}
         <motion.div
           animate={{ y: [0, -8, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          className="relative z-10 w-36 sm:w-52 h-36 sm:h-52 rounded-full p-2 glass-spatial border border-white/50 dark:border-[var(--color-secondary)]/35 shadow-[0_20px_50px_rgba(0,114,255,0.25)] dark:shadow-[0_20px_60px_rgba(0,240,255,0.25)] flex items-center justify-center overflow-hidden group glass-specular-top"
+          transition={{ duration: 5, repeat: Infinity, ease: [0.16, 1, 0.3, 1] }}
+          className="relative z-10 w-56 sm:w-80 h-56 sm:h-80 rounded-full p-2 glass-spatial border border-white/50 dark:border-[var(--color-secondary)]/35 shadow-[0_20px_50px_rgba(0,114,255,0.25)] dark:shadow-[0_20px_60px_rgba(0,240,255,0.25)] flex items-center justify-center overflow-hidden group glass-specular-top"
         >
           {/* Specular Edge Highlight Overlay */}
           <div className="absolute inset-0 bg-gradient-to-tr from-white/30 via-transparent to-cyan-400/25 pointer-events-none rounded-full" />
@@ -113,10 +113,11 @@ export function SpatialCore() {
           {/* Authentic Portrait Image of THE SABBiR */}
           <div className="relative w-full h-full rounded-full overflow-hidden border border-slate-200/50 dark:border-white/10 bg-slate-950">
             <Image
-              src="/assets/sabbir-portrait-v2.png"
+              src="/assets/sabbir-stylish-portrait.jpg"
               alt="Md Sabbirul Islam Khan (THE SABBiR)"
               fill
               priority
+              draggable={false}
               sizes="(max-width: 768px) 300px, 600px"
               quality={100}
               className="object-cover object-top filter contrast-105 group-hover:scale-105 transition-transform duration-500"

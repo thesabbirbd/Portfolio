@@ -4,6 +4,8 @@ import React from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { hoverSoft, pressSoft } from "@/lib/motion-presets";
+import { sound } from "@/lib/sound";
 
 interface GlowButtonProps {
   children: React.ReactNode;

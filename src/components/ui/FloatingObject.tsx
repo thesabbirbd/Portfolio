@@ -37,7 +37,7 @@ export function FloatingObject({
         duration,
         repeat: Infinity,
         repeatType: "mirror",
-        ease: "easeInOut",
+        ease: [0.16, 1, 0.3, 1],
         delay,
       }}
       className={cn("will-change-transform", className)}

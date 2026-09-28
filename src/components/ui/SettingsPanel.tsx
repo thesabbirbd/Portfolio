@@ -5,44 +5,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Settings, X, Volume2, VolumeX, Sun, Moon, Monitor, Eye, Sparkles } from "lucide-react";
 import { useTheme } from "next-themes";
 import { sound } from "@/lib/sound";
+import { useSettings } from "@/contexts/SettingsContext";
 
 export function SettingsPanel() {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
-  const [soundEnabled, setSoundEnabled] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
-  const [colorTheme, setColorTheme] = useState("orange");
-  const [spatial3D, setSpatial3D] = useState(true);
+  const { colorTheme, setColorTheme, spatial3D, toggle3D, reducedMotion, toggleMotion, soundEnabled, toggleSound, isHydrated } = useSettings();
 
-  useEffect(() => {
-    setSoundEnabled(sound.isEnabled());
-    const storedMotion = localStorage.getItem("sabbir_reduced_motion");
-    if (storedMotion) setReducedMotion(storedMotion === "true");
-    const stored3D = localStorage.getItem("sabbir_spatial_3d");
-    if (stored3D) setSpatial3D(stored3D !== "false");
+  if (!isHydrated) return null;
 
-    const storedColor = localStorage.getItem("sabbir_color_theme");
-    if (storedColor) setColorTheme(storedColor);
-  }, []);
-
-  const toggleSound = () => {
-    const next = sound.toggle();
-    setSoundEnabled(next);
-  };
-
-  const toggleMotion = () => {
-    const next = !reducedMotion;
-    setReducedMotion(next);
-    localStorage.setItem("sabbir_reduced_motion", next ? "true" : "false");
-    sound.click();
-  };
-
-  const toggle3D = () => {
-    const next = !spatial3D;
-    setSpatial3D(next);
-    localStorage.setItem("sabbir_spatial_3d", next ? "true" : "false");
-    sound.click();
-  };
 
   return (
     <>

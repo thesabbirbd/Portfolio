@@ -52,7 +52,7 @@ export function ScrollMotionHUD() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-secondary)] opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--color-accent)]" />
             </span>
-            <span className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <span className="text-[10px] uppercase tracking-wider text-slate-700 dark:text-slate-300 dark:text-slate-700 dark:text-slate-300">
               HUD // SCROLL
             </span>
           </div>
@@ -67,7 +67,7 @@ export function ScrollMotionHUD() {
             onClick={scrollToTop}
             title="Scroll to Top"
             aria-label="Scroll to top"
-            className="p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-slate-500 hover:text-[var(--color-secondary)] transition-colors"
+            className="p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 hover:text-[var(--color-secondary)] transition-colors"
           >
             <ArrowUp className="w-3 h-3" />
           </button>

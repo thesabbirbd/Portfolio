@@ -132,7 +132,7 @@ export function OmnideskSection() {
                   <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                     Omnidesk BD Multi-Tier Architecture
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-slate-700 dark:text-slate-300 dark:text-slate-700 dark:text-slate-300">
                     High-throughput event streaming &amp; offline LLM pipeline.
                   </p>
                 </div>
@@ -156,11 +156,11 @@ export function OmnideskSection() {
                       <p className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
                         {node.label}
                       </p>
-                      <p className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
+                      <p className="text-[10px] text-slate-700 dark:text-slate-300 dark:text-slate-700 dark:text-slate-300 font-mono">
                         {node.type}
                       </p>
                       {index < ARCHITECTURE_NODES.length - 1 && (
-                        <div className="hidden sm:block absolute -right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-600 font-bold z-10">
+                        <div className="hidden sm:block absolute -right-3 top-1/2 -translate-y-1/2 text-slate-700 dark:text-slate-300 dark:text-slate-600 font-bold z-10">
                           →
                         </div>
                       )}
@@ -185,7 +185,7 @@ export function OmnideskSection() {
                 "px-4 py-2 rounded-xl text-xs font-medium transition-all text-left border flex items-center gap-2",
                 activeScreenIndex === idx
                   ? "glass-panel border-blue-500/50 dark:border-[var(--color-secondary)]/50 bg-blue-50/50 dark:bg-slate-900/90 text-blue-700 dark:text-cyan-300 font-bold shadow-md"
-                  : "bg-white/40 dark:bg-slate-900/30 border-slate-200/60 dark:border-white/5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                  : "bg-white/40 dark:bg-slate-900/30 border-slate-200/60 dark:border-white/5 text-slate-600 dark:text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
               )}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-secondary)]" />
@@ -208,11 +208,11 @@ export function OmnideskSection() {
               <span className="w-3 h-3 rounded-full bg-rose-500/80 inline-block" />
               <span className="w-3 h-3 rounded-full bg-amber-500/80 inline-block" />
               <span className="w-3 h-3 rounded-full bg-[var(--color-accent)]/10 inline-block" />
-              <span className="ml-2 text-xs font-mono text-slate-500 dark:text-slate-400">
+              <span className="ml-2 text-xs font-mono text-slate-700 dark:text-slate-300 dark:text-slate-700 dark:text-slate-300">
                 Omnidesk BD // {SCREENS[activeScreenIndex].title}
               </span>
             </div>
-            <span className="text-[11px] font-mono text-slate-400 dark:text-slate-500">
+            <span className="text-[11px] font-mono text-slate-700 dark:text-slate-300 dark:text-slate-700 dark:text-slate-300">
               v1.3.1 STABLE
             </span>
           </div>
@@ -230,7 +230,7 @@ export function OmnideskSection() {
             />
           </div>
 
-          <div className="p-3 sm:p-4 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600 dark:text-slate-400">
+          <div className="p-3 sm:p-4 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600 dark:text-slate-700 dark:text-slate-300">
             <p>{SCREENS[activeScreenIndex].desc}</p>
             <div className="flex flex-wrap gap-1.5 font-mono text-[11px]">
               {omnidesk.technologies.map((tag) => (

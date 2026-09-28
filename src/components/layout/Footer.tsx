@@ -50,17 +50,17 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
           {/* Main Statement */}
           <div className="space-y-2">
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
               Crafted with precision by{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-400 dark:from-cyan-400 dark:to-blue-400">
                 {PROFILE_DATA.shortName}
               </span>
               .
             </h2>
-            <p className="text-xs sm:text-sm font-mono text-slate-600 dark:text-slate-400 tracking-wide">
+            <p className="text-xs sm:text-sm font-mono text-gray-600 dark:text-slate-700 dark:text-slate-300 tracking-wide">
               Business × Engineering × AI × Systems × Creativity
             </p>
-            <p className="text-xs text-slate-500 dark:text-slate-500">
+            <p className="text-xs text-slate-700 dark:text-slate-300 dark:text-slate-700 dark:text-slate-300">
               Built to Learn • Build • Deploy • Explore
             </p>
           </div>
@@ -76,7 +76,7 @@ export function Footer() {
                   rel="noopener noreferrer"
                   aria-label={social.name}
                   onClick={() => sound.click()}
-                  className="p-2.5 rounded-full glass-panel hover:border-[var(--color-secondary)]/50 hover:text-[var(--color-secondary)] transition-all hover:scale-110 text-slate-600 dark:text-slate-300"
+                  className="p-2.5 rounded-full glass-panel hover:border-[var(--color-secondary)]/50 hover:text-[var(--color-secondary)] transition-all hover:scale-110 text-gray-600 dark:text-gray-300"
                 >
                   {getSocialIcon(social.icon)}
                 </a>
@@ -85,7 +85,7 @@ export function Footer() {
 
             <button
               onClick={scrollToTop}
-              className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-blue-600 dark:hover:text-[var(--color-secondary)] transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-gray-600 dark:text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-[var(--color-secondary)] transition-colors"
             >
               <span>Back to surface</span>
               <ArrowUp className="w-3.5 h-3.5" />
@@ -93,7 +93,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-6 border-t border-slate-200/50 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
+        <div className="mt-12 pt-6 border-t border-slate-200/50 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600 dark:text-slate-700 dark:text-slate-300">
           <div className="flex items-center gap-2">
             <span className="inline-block w-2 h-2 rounded-full bg-[var(--color-accent)] animate-ping" />
             <span className="font-mono">SYSTEM ONLINE • sabbir.nav.bd</span>

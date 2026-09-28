@@ -15,6 +15,8 @@ export interface ProjectItem {
   caseStudyUrl?: string;
   gradient: string;
   stats?: { label: string; value: string }[];
+  heroImage?: string;
+  gallery?: string[];
 }
 
 export const PROJECTS_DATA: ProjectItem[] = [

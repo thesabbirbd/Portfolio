@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { SectionReveal } from "@/components/ui/SectionReveal";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { GraduationCap, MapPin, Cpu, Award, Compass, Sparkles, Heart, Layers } from "lucide-react";
 import { PROFILE_DATA } from "@/data/profile";
@@ -20,8 +22,27 @@ export function AboutSection() {
     { id: "clean", label: "Clean" },
   ];
 
+
+  const getPhotoImage = () => {
+    switch (photoMode) {
+      case "spatial": return "/assets/about-spatial.jpg";
+      case "editorial": return "/assets/about-editorial.jpg";
+      case "clean": return "/assets/about-clean.jpg";
+      case "glass":
+      default:
+        return "/assets/about-glass.jpg";
+    }
+  };
+
+  const getBrightnessClass = () => {
+    // Specifically increase brightness for the portrait (which we map to editorial)
+    if (photoMode === "editorial") return "brightness-[1.20] contrast-105";
+    return "";
+  };
+
   return (
     <section id="about" className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full space-y-20 overflow-hidden">
+      <SectionReveal className="w-full">
       {/* Section Heading & Spiritual Greeting */}
       <div className="space-y-4 text-center sm:text-left">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-semibold tracking-wider text-[var(--color-primary)] bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20">
@@ -98,10 +119,19 @@ export function AboutSection() {
             >
               {/* Photo Box */}
               <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 flex flex-col items-center justify-end p-6 text-center text-white">
-                {/* Visual Ambient Rings */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(0,180,216,0.35),transparent_70%)]" />
-                <div className="absolute top-1/3 w-36 h-36 rounded-full border border-[var(--color-secondary)]/30 animate-spin-slow" />
-                <div className="absolute top-1/3 w-48 h-48 rounded-full border border-purple-500/20" />
+                <Image
+                  src={getPhotoImage()}
+                  alt="Md Sabbirul Islam Khan"
+                  fill
+                  className={`object-cover object-center opacity-100 transition-transform duration-700 hover:scale-105 ${getBrightnessClass()}`}
+                  sizes="(max-width: 768px) 100vw, 400px"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/40 to-transparent" />
+                
+                {/* Visual Ambient Rings (moved on top of image but behind text) */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(0,180,216,0.15),transparent_70%)]" />
+                <div className="absolute top-1/3 w-36 h-36 rounded-full border border-[var(--color-secondary)]/20 animate-spin-slow" />
+                <div className="absolute top-1/3 w-48 h-48 rounded-full border border-purple-500/10" />
 
                 {/* Portrait Core Branding Badge */}
                 <div className="relative z-10 space-y-2">
@@ -261,6 +291,7 @@ export function AboutSection() {
         </div>
         <JourneyTimeline />
       </div>
+    </SectionReveal>
     </section>
   );
 }

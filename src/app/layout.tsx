@@ -2,70 +2,47 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import { Navbar } from "@/components/navigation/Navbar";
+import { ThemeWelcomePopup } from "@/components/ui/ThemeWelcomePopup";
+import { IdentityDock } from "@/components/ui/IdentityDock";
+import { CommandMenu } from "@/components/ui/CommandMenu";
+import { MorphingNav } from "@/components/navigation/MorphingNav";
 import { Footer } from "@/components/layout/Footer";
 import { TerminalModal } from "@/components/ui/TerminalModal";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
-import { CustomCursor } from "@/components/ui/CustomCursor";
+import { LiquidBackground } from "@/components/ui/LiquidBackground";
 import { FloatingGlassBackground } from "@/components/ui/FloatingGlassBackground";
-import { ScrollMotionHUD } from "@/components/ui/ScrollMotionHUD";
+import { SmoothScroll } from "@/components/ui/SmoothScroll";
+import { SmoothCursor } from "@/components/lightswind/smooth-cursor";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
+// METADATA (Restored dynamically from previous)
+// METADATA
 export const metadata: Metadata = {
   metadataBase: new URL("https://sabbir.nav.bd"),
-  title: "Md Sabbirul Islam Khan — THE SABBiR | Backend • DevOps • AI • Systems",
-  description:
-    "Official digital platform of Md Sabbirul Islam Khan (THE SABBiR). Bridging Business Management economics with Backend Architecture (FastAPI), DevOps (Docker, Linux), Local AI (Ollama), and NOC Infrastructure. Creator of Omnidesk BD.",
-  keywords: [
-    "Md Sabbirul Islam Khan",
-    "THE SABBiR",
-    "thesabbirbd",
-    "iamthesabbir",
-    "Omnidesk BD",
-    "Backend Engineer Bangladesh",
-    "DevOps Architect Rajshahi",
-    "FastAPI Python Developer",
-    "Docker Containerization",
-    "PostgreSQL Database Architect",
-    "Linux Ubuntu Specialist",
-    "Local AI Ollama Engineer",
-    "NOC Network Operations",
-    "Mikrotik MTCNA",
-    "Rajshahi College BBA Management",
-    "National University Bangladesh",
-    "Software Systems Architect",
-    "Google Local Guide Rajshahi 360",
-    "Power Electronics Hardware Hacking",
-    "sabbir.nav.bd",
-  ],
+  title: "Md Sabbirul Islam Khan — THE SABBiR | Backend, DevOps, AI & Systems",
+  description: "Md Sabbirul Islam Khan, known online as THE SABBiR, is a Management student from Rajshahi, Bangladesh exploring Backend Engineering, DevOps, AI, Linux, Networking, IT Systems and Creative Technology.",
+  keywords: ["Md Sabbirul Islam Khan", "THE SABBiR", "sabbir.nav.bd", "Backend Engineering", "DevOps", "Local AI", "IT Systems"],
   authors: [{ name: "Md Sabbirul Islam Khan", url: "https://github.com/thesabbirbd" }],
-  creator: "Md Sabbirul Islam Khan (THE SABBiR)",
+  creator: "Md Sabbirul Islam Khan",
   publisher: "THE SABBiR",
   alternates: {
     canonical: "https://sabbir.nav.bd",
   },
   openGraph: {
-    title: "Md Sabbirul Islam Khan — THE SABBiR | Backend • DevOps • AI • Systems",
-    description: "Bridging Business Management with Hardcore Systems Engineering. Creator of Omnidesk BD.",
+    title: "Md Sabbirul Islam Khan — THE SABBiR | Backend, DevOps, AI & Systems",
+    description: "Md Sabbirul Islam Khan, known online as THE SABBiR, is a Management student from Rajshahi, Bangladesh exploring Backend Engineering, DevOps, AI, Linux, Networking, IT Systems and Creative Technology.",
     url: "https://sabbir.nav.bd",
-    siteName: "Md Sabbirul Islam Khan (THE SABBiR)",
+    siteName: "THE SABBiR",
     images: [
       {
-        url: "/assets/sabbir-portrait-v2.png",
-        width: 800,
-        height: 800,
-        alt: "Md Sabbirul Islam Khan (THE SABBiR) - Systems Architect",
+        url: "/the-sabbir-og-1200x630.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Md Sabbirul Islam Khan — THE SABBiR professional portrait",
       },
     ],
     locale: "en_US",
@@ -73,10 +50,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Md Sabbirul Islam Khan — THE SABBiR",
-    description: "Bridging Business Management with Systems, DevOps, AI & Infrastructure.",
+    title: "Md Sabbirul Islam Khan — THE SABBiR | Backend, DevOps, AI & Systems",
+    description: "Md Sabbirul Islam Khan, known online as THE SABBiR, is a Management student from Rajshahi, Bangladesh exploring Backend Engineering, DevOps, AI, Linux, Networking, IT Systems and Creative Technology.",
     creator: "@thesabbirbd",
-    images: ["/assets/sabbir-portrait-v2.png"],
+    images: ["/the-sabbir-og-1200x630.jpg"],
   },
   robots: {
     index: true,
@@ -92,6 +69,7 @@ export const metadata: Metadata = {
   category: "technology",
 };
 
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
@@ -99,43 +77,32 @@ const jsonLd = {
       "@type": "Person",
       "@id": "https://sabbir.nav.bd/#person",
       "name": "Md Sabbirul Islam Khan",
-      "alternateName": ["THE SABBiR", "thesabbirbd", "iamthesabbir"],
+      "alternateName": "THE SABBiR",
       "url": "https://sabbir.nav.bd",
-      "image": "https://sabbir.nav.bd/assets/sabbir-portrait-v2.png",
-      "jobTitle": "Backend & DevOps Engineering Focus | BBA Management",
-      "worksFor": {
-        "@type": "Organization",
-        "name": "Omnidesk BD",
-        "url": "https://github.com/thesabbirbd/Omnidesk-BD"
-      },
-      "alumniOf": [
-        {
-          "@type": "CollegeOrUniversity",
-          "name": "Rajshahi College",
-          "sameAs": "https://en.wikipedia.org/wiki/Rajshahi_College"
-        },
-        {
-          "@type": "EducationalOrganization",
-          "name": "Hat Gangopara BM Technical College"
-        }
-      ],
-      "knowsAbout": [
-        "Backend Architecture",
-        "DevOps & Microservices",
-        "FastAPI",
-        "Docker",
-        "PostgreSQL",
-        "Linux & GNU Bash",
-        "Local LLM Inference (Ollama)",
-        "NOC Network Engineering",
-        "Mikrotik Routing",
-        "Business Management Economics"
-      ],
+      "image": "https://sabbir.nav.bd/the-sabbir-og-1200x630.jpg",
+      "description": "Md Sabbirul Islam Khan, known online as THE SABBiR, is a Management student from Rajshahi, Bangladesh exploring Backend Engineering, DevOps, AI, Linux, Networking, IT Systems and Creative Technology.",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Rajshahi",
         "addressCountry": "Bangladesh"
       },
+      "alumniOf": [
+        {
+          "@type": "CollegeOrUniversity",
+          "name": "Rajshahi College"
+        }
+      ],
+      "knowsAbout": [
+        "Backend Engineering",
+        "DevOps",
+        "FastAPI",
+        "Docker",
+        "PostgreSQL",
+        "Linux",
+        "Local AI",
+        "Ollama",
+        "Networking"
+      ],
       "sameAs": [
         "https://github.com/thesabbirbd",
         "https://linkedin.com/in/thesabbirbd",
@@ -149,8 +116,9 @@ const jsonLd = {
       "@type": "WebSite",
       "@id": "https://sabbir.nav.bd/#website",
       "url": "https://sabbir.nav.bd",
-      "name": "Md Sabbirul Islam Khan (THE SABBiR) — Official Platform",
-      "description": "Personal digital identity platform of Md Sabbirul Islam Khan (THE SABBiR).",
+      "name": "THE SABBiR",
+      "alternateName": "Md Sabbirul Islam Khan",
+      "description": "Md Sabbirul Islam Khan, known online as THE SABBiR, is a Management student from Rajshahi, Bangladesh exploring Backend Engineering, DevOps, AI, Linux, Networking, IT Systems and Creative Technology.",
       "publisher": {
         "@id": "https://sabbir.nav.bd/#person"
       }
@@ -158,59 +126,34 @@ const jsonLd = {
   ]
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} scroll-smooth antialiased`}
-    >
+    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} scroll-smooth antialiased`}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-[var(--bg-primary)] text-[var(--text-primary)] selection:bg-[var(--color-secondary)]/10 selection:text-[var(--color-secondary)]">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange={false}
-        >
-          {/* Fast visionOS initializing loading screen */}
-          <LoadingScreen />
-
-          {/* Omnidesk Spatial Glass Dynamic Floating Background (3 Vibrant Theme Colors) */}
+      <body className="bg-background text-foreground transition-colors duration-500 min-h-screen flex flex-col selection:bg-[var(--color-secondary)]/10 selection:text-[var(--color-secondary)]">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <ThemeWelcomePopup />
+          {/* <LoadingScreen /> */}
+          <LiquidBackground />
           <FloatingGlassBackground />
-
-          {/* Modern Scroll Motion Loading & Telemetry HUD */}
-          <ScrollMotionHUD />
-
-          {/* Ambient Background Gradients */}
-          <div className="fixed inset-0 bg-grid-pattern pointer-events-none -z-20 opacity-70" />
-          <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 ambient-radial-glow pointer-events-none -z-10" />
-
-          {/* Navigation Bar */}
-          <Navbar />
-
-          {/* Main Content Viewport */}
-          <main className="flex-1 w-full max-w-full relative pt-16 md:pt-24 overflow-x-clip">{children}</main>
-
-          {/* Footer */}
-          <Footer />
-
-          {/* Interactive Easter Egg Terminal */}
-          <TerminalModal />
-
-          {/* Subtle Custom Cursor */}
-          <CustomCursor />
-
-          {/* Vercel Speed Insights & Real User Analytics */}
+          <div className="grain-overlay" />
+          <MorphingNav />
+          <SmoothScroll>
+            <main className="flex-1 w-full max-w-full relative z-10 pt-16 md:pt-24 overflow-x-clip">{children}</main>
+            <Footer />
+            <TerminalModal />
+          </SmoothScroll>
+          <CommandMenu />
+          <IdentityDock />
+          <div className="hidden md:block">
+            <SmoothCursor color="#ffffff" glowEffect={false} rotateOnMove={false} scaleOnClick={true} magneticElements="button, a" magneticDistance={40} />
+          </div>
           <SpeedInsights />
           <Analytics />
         </ThemeProvider>

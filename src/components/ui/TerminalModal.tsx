@@ -120,7 +120,7 @@ export function TerminalModal() {
         >
           <Terminal className="w-3.5 h-3.5 text-[var(--color-secondary)]" />
           <span>terminal</span>
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200/80 dark:bg-slate-800 text-slate-500">
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
             Ctrl+K
           </span>
         </motion.button>
@@ -143,13 +143,13 @@ export function TerminalModal() {
                   <span className="w-3 h-3 rounded-full bg-rose-500 inline-block" />
                   <span className="w-3 h-3 rounded-full bg-amber-500 inline-block" />
                   <span className="w-3 h-3 rounded-full bg-[var(--color-accent)] inline-block" />
-                  <span className="ml-2 text-xs text-slate-400">
+                  <span className="ml-2 text-xs text-slate-700 dark:text-slate-300">
                     sabbir@host:~$ (Interactive CLI)
                   </span>
                 </div>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+                  className="p-1 rounded hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-white transition-colors"
                   aria-label="Close terminal"
                 >
                   <X className="w-4 h-4" />
@@ -189,7 +189,7 @@ export function TerminalModal() {
                 />
                 <button
                   type="submit"
-                  className="p-1.5 rounded hover:bg-slate-800 text-slate-400 hover:text-white"
+                  className="p-1.5 rounded hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-white"
                   title="Execute"
                 >
                   <CornerDownLeft className="w-3.5 h-3.5" />

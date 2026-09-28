@@ -2,7 +2,7 @@ import { HeroSection } from "@/components/hero/HeroSection";
 import { AboutSection } from "@/components/about/AboutSection";
 import { ProjectsSection } from "@/components/projects/ProjectsSection";
 import { EngineeringLabSection } from "@/components/lab/EngineeringLabSection";
-import { SkillsSection } from "@/components/skills/SkillsSection";
+import { SkillsBento } from "@/components/skills/SkillsBento";
 import { MapsExplorerSection } from "@/components/maps/MapsExplorerSection";
 import { CommunitySection } from "@/components/community/CommunitySection";
 import { MissionSection } from "@/components/mission/MissionSection";
@@ -24,8 +24,8 @@ export default function Home() {
       {/* 04 // ENGINEERING LAB (5 DISCIPLINE PROTOTYPES) */}
       <EngineeringLabSection />
 
-      {/* 05 // SKILLS & CAPABILITY ECOSYSTEM */}
-      <SkillsSection />
+      {/* 05 // SKILLS & CAPABILITY ECOSYSTEM (GLASS BENTO) */}
+      <SkillsBento />
 
       {/* 06 // MAPS EXPLORER (GOOGLE LOCAL GUIDE & 360° VR) */}
       <MapsExplorerSection />
