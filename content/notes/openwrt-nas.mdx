@@ -1,0 +1,35 @@
+---
+title: "The OpenWrt NAS Experiment"
+slug: "openwrt-nas"
+description: "Repurposing a D-Link router into a lightweight local network storage solution using OpenWrt."
+date: "2026-09-25"
+type: "note"
+category: "Networking"
+tags: ["OpenWrt", "NAS", "Hardware", "Networking"]
+status: "published"
+featured: true
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## What Was I Trying to Do?
+
+I had an older D-Link router laying around and wanted to see if I could repurpose it rather than contributing to e-waste. My goal was to flash it with **OpenWrt** and utilize its USB port to create a lightweight, low-power Network Attached Storage (NAS) for my local network.
+
+## The Process
+
+1. **Flashing OpenWrt:** This required finding the exact hardware revision of my D-Link router and ensuring the OpenWrt firmware matched perfectly to avoid bricking the device.
+2. **Mounting Storage:** I connected an external USB drive. OpenWrt, being a Linux distribution at its core, required me to SSH into the router, install the necessary USB storage and filesystem kernel modules (like `kmod-usb-storage` and `ntfs-3g`), and mount the drive manually.
+3. **Network Sharing:** I installed and configured Samba (`samba4-server`) via the command line to expose the mounted drive to my local network.
+
+## What Actually Happened?
+
+It worked! I successfully mapped the network drive on my main workstation.
+
+However, the hardware limitations of the router quickly became apparent. The CPU on a standard consumer router is optimized for switching packets, not for handling the I/O overhead of Samba file transfers over a USB 2.0 interface. 
+
+## What I Learned
+
+While technically feasible, a router-based NAS is incredibly slow. Transfer speeds hovered around 3-5 MB/s, which is fine for small documents but completely unviable for large media files or backups.
+
+More importantly, this experiment deepened my understanding of Linux filesystems, network protocols (SMB/CIFS), and embedded hardware limitations. It proved that just because software *can* run on a device, doesn't mean the hardware architecture is suited for it.

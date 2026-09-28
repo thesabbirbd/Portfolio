@@ -1,0 +1,66 @@
+---
+title: "Why Qwen 0.5B Felt Too Weak for My Automation Workflow"
+slug: "qwen-automation-limitations"
+description: "My practical experience using a small local model for command interpretation in a Telegram-controlled automation system."
+date: "2026-09-10"
+updated: "2026-09-12"
+type: "lab"
+category: "Local AI"
+tags: ["Ollama", "Local AI", "Automation", "Qwen"]
+status: "published"
+featured: true
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+relatedProjects: ["studyos"]
+---
+
+## Experiment Overview
+
+I wanted to build a localized automation system that could interpret natural language commands sent via Telegram. The goal was to run the entire brain locally on consumer hardware without relying on OpenAI or cloud APIs. I selected **Qwen 0.5B** running via Ollama because of its incredibly low memory footprint and high token generation speed.
+
+## Hypothesis
+
+A 0.5B parameter model should be sufficient to perform simple intent-classification and structured JSON output for basic smart-home and script-execution commands (e.g., "turn off the server", "run the backup script").
+
+## Hardware & Environment
+
+- **Host:** Local Linux environment (Ubuntu)
+- **Engine:** Ollama
+- **Model:** `qwen:0.5b`
+- **Interface:** Python Telegram Bot
+
+## The Procedure
+
+I wrote a Python orchestrator that captured Telegram messages, constructed a rigid system prompt demanding JSON output, and fed it to the local Ollama API. 
+
+The prompt looked roughly like this:
+```json
+{
+  "system": "You are a command parser. Extract the 'action' and 'target' from the user input. Output ONLY valid JSON."
+}
+```
+
+## Observed Results & Failures
+
+### 1. The JSON Structure Broke Constantly
+Despite explicit instructions, Qwen 0.5B frequently added conversational filler.
+Instead of:
+`{"action": "restart", "target": "nginx"}`
+
+It would output:
+`Here is the JSON you requested: {"action": "restart", "target": "nginx"}. Have a great day!`
+
+This immediately broke the `json.loads()` parser in my Python script.
+
+### 2. Context Amnesia
+When given slightly ambiguous commands like "restart it", the model lacked the reasoning depth to ask for clarification or maintain context from the previous message.
+
+### 3. Hallucinated Commands
+When asked to do something outside its explicit toolset, rather than failing gracefully, it would invent JSON structures that my orchestrator didn't know how to handle, leading to unhandled exceptions.
+
+## Conclusion and Lessons
+
+Running small models locally is fast, but **parameter size directly correlates with instruction adherence**. Qwen 0.5B is impressive for its size, but it lacks the strict logical discipline required for a zero-shot JSON automation parser.
+
+### What I Changed
+I eventually migrated the "brain" to a hybrid model. For simple, rigid command parsing, I dropped the LLM entirely in favor of Regex and keyword matching. I reserved the LLM (stepping up to a slightly larger model like Llama 3 8B when hardware permits) for tasks that actually require semantic understanding.

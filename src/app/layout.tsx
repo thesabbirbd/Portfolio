@@ -66,6 +66,11 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  verification: {
+    other: {
+      "msvalidate.01": "2A1C034D7F08C07516BA1E476BC97EE0",
+    },
+  },
   category: "technology",
 };
 
@@ -79,7 +84,11 @@ const jsonLd = {
       "name": "Md Sabbirul Islam Khan",
       "alternateName": "THE SABBiR",
       "url": "https://sabbir.nav.bd",
-      "image": "https://sabbir.nav.bd/the-sabbir-og-1200x630.jpg",
+      "image": [
+        "https://sabbir.nav.bd/branding/the-sabbir-avatar-1x1.png",
+        "https://sabbir.nav.bd/branding/the-sabbir-avatar-4x3.png",
+        "https://sabbir.nav.bd/branding/the-sabbir-avatar-16x9.png"
+      ],
       "description": "Md Sabbirul Islam Khan, known online as THE SABBiR, is a Management student from Rajshahi, Bangladesh exploring Backend Engineering, DevOps, AI, Linux, Networking, IT Systems and Creative Technology.",
       "address": {
         "@type": "PostalAddress",

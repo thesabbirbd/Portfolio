@@ -1,0 +1,45 @@
+---
+title: "Omnidesk BD: Engineering a Modern Service Platform"
+slug: "omnidesk"
+description: "Architectural decisions and technical challenges in building Omnidesk BD, a practical service and management platform."
+date: "2026-08-15"
+type: "project"
+category: "Backend"
+tags: ["Architecture", "System Design", "Backend"]
+status: "published"
+featured: true
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## Overview
+
+Omnidesk BD is one of my core structural projects that translates business requirements into a functional web platform. The goal was to build something scalable, maintainable, and aligned with modern operational needs.
+
+## The Problem Space
+
+Managing service requests, user interactions, and operational tasks requires a system that is both reliable and fast. Traditional monolithic approaches often become cumbersome when scaling small-to-medium teams. I needed a solution that would be lightweight yet robust enough to handle structured data flow.
+
+## Architectural Decisions
+
+When designing the backend for this platform, I focused heavily on **Separation of Concerns** and **API-First Design**. 
+
+1. **Stateless API:** Building the core as a stateless API allowed the frontend components to remain entirely decoupled.
+2. **Database Schema:** The relational integrity of the data was paramount. I structured the database to ensure fast read times while maintaining strict foreign key constraints for user and service logs.
+3. **Deployment Strategy:** Utilizing containerization (Docker) ensures that the development environment matches the production environment, reducing "it works on my machine" issues.
+
+## Technical Stack & Implementation
+
+The implementation relied heavily on a structured backend communicating with a modern component-driven frontend.
+
+- **Backend:** Focused on fast, asynchronous request handling.
+- **Infrastructure:** Containerized environments for predictable deployments.
+- **Frontend Integration:** Using a highly componentized UI (like the glass/spatial design seen in this portfolio) to ensure a premium user experience without sacrificing performance.
+
+## What I Learned
+
+The biggest lesson from Omnidesk BD was understanding the balance between **over-engineering** and **future-proofing**. Initially, I considered complex microservices, but realized a well-structured modular monolith was far more appropriate for the scale of the operation.
+
+## Future Direction
+
+The next phase involves integrating more automated tooling—potentially tying into my Local AI experiments to handle basic triage and categorization of incoming requests before they hit a human operator.
