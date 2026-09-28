@@ -1,54 +1,63 @@
-export const seoMap = {
-  primaryKeywords: [
+/**
+ * SEO Keyword Mapping and Intent Architecture
+ * This file serves as the master planning source for content optimization.
+ * DO NOT render this entire file directly in the DOM.
+ */
+
+export const keywordArchitecture = {
+  primaryBrand: [
     "Md Sabbirul Islam Khan",
     "THE SABBiR",
-    "THE SABBiR portfolio",
-    "Md Sabbirul Islam Khan website"
-  ],
-  secondaryKeywords: [
     "sabbir.nav.bd",
+    "THE SABBiR portfolio",
+    "Md Sabbirul Islam Khan portfolio"
+  ],
+  academicLocal: [
+    "Rajshahi",
+    "Bangladesh",
+    "Rajshahi College",
+    "Management student Bangladesh",
+    "Technical student Rajshahi"
+  ],
+  professional: [
     "Backend Engineering",
-    "DevOps Architect",
-    "Systems Engineering",
-    "FastAPI Python Developer",
-    "Docker Containerization",
-    "Linux Systems"
+    "DevOps",
+    "Linux Systems",
+    "NOC Support",
+    "IT Support Specialist",
+    "Networking",
+    "Local AI",
+    "Ollama",
+    "Creative Technology"
   ],
-  brandKeywords: [
-    "THE SABBiR",
-    "Md Sabbirul Islam Khan (THE SABBiR)"
-  ],
-  locationKeywords: [
-    "Rajshahi, Bangladesh",
-    "Rajshahi technology student",
-    "Rajshahi IT student"
-  ],
-  topicKeywords: {
-    backend: ["Backend Development", "Python API development", "RESTful API"],
-    devops: ["DevOps Engineering", "CI/CD", "infrastructure automation"],
-    ai: ["Local AI", "Ollama", "Offline LLM"],
-    systems: ["IT Support Rajshahi", "NOC operations", "MikroTik networking"]
-  },
   pageAssignments: {
     "/": {
-      intent: "brand + primary professional positioning",
-      title: "Md Sabbirul Islam Khan — THE SABBiR | Backend, DevOps, AI & Systems"
+      intent: "brand_primary",
+      focusKeywords: ["Md Sabbirul Islam Khan", "THE SABBiR", "Backend Engineering", "DevOps", "AI"]
     },
     "/about": {
-      intent: "name + academic + identity",
-      title: "About Md Sabbirul Islam Khan — THE SABBiR"
+      intent: "identity_academic",
+      focusKeywords: ["Md Sabbirul Islam Khan portfolio", "Rajshahi College", "Management student Bangladesh"]
     },
     "/projects": {
-      intent: "project + engineering terms",
-      title: "Projects by THE SABBiR | Backend, AI, Systems & Creative Technology"
+      intent: "engineering_portfolio",
+      focusKeywords: ["Backend developer portfolio", "API architecture", "creative technology projects"]
     },
     "/engineering-lab": {
-      intent: "backend + DevOps + Linux + AI + systems",
-      title: "THE SABBiR Engineering Lab | Linux, AI, Networking & Systems"
+      intent: "technical_experiments",
+      focusKeywords: ["Local LLM", "Ollama", "Linux server", "Docker development"]
+    },
+    "/exploration": {
+      intent: "geospatial_multimedia",
+      focusKeywords: ["Google Maps Local Guide", "360 photography Bangladesh", "Rajshahi"]
+    },
+    "/experience": {
+      intent: "professional_history",
+      focusKeywords: ["IT Support Specialist", "NOC Support", "network troubleshooting"]
     },
     "/contact": {
-      intent: "name + brand + contact intent",
-      title: "Contact THE SABBiR | Md Sabbirul Islam Khan"
+      intent: "professional_inquiry",
+      focusKeywords: ["Contact THE SABBiR", "Md Sabbirul Islam Khan"]
     }
   }
 };

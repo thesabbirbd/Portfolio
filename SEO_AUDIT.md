@@ -1,50 +1,38 @@
-# SEO AUDIT & IMPLEMENTATION REPORT
-**Target:** Md Sabbirul Islam Khan (THE SABBiR)
-**URL:** https://sabbir.nav.bd/
+# THE SABBiR — SEO & SEARCH DISCOVERY AUDIT
 
-## 1. Technical SEO
-- **Framework:** Next.js with app directory structure.
-- **Title Tag Strategy:** Clean, brand-focused, intent-driven (e.g. `Md Sabbirul Islam Khan — THE SABBiR | Backend, DevOps, AI & Systems`).
-- **Descriptions:** Actionable and accurate meta descriptions. Keyword stuffing removed.
+**Entity Moniker:** Md Sabbirul Islam Khan / THE SABBiR
+**Primary URL:** https://sabbir.nav.bd/
+**Date:** September 28, 2026
 
-## 2. Indexability
-- **Robots.txt:** Implemented at `/robots.ts`. Allows all bots, disallows `/api/`, `/private/`, `/admin/`.
-- **Sitemap:** Implemented at `/sitemap.ts`. Includes active canonical routes (`/`, `/about`).
-- **Noindex:** Default behavior permits indexing. Unnecessary tags removed.
+## 1. Technical SEO & Indexability
+- [x] **HTTPS & Canonical**: Enforced HTTPS. Canonical set globally in Next.js metadata.
+- [x] **Robots.txt**: Implemented (`/robots.txt`).
+- [x] **Sitemap.xml**: Updated to include dedicated routes for `/about`, `/projects`, `/engineering-lab`, `/exploration`, `/experience`, and `/contact`.
+- [x] **Next.js Metadata**: `metadataBase`, `authors`, `creator`, and `openGraph` properly configured in root `layout.tsx`.
 
-## 3. Canonical Strategy
-- **Base URL:** Defined via `metadataBase` as `https://sabbir.nav.bd`.
-- **Canonical Alternate:** Implemented explicitly for main entry points.
+## 2. Structured Data (JSON-LD)
+- [x] **WebSite Schema**: Implemented in root `layout.tsx` (Name: THE SABBiR, Alternate: Md Sabbirul Islam Khan).
+- [x] **Person Schema**: Implemented in root `layout.tsx` (Links to GitHub, LinkedIn, specifies Rajshahi, Bangladesh).
 
-## 4. Metadata & Open Graph
-- **Title/Description:** Inherits clean, structured data.
-- **Open Graph:** Includes `og:title`, `og:description`, `og:url`, `og:image`, `og:type` mapped cleanly.
-- **Twitter Cards:** `summary_large_image` configured perfectly.
+## 3. Brand & Image SEO
+- [x] **Favicon & Apple Icon**: `favicon.ico` and `apple-icon.png` generated and placed in root `src/app`.
+- [x] **Open Graph Image**: `the-sabbir-og-1200x630.jpg` supplied and mapped in layout metadata.
+- [x] **Alt Text**: Contextual alt text used throughout the application (e.g. Hero portrait, UI components).
 
-## 5. Image SEO & Favicon
-- **Icon Generation:** Derived `icon.png` and `apple-icon.png` locally and dynamically.
-- **OG Preview:** High-quality `the-sabbir-og-1200x630.jpg` with clean branding created.
-- **Alt Text:** Descriptive and non-spammy alt text rules established.
+## 4. Page Architecture & Mapping
+- **`/` (Home)**: Brand, Backend, DevOps, AI overview.
+- **`/about`**: Personal identity, Rajshahi College, Management.
+- **`/projects`**: Omnidesk BD, Systems Integration, Software architecture.
+- **`/engineering-lab`**: Local AI, Linux, DevOps prototyping.
+- **`/exploration`**: Google Maps, 360 photography, VR mapping.
+- **`/experience`**: IT Ops, NOC support, Skill ecosystem.
+- **`/contact`**: Professional transmission, inquiries.
 
-## 6. Structured Data (JSON-LD)
-- **WebSite Schema:** Implemented at the root level specifying URL and alternateNames.
-- **Person Schema:** Comprehensive `Person` entity explicitly highlighting affiliation, role, and sameAs links mapping social graphs accurately.
+## 5. AI Search Readiness
+- Built on semantic HTML. No "AI SEO Hacks" or `llms.txt` injections.
+- Emphasizes first-hand technical experience over keyword stuffing.
 
-## 7. Keyword Architecture
-- Clean keyword banks established at `src/data/seo.ts`. No black-hat "keyword walls" or "hidden text".
-- Semantic distribution established across pages based on user intent.
-
-## 8. AI Search Readiness
-- No fake "hacks".
-- Factual and clear HTML semantics allowing AI crawlers to construct accurate responses to "Who is THE SABBiR?".
-
-## 9. Performance Impact
-- Maintained Core Web Vitals optimizations.
-- No heavy client-side only meta blocks - all SEO rendering runs server-side during the initial payload.
-
-## 10. Remaining Manual Steps
-1. Verify Google Search Console (GSC) property for `https://sabbir.nav.bd/`.
-2. Verify Bing Webmaster Tools property.
-3. Submit the sitemap `https://sabbir.nav.bd/sitemap.xml` to both consoles.
-4. Publish consistent updates to social handles pointing directly to `https://sabbir.nav.bd`.
-5. Maintain semantic structure for upcoming pages (Projects, Engineering Lab) when officially separated.
+## 6. Remaining Manual Tasks
+1. **Google Search Console**: Verify indexability and request indexing for the homepage and new nested routes (`/about`, `/projects`, etc.).
+2. **Bing Webmaster**: Import GSC profile and submit sitemap.
+3. **Social Profiles**: Update LinkedIn, GitHub, Facebook, X, Maps to definitively point back to `https://sabbir.nav.bd/`.
