@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValueEvent } from "framer-motion";
+import { useSpatialScroll } from "@/hooks/useSpatialScroll";
 import { User, Command, Palette, Box, MessageSquare, X, ChevronRight, Activity, MapPin } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
 import { useTheme } from "next-themes";
@@ -17,6 +18,18 @@ export function IdentityDock() {
   const [hoveredIcon, setHoveredIcon] = useState<string | null>(null);
   const { theme, setTheme } = useTheme();
   const { spatial3D, toggle3D } = useSettings();
+  const { scrollY } = useSpatialScroll();
+  const [isNavHidden, setIsNavHidden] = useState(false);
+  
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const prev = scrollY.getPrevious() ?? 0;
+    if (latest > prev && latest > 150) {
+      setIsNavHidden(true); // scrolling down -> Nav is HIDDEN -> IdentityDock should be at BOTTOM MIDDLE
+    } else {
+      setIsNavHidden(false); // scrolling up/idle -> Nav is VISIBLE -> IdentityDock should be at RIGHT
+    }
+  });
+
   
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -103,7 +116,15 @@ export function IdentityDock() {
       </AnimatePresence>
 
       {/* Dock */}
-      <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[90]">
+      {/* Dynamic Position Wrapper */}
+      <motion.div 
+        layout
+        className={`fixed z-[90] flex transition-all duration-700 ease-in-out ${
+          !isNavHidden 
+            ? "bottom-[130px] right-4 sm:bottom-[90px] sm:right-6" 
+            : "bottom-12 left-0 right-0 justify-center"
+        }`}
+      >
         <motion.div 
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -176,7 +197,7 @@ export function IdentityDock() {
             </motion.div>
           </button>
         </motion.div>
-      </div>
+      </motion.div>
     </>
   );
 }
