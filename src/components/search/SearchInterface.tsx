@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
+import { useDebounce } from '@/hooks/use-debounce';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Search, X, Filter } from 'lucide-react';
@@ -22,6 +23,13 @@ export function SearchInterface({ initialData }: { initialData: any[] }) {
   const pathname = usePathname();
 
   const [query, setQuery] = useState('');
+
+  // ⚡ Bolt: Debounce the search query to optimize performance
+  // 💡 What: Apply 300ms debounce to the search input state
+  // 🎯 Why: Prevents the expensive filtering operation in useMemo from running on every keystroke
+  // 📊 Impact: Significantly reduces UI thread blocking and re-renders while the user is actively typing
+  // 🔬 Measurement: Observe React Profiler; filtering now only executes once after the user stops typing
+  const debouncedQuery = useDebounce(query, 300);
   const [activeType, setActiveType] = useState<string | null>(null);
 
   const filteredResults = useMemo(() => {
@@ -31,8 +39,8 @@ export function SearchInterface({ initialData }: { initialData: any[] }) {
       results = results.filter(item => item.type === activeType);
     }
 
-    if (query.trim()) {
-      const q = query.toLowerCase();
+    if (debouncedQuery.trim()) {
+      const q = debouncedQuery.toLowerCase();
       results = results.filter(item => 
         item.title.toLowerCase().includes(q) ||
         (item.description && item.description.toLowerCase().includes(q)) ||
@@ -42,7 +50,7 @@ export function SearchInterface({ initialData }: { initialData: any[] }) {
     }
 
     return results;
-  }, [query, activeType, initialData]);
+  }, [debouncedQuery, activeType, initialData]);
 
   const types = ['notes', 'journal', 'projects', 'lab'];
 

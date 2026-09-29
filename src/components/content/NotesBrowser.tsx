@@ -1,12 +1,20 @@
 "use client";
 
 import { useState, useMemo } from 'react';
+import { useDebounce } from '@/hooks/use-debounce';
 import { ContentItem } from '@/lib/content';
 import { ContentCard } from './ContentCard';
 import { Search } from 'lucide-react';
 
 export function NotesBrowser({ notes }: { notes: ContentItem[] }) {
   const [searchQuery, setSearchQuery] = useState('');
+
+  // ⚡ Bolt: Debounce the search query to optimize performance
+  // 💡 What: Apply 300ms debounce to the search input state
+  // 🎯 Why: Prevents the expensive filtering operation in useMemo from running on every keystroke
+  // 📊 Impact: Significantly reduces UI thread blocking and re-renders while the user is actively typing
+  // 🔬 Measurement: Observe React Profiler; filtering now only executes once after the user stops typing
+  const debouncedQuery = useDebounce(searchQuery, 300);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const categories = useMemo(() => {
@@ -19,12 +27,12 @@ export function NotesBrowser({ notes }: { notes: ContentItem[] }) {
 
   const filteredNotes = useMemo(() => {
     return notes.filter(note => {
-      const matchesSearch = note.meta.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            note.meta.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = note.meta.title.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
+                            note.meta.description.toLowerCase().includes(debouncedQuery.toLowerCase());
       const matchesCategory = selectedCategory ? note.meta.category === selectedCategory : true;
       return matchesSearch && matchesCategory;
     });
-  }, [notes, searchQuery, selectedCategory]);
+  }, [notes, debouncedQuery, selectedCategory]);
 
   return (
     <div className="w-full">
