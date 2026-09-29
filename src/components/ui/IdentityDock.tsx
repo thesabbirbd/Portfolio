@@ -77,7 +77,7 @@ export function IdentityDock() {
               className="relative w-full max-w-sm glass-panel rounded-3xl p-6 shadow-2xl flex flex-col items-center text-center overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-accent/10 pointer-events-none" />
-              <button onClick={() => setProfileOpen(false)} className="absolute top-4 right-4 p-1.5 rounded-full bg-white/5 hover:bg-white/10 transition-colors">
+              <button onClick={() => setProfileOpen(false)} aria-label="Close profile panel" className="absolute top-4 right-4 p-1.5 rounded-full bg-white/5 hover:bg-white/10 transition-colors">
                 <X className="w-4 h-4 text-muted" />
               </button>
               <div className="w-24 h-24 rounded-full overflow-hidden mb-4 border-2 border-primary/30 relative">
@@ -116,7 +116,8 @@ export function IdentityDock() {
             onClick={() => { sound.click(); setProfileOpen(true); }}
             className="w-10 h-10 rounded-full overflow-hidden relative border border-white/10 hover:border-primary/50 transition-colors shrink-0"
             title="Identity"
-            aria-label="Open profile"
+
+            aria-label="Open profile panel"
           >
             <Image src="/assets/sabbir-stylish-portrait.jpg" alt="Identity" fill className="object-cover object-center" />
           </button>
@@ -139,6 +140,7 @@ export function IdentityDock() {
                   >
                     <button 
                       onClick={item.onClick}
+                      aria-label={item.name}
                       className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all relative z-10 hover:scale-110 duration-300"
                     >
                       <item.icon className={`w-5 h-5 ${item.colorClass} icon-3d-punchy transition-colors`} />
@@ -165,6 +167,7 @@ export function IdentityDock() {
 
           <button 
             onClick={() => { sound.click(); setExpanded(!expanded); }}
+            aria-label={expanded ? "Collapse dock" : "Expand dock"}
             className="md:hidden w-8 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-muted hover:text-foreground transition-colors shrink-0"
             aria-label={expanded ? "Collapse dock" : "Expand dock"}
           >
