@@ -142,6 +142,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} scroll-smooth antialiased`}>
       <head>
+        {/* Google Analytics Tag */}
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-47T386XBN6"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-47T386XBN6');
+          `}
+        </Script>
+
         <script dangerouslySetInnerHTML={{ __html: `if ("serviceWorker" in navigator) { window.addEventListener("load", function() { navigator.serviceWorker.register("/sw.js").then(function(registration) { console.log("SW registered"); }, function(err) { console.log("SW registration failed: ", err); }); }); }` }} />
         <Script id="microsoft-clarity" strategy="afterInteractive">
           {`
