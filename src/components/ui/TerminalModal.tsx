@@ -191,6 +191,7 @@ export function TerminalModal() {
                   type="submit"
                   className="p-1.5 rounded hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-white"
                   title="Execute"
+                  aria-label="Execute command"
                 >
                   <CornerDownLeft className="w-3.5 h-3.5" />
                 </button>

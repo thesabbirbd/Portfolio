@@ -116,6 +116,7 @@ export function IdentityDock() {
             onClick={() => { sound.click(); setProfileOpen(true); }}
             className="w-10 h-10 rounded-full overflow-hidden relative border border-white/10 hover:border-primary/50 transition-colors shrink-0"
             title="Identity"
+            aria-label="Open profile"
           >
             <Image src="/assets/sabbir-stylish-portrait.jpg" alt="Identity" fill className="object-cover object-center" />
           </button>
@@ -165,6 +166,7 @@ export function IdentityDock() {
           <button 
             onClick={() => { sound.click(); setExpanded(!expanded); }}
             className="md:hidden w-8 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-muted hover:text-foreground transition-colors shrink-0"
+            aria-label={expanded ? "Collapse dock" : "Expand dock"}
           >
             <motion.div animate={{ rotate: expanded ? 180 : 0 }}>
               <ChevronRight className="w-4 h-4" />
