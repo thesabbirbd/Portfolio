@@ -110,17 +110,17 @@ export function TerminalModal() {
   return (
     <>
       {/* Floating Mini Launcher Pill in bottom left */}
-      <div className="fixed bottom-4 left-4 z-40 hidden sm:block">
+      <div className="fixed bottom-20 left-4 sm:bottom-6 sm:left-6 z-40 mb-[env(safe-area-inset-bottom)] sm:mb-0">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-full glass-panel border border-slate-200/80 dark:border-white/10 text-xs font-mono text-slate-700 dark:text-slate-300 shadow-md hover:border-[var(--color-secondary)]/50 transition-colors"
+          className="flex items-center justify-center gap-2 p-3 sm:px-3 sm:py-1.5 rounded-full glass-panel border border-slate-200/80 dark:border-white/10 text-xs font-mono text-slate-700 dark:text-slate-300 shadow-md hover:border-[var(--color-secondary)]/50 transition-colors"
           title="Open Terminal (Press ` or Ctrl+K)"
         >
-          <Terminal className="w-3.5 h-3.5 text-[var(--color-secondary)]" />
-          <span>terminal</span>
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+          <Terminal className="w-5 h-5 sm:w-3.5 sm:h-3.5 text-[var(--color-secondary)]" />
+          <span className="hidden sm:inline">terminal</span>
+          <span className="hidden sm:inline text-[10px] px-1.5 py-0.5 rounded bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
             Ctrl+K
           </span>
         </motion.button>

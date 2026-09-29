@@ -40,7 +40,7 @@ export function ThemeWelcomePopup() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 10, scale: 0.95 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="fixed bottom-6 right-6 sm:bottom-10 sm:right-10 z-[100] w-[calc(100vw-3rem)] sm:w-96 p-6 rounded-3xl bg-background/70 backdrop-blur-2xl border border-[var(--primary)]/30 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] spatial-glass"
+          className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] inset-x-4 sm:inset-x-auto sm:bottom-10 sm:right-10 z-[100] w-auto sm:w-96 mx-auto sm:mx-0 p-6 rounded-3xl bg-background/70 backdrop-blur-2xl border border-[var(--primary)]/30 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] spatial-glass"
         >
           <div className="absolute inset-0 bg-gradient-to-tr from-[var(--primary)]/5 to-[var(--accent)]/5 rounded-3xl pointer-events-none" />
           

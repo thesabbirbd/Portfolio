@@ -8,6 +8,7 @@ import { CommunitySection } from "@/components/community/CommunitySection";
 import { MissionSection } from "@/components/mission/MissionSection";
 import { ContactSection } from "@/components/contact/ContactSection";
 import { SettingsPanel } from "@/components/ui/SettingsPanel";
+import { LatestThinking } from "@/components/content/LatestThinking";
 
 export default function Home() {
   return (
@@ -23,6 +24,9 @@ export default function Home() {
 
       {/* 04 // ENGINEERING LAB (5 DISCIPLINE PROTOTYPES) */}
       <EngineeringLabSection />
+
+      {/* LATEST THINKING (KNOWLEDGE ENGINE) */}
+      <LatestThinking />
 
       {/* 05 // SKILLS & CAPABILITY ECOSYSTEM (GLASS BENTO) */}
       <SkillsBento />

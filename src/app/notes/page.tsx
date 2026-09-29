@@ -1,5 +1,5 @@
 import { getAllContent } from '@/lib/content';
-import { ContentCard } from '@/components/content/ContentCard';
+import { NotesBrowser } from '@/components/content/NotesBrowser';
 import Link from 'next/link';
 
 export const metadata = {
@@ -31,11 +31,7 @@ export default function NotesIndexPage() {
           Shorter technical documentation, learning logs, and system observations.
         </p>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {notes.map(note => (
-            <ContentCard key={note.meta.slug} item={note} baseUrl="/notes" />
-          ))}
-        </div>
+        <NotesBrowser notes={notes} />
       </div>
     </div>
   );

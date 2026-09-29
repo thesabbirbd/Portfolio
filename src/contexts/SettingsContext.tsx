@@ -4,9 +4,10 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { sound } from "@/lib/sound";
 
 type ColorTheme = "orange" | "blue" | "green";
+export type VisitorLens = "general" | "engineer" | "professional" | "explorer";
 
 type SettingsContextType = {
-  themeMode: "light" | "dark" | "system"; // Managed by next-themes natively, but we expose toggle here? Actually we rely on next-themes for this.
+  themeMode: "light" | "dark" | "system"; 
   colorTheme: ColorTheme;
   setColorTheme: (color: ColorTheme) => void;
   spatial3D: boolean;
@@ -15,6 +16,8 @@ type SettingsContextType = {
   toggleMotion: () => void;
   soundEnabled: boolean;
   toggleSound: () => void;
+  lens: VisitorLens;
+  setLens: (lens: VisitorLens) => void;
   isHydrated: boolean;
 };
 
@@ -26,6 +29,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [spatial3D, setSpatial3D] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(false);
+  const [lens, setLocalLens] = useState<VisitorLens>("general");
 
   useEffect(() => {
     // Load preferences
@@ -34,6 +38,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
     const savedMotion = localStorage.getItem("sabbir_reduced_motion");
     if (savedMotion !== null) setReducedMotion(savedMotion === "true");
+
+    const savedLens = localStorage.getItem("sabbir_visitor_lens") as VisitorLens;
+    if (savedLens) setLocalLens(savedLens);
 
     const savedColor = localStorage.getItem("sabbir_color_theme") as ColorTheme;
     if (savedColor) {
@@ -86,6 +93,11 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     setSoundEnabled(next);
   };
 
+  const setLens = (newLens: VisitorLens) => {
+    setLocalLens(newLens);
+    localStorage.setItem("sabbir_visitor_lens", newLens);
+  };
+
   return (
     <SettingsContext.Provider 
       value={{ 
@@ -93,6 +105,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         spatial3D, toggle3D, 
         reducedMotion, toggleMotion, 
         soundEnabled, toggleSound,
+        lens, setLens,
         isHydrated,
         themeMode: "system" 
       }}

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { GlassCard } from "@/components/ui/glass/GlassCard";
+import { GlassCard } from "@/components/ui/GlassCard";
 import { Terminal } from "lucide-react";
 import { sound } from "@/lib/sound";
 import { useTheme } from "next-themes";

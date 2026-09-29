@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { SectionReveal } from "@/components/ui/SectionReveal";
 import { motion, AnimatePresence } from "framer-motion";
 import { Server, Cpu, Network, Terminal, Video, HardDrive, Map } from "lucide-react";
-import { GlassCard } from "@/components/ui/glass/GlassCard";
+import { GlassCard } from "@/components/ui/GlassCard";
 import { cn } from "@/lib/utils";
 
 const SKILL_CATEGORIES = [
@@ -21,7 +21,7 @@ export function SkillsBento() {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   return (
-    <section id="skills" className="relative w-full max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8">
+    <section id="skills" className="relative w-full max-w-7xl mx-auto py-12 md:py-24 px-4 sm:px-6 lg:px-8">
       <SectionReveal className="w-full">
       <div className="text-center mb-16">
         <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-gray-900 dark:text-gray-100 mb-4">

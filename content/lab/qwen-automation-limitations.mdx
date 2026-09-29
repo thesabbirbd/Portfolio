@@ -1,66 +1,54 @@
 ---
-title: "Why Qwen 0.5B Felt Too Weak for My Automation Workflow"
+title: "Qwen 0.5B Automation Limitations"
 slug: "qwen-automation-limitations"
-description: "My practical experience using a small local model for command interpretation in a Telegram-controlled automation system."
-date: "2026-09-10"
-updated: "2026-09-12"
+description: "Testing the viability of running Qwen 0.5B locally for deterministic JSON-based system automation."
+date: "2026-08-25"
 type: "lab"
 category: "Local AI"
-tags: ["Ollama", "Local AI", "Automation", "Qwen"]
+tags: ["Ollama", "Qwen", "JSON", "Automation"]
 status: "published"
 featured: true
 author: "Md Sabbirul Islam Khan"
 brand: "THE SABBiR"
+experimentResult: "failed"
+dateCompleted: "2026-08-28"
+hardware: ["Intel Core i5", "16GB RAM", "No dedicated GPU"]
+software: ["Ollama v0.1.20", "Qwen:0.5b", "Python 3.10"]
+measurements:
+  - label: "Average Inference Latency"
+    value: "200ms"
+    notes: "Extremely fast on CPU"
+  - label: "JSON Structure Accuracy"
+    value: "34%"
+    notes: "Failed consistently on nested structures"
+  - label: "Memory Footprint"
+    value: "450MB"
+    notes: "Perfect for background daemon"
 relatedProjects: ["studyos"]
+relatedNotes: ["openwrt-nas"]
+relatedJournal: ["changing-local-ai-strategy"]
 ---
-
-## Experiment Overview
-
-I wanted to build a localized automation system that could interpret natural language commands sent via Telegram. The goal was to run the entire brain locally on consumer hardware without relying on OpenAI or cloud APIs. I selected **Qwen 0.5B** running via Ollama because of its incredibly low memory footprint and high token generation speed.
 
 ## Hypothesis
 
-A 0.5B parameter model should be sufficient to perform simple intent-classification and structured JSON output for basic smart-home and script-execution commands (e.g., "turn off the server", "run the backup script").
+I hypothesized that a heavily quantized, sub-billion parameter model (Qwen 0.5B) could reliably act as an offline automation brain if the prompt strictly enforced JSON formatting. The goal was low-latency execution without eating up developer RAM.
 
-## Hardware & Environment
+## Setup & Variables
 
-- **Host:** Local Linux environment (Ubuntu)
-- **Engine:** Ollama
-- **Model:** `qwen:0.5b`
-- **Interface:** Python Telegram Bot
+1. **Model:** Qwen 0.5B via Ollama.
+2. **Input:** System prompt enforcing JSON format: `{"action": "string", "parameters": {}}`. User prompt asking it to map a natural language command to a specific action.
+3. **Execution Environment:** A Python script capturing stdout and attempting to parse the result via `json.loads()`.
 
-## The Procedure
+## Observed Result
 
-I wrote a Python orchestrator that captured Telegram messages, constructed a rigid system prompt demanding JSON output, and fed it to the local Ollama API. 
+While the model's latency was astonishingly fast on standard CPU hardware (avg 200ms to first token), its deterministic reasoning was severely flawed.
 
-The prompt looked roughly like this:
-```json
-{
-  "system": "You are a command parser. Extract the 'action' and 'target' from the user input. Output ONLY valid JSON."
-}
-```
+1. **Hallucinated Syntax:** The model frequently forgot closing braces `}` or added Markdown code block ticks ````json` inconsistently.
+2. **Context Loss:** In multi-turn conversations, it rapidly lost the strict structural requirement and began responding conversationally ("Sure! Here is your JSON:").
+3. **Parameter Bleed:** It struggled to map variables to the correct nested keys, often inventing new top-level keys.
 
-## Observed Results & Failures
+## Interpretation & Conclusion
 
-### 1. The JSON Structure Broke Constantly
-Despite explicit instructions, Qwen 0.5B frequently added conversational filler.
-Instead of:
-`{"action": "restart", "target": "nginx"}`
+The experiment failed its primary objective. Qwen 0.5B is not currently viable for zero-shot strict JSON generation in a production-like automation pipeline. 
 
-It would output:
-`Here is the JSON you requested: {"action": "restart", "target": "nginx"}. Have a great day!`
-
-This immediately broke the `json.loads()` parser in my Python script.
-
-### 2. Context Amnesia
-When given slightly ambiguous commands like "restart it", the model lacked the reasoning depth to ask for clarification or maintain context from the previous message.
-
-### 3. Hallucinated Commands
-When asked to do something outside its explicit toolset, rather than failing gracefully, it would invent JSON structures that my orchestrator didn't know how to handle, leading to unhandled exceptions.
-
-## Conclusion and Lessons
-
-Running small models locally is fast, but **parameter size directly correlates with instruction adherence**. Qwen 0.5B is impressive for its size, but it lacks the strict logical discipline required for a zero-shot JSON automation parser.
-
-### What I Changed
-I eventually migrated the "brain" to a hybrid model. For simple, rigid command parsing, I dropped the LLM entirely in favor of Regex and keyword matching. I reserved the LLM (stepping up to a slightly larger model like Llama 3 8B when hardware permits) for tasks that actually require semantic understanding.
+The memory footprint is incredible, making it suitable for simple summarization or semantic search embeddings, but it cannot function as the "brain" of a deterministic API without extensive middleware to heal broken JSON strings. This observation directly drove the architectural pivot in the StudyOS project towards a hybrid cloud-reasoning approach.

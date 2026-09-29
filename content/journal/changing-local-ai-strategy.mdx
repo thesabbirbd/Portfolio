@@ -1,0 +1,36 @@
+---
+title: "Changing My Local AI Strategy"
+slug: "changing-local-ai-strategy"
+description: "Why I transitioned from attempting to run everything locally to a hybrid cloud/local approach."
+date: "2026-09-15"
+type: "journal"
+category: "Local AI"
+tags: ["Architecture", "Local AI", "Cloud"]
+status: "published"
+featured: false
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+relatedLab: ["qwen-automation-limitations"]
+---
+
+## Initial Approach
+
+My initial goal was absolute privacy and zero-latency execution. I wanted my entire automation and scripting pipeline to be powered by local models running via Ollama. I spent weeks configuring systemd services, writing Python wrappers, and trying to squeeze performance out of sub-billion parameter models.
+
+## What Felt Wrong
+
+While the latency was fantastic, the intelligence just wasn't there. Small models were great for summarization, but they hallucinated JSON structures and lost context during multi-turn automation commands. I found myself writing more Regex to fix the LLM's output than I was writing actual business logic. It became clear that local models on consumer hardware are currently better suited as assistants than orchestrators.
+
+## What Was Discovered
+
+I realized I was treating LLMs as deterministic functions. I needed to separate the "brain" (which requires heavy reasoning) from the "nervous system" (which requires speed and structure).
+
+## What Changed
+
+I shifted to a hybrid architecture:
+1. **Local/Deterministic:** Basic intents, wake-words, and strict API routing are handled locally using standard programming logic and very small embedded models for vector search.
+2. **Cloud/Reasoning:** Complex, ambiguous queries are offloaded to cloud APIs (like Gemini or OpenAI) where context windows and reasoning capabilities are significantly higher.
+
+## Why The Architecture Evolved
+
+This evolution taught me a crucial lesson in system design: don't force a technology to solve a problem it isn't ready for. By offloading the heavy lifting, my system's reliability increased tenfold, and I can still retain privacy by only sending sanitized, necessary context to the cloud.

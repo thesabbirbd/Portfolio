@@ -41,7 +41,7 @@ export function AboutSection() {
   };
 
   return (
-    <section id="about" className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full space-y-20 overflow-hidden">
+    <section id="about" className="relative py-12 md:py-24 landscape:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full space-y-20 overflow-hidden">
       <SectionReveal className="w-full">
       {/* Section Heading & Spiritual Greeting */}
       <div className="space-y-4 text-center sm:text-left">
@@ -51,7 +51,8 @@ export function AboutSection() {
         </div>
 
         {/* Spiritual Greeting Bio (requested in prompt) */}
-        <div className="p-4 rounded-2xl glass-subtle border border-[var(--border-glass)] inline-block text-left max-w-md">
+        <div className="w-full flex justify-center sm:justify-center my-4">
+          <div className="p-4 rounded-2xl glass-subtle border border-[var(--border-glass)] text-center max-w-md opacity-60 hover:opacity-100 transition-opacity">
           <div className="text-sm font-semibold text-[var(--text-primary)]">
             {PROFILE_DATA.spiritualEthos.greeting}
           </div>
@@ -63,6 +64,7 @@ export function AboutSection() {
           </div>
           <div className="text-xs text-[var(--text-muted)] font-mono">
             {PROFILE_DATA.spiritualEthos.jazakallah}
+          </div>
           </div>
         </div>
 
@@ -163,7 +165,7 @@ export function AboutSection() {
         {/* Right: Academic & Engineering Alignment */}
         <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Academic Card */}
-          <div className="p-5 rounded-2xl glass-interactive border border-[var(--border-glass)] space-y-2">
+          <div className="p-4 sm:p-5 rounded-2xl glass-interactive border border-[var(--border-glass)] space-y-1.5 sm:space-y-2">
             <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
               <GraduationCap className="w-5 h-5" />
             </div>
@@ -182,7 +184,7 @@ export function AboutSection() {
           </div>
 
           {/* Geographic Base */}
-          <div className="p-5 rounded-2xl glass-interactive border border-[var(--border-glass)] space-y-2">
+          <div className="p-4 sm:p-5 rounded-2xl glass-interactive border border-[var(--border-glass)] space-y-1.5 sm:space-y-2">
             <div className="w-9 h-9 rounded-xl bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] dark:text-[var(--color-secondary)] flex items-center justify-center">
               <MapPin className="w-5 h-5" />
             </div>
@@ -201,7 +203,7 @@ export function AboutSection() {
           </div>
 
           {/* Core Focus */}
-          <div className="p-5 rounded-2xl glass-interactive border border-[var(--border-glass)] space-y-2">
+          <div className="p-4 sm:p-5 rounded-2xl glass-interactive border border-[var(--border-glass)] space-y-1.5 sm:space-y-2">
             <div className="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
               <Cpu className="w-5 h-5" />
             </div>
@@ -220,7 +222,7 @@ export function AboutSection() {
           </div>
 
           {/* Field Recognition */}
-          <div className="p-5 rounded-2xl glass-interactive border border-[var(--border-glass)] space-y-2">
+          <div className="p-4 sm:p-5 rounded-2xl glass-interactive border border-[var(--border-glass)] space-y-1.5 sm:space-y-2">
             <div className="w-9 h-9 rounded-xl bg-[var(--color-accent)]/10 text-[var(--color-accent)] dark:text-[var(--color-accent)] flex items-center justify-center">
               <Award className="w-5 h-5" />
             </div>
@@ -251,7 +253,7 @@ export function AboutSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           {PROFILE_DATA.myWorld.map((item) => {
             const isHovered = hoveredWorld === item.id;
             return (
@@ -263,16 +265,18 @@ export function AboutSection() {
                 }}
                 onMouseLeave={() => setHoveredWorld(null)}
                 whileHover={{ y: -4, scale: 1.02 }}
-                className="relative p-4 rounded-2xl glass-interactive border border-[var(--border-glass)] flex flex-col justify-between min-h-[140px] cursor-default"
+                className="relative p-3 sm:p-4 rounded-2xl glass-interactive border border-[var(--border-glass)] flex flex-row sm:flex-col items-center sm:items-start text-left sm:justify-between min-h-[auto] sm:min-h-[140px] cursor-default"
               >
-                <div>
-                  <div className="text-2xl mb-2">{item.emoji}</div>
+                <div className="flex-shrink-0 mr-3 sm:mr-0 flex items-center justify-center w-10 h-10 sm:w-auto sm:h-auto rounded-full bg-[var(--color-primary)]/10 sm:bg-transparent">
+                  <div className="text-xl sm:text-2xl">{item.emoji}</div>
+                </div>
+                <div className="flex-1">
                   <h4 className="text-sm font-bold text-[var(--text-primary)]">{item.title}</h4>
                   <p className="text-xs font-medium text-[var(--color-primary)] mt-0.5">{item.shortDesc}</p>
+                  <p className="text-[11px] text-[var(--text-muted)] leading-tight mt-1 sm:mt-2 line-clamp-2 hidden sm:block">
+                    {item.fullDesc}
+                  </p>
                 </div>
-                <p className="text-[11px] text-[var(--text-muted)] leading-tight mt-2 line-clamp-2">
-                  {item.fullDesc}
-                </p>
               </motion.div>
             );
           })}

@@ -23,11 +23,11 @@ export function HeroSection() {
   return (
     <section
       id="hero"
-      className="relative min-h-[90vh] flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 py-12 md:py-20 overflow-hidden"
+      className="relative min-h-[70svh] md:min-h-[90vh] landscape:min-h-0 flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 py-10 md:py-20 landscape:py-12 overflow-hidden"
     >
-      <motion.div style={{ y, opacity }} className="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+      <motion.div style={{ y, opacity }} className="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
         {/* Left Column: Typography & Dynamic Identity */}
-        <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
+        <div className="lg:col-span-7 flex flex-col order-2 lg:order-1 items-center lg:items-start text-center lg:text-left space-y-4 md:space-y-6">
           {/* Status Badge */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -54,7 +54,7 @@ export function HeroSection() {
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-4xl xs:text-5xl sm:text-7xl md:text-8xl font-black tracking-tighter"
+              className="text-[clamp(2.5rem,8vw,5.5rem)] font-black tracking-tighter leading-none"
             >
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 dark:from-cyan-400 dark:via-blue-400 dark:to-purple-400">
                 {PROFILE_DATA.shortName}
@@ -114,10 +114,10 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="flex flex-wrap items-center gap-3 sm:gap-4 justify-center lg:justify-start pt-2"
           >
-            <GlowButton href="#work" variant="glass" size="lg" icon={<ArrowRight className="w-4 h-4" />}>
+            <GlowButton href="/#work" variant="primary" size="lg" icon={<ArrowRight className="w-4 h-4" />}>
               Explore My Work
             </GlowButton>
-            <GlowButton href="#contact" variant="glass" size="lg" icon={<Send className="w-4 h-4" />}>
+            <GlowButton href="/#contact" variant="glass" size="lg" icon={<Send className="w-4 h-4" />}>
               Connect With Me
             </GlowButton>
           </motion.div>
@@ -128,7 +128,7 @@ export function HeroSection() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="lg:col-span-5 flex justify-center"
+          className="lg:col-span-5 flex justify-center order-1 lg:order-2"
         >
           <SpatialCore />
         </motion.div>

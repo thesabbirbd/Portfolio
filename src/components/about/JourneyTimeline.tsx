@@ -4,7 +4,7 @@ import React, { useRef } from "react";
 import { SectionReveal } from "@/components/ui/SectionReveal";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Briefcase, Monitor, Network, Terminal, Code, Cpu, Server, Workflow } from "lucide-react";
-import { GlassCard } from "@/components/ui/glass/GlassCard";
+import { GlassCard } from "@/components/ui/GlassCard";
 
 const JOURNEY_STEPS = [
   { id: "management", title: "MANAGEMENT", icon: Briefcase, color: "text-blue-500", desc: "Started with BBA in Management. Built the foundation of business economics, resource allocation, and strategic leadership." },
@@ -28,7 +28,7 @@ export function JourneyTimeline() {
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 400, damping: 40 });
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-5xl mx-auto py-24">
+    <div id="timeline" ref={containerRef} className="relative w-full max-w-5xl mx-auto py-24">
       <div className="text-center mb-24">
         <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-slate-900 dark:text-white mb-4">
           THE ENGINEERING <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-400">EVOLUTION</span>
@@ -80,7 +80,7 @@ function JourneyNode({ step, index, total, scrollYProgress }: any) {
       {/* Mobile-only connector dot */}
       <div className="md:hidden absolute -left-4 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-blue-500" />
       
-      <GlassCard heavy className="p-8 w-full backdrop-blur-xl border-white/10 hover:border-white/20 transition-colors">
+      <GlassCard heavy hoverEffect={true} className="p-8 w-full backdrop-blur-xl border-white/10 hover:border-[var(--color-primary)]/50 transition-colors group/card">
         <div className="flex items-center gap-6 mb-4">
           <div className={`p-4 rounded-2xl bg-white/5 border border-white/10 shadow-lg ${step.color}`}>
             <Icon className="w-8 h-8" />

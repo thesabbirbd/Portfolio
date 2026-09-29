@@ -25,7 +25,7 @@ export function MissionSection() {
   return (
     <section
       id="mission"
-      className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full space-y-16 overflow-hidden"
+      className="relative py-12 md:py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full space-y-16 overflow-hidden"
     >
       {/* Background Ambience */}
       <div className="absolute top-1/2 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-blue-500/10 dark:bg-[var(--color-secondary)]/10 blur-3xl pointer-events-none -z-10" />
@@ -121,7 +121,7 @@ export function MissionSection() {
               </div>
               <a
                 href="https://github.com/thesabbirbd"
-                target="_blank"
+                target="_blank" rel="noopener noreferrer"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-blue-500 transition-colors"
                 aria-label="Visit GitHub"

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { ToastProvider } from "@/contexts/ToastContext";
 import { ThemeWelcomePopup } from "@/components/ui/ThemeWelcomePopup";
 import { IdentityDock } from "@/components/ui/IdentityDock";
 import { CommandMenu } from "@/components/ui/CommandMenu";
@@ -12,7 +13,7 @@ import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { LiquidBackground } from "@/components/ui/LiquidBackground";
 import { FloatingGlassBackground } from "@/components/ui/FloatingGlassBackground";
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
-import { SmoothCursor } from "@/components/lightswind/smooth-cursor";
+import { CustomCursor } from "@/components/ui/CustomCursor";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
@@ -141,6 +142,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} scroll-smooth antialiased`}>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: `if ("serviceWorker" in navigator) { window.addEventListener("load", function() { navigator.serviceWorker.register("/sw.js").then(function(registration) { console.log("SW registered"); }, function(err) { console.log("SW registration failed: ", err); }); }); }` }} />
         <Script id="microsoft-clarity" strategy="afterInteractive">
           {`
             (function(c,l,a,r,i,t,y){
@@ -157,6 +159,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="bg-background text-foreground transition-colors duration-500 min-h-screen flex flex-col selection:bg-[var(--color-secondary)]/10 selection:text-[var(--color-secondary)]">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <ToastProvider>
           <ThemeWelcomePopup />
           {/* <LoadingScreen /> */}
           <LiquidBackground />
@@ -171,10 +174,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <CommandMenu />
           <IdentityDock />
           <div className="hidden md:block">
-            <SmoothCursor color="#ffffff" glowEffect={false} rotateOnMove={false} scaleOnClick={true} magneticElements="button, a" magneticDistance={40} />
+            <CustomCursor />
           </div>
           <SpeedInsights />
           <Analytics />
+        </ToastProvider>
         </ThemeProvider>
       </body>
     </html>

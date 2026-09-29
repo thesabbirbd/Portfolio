@@ -34,6 +34,12 @@ export function GlassButton({
   const springY = useSpring(y, { stiffness: 400, damping: 30 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // Disable magnetic effect on touch devices and if user prefers reduced motion
+    if (typeof window !== "undefined") {
+      const isTouch = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (isTouch || prefersReducedMotion) return;
+    }
     if (!magnetic || !ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -81,7 +87,7 @@ export function GlassButton({
         sound.click();
         onClick?.(e);
       }}
-      whileTap={{ scale: 0.95 }}
+      whileTap={{ scale: 0.97 }}
       className={cn(
         "relative flex items-center justify-center font-medium transition-colors border backdrop-blur-xl overflow-hidden group outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50",
         variants[variant],

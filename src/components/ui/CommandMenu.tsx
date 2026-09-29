@@ -16,7 +16,7 @@ export function CommandMenu() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const { theme, setTheme } = useTheme();
-  const { spatial3D, toggle3D, soundEnabled, toggleSound, reducedMotion, toggleMotion } = useSettings();
+  const { spatial3D, toggle3D, soundEnabled, toggleSound, reducedMotion, toggleMotion, setLens } = useSettings();
   
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -59,13 +59,19 @@ export function CommandMenu() {
 
   const commands = [
     // NAVIGATION
-    { category: "NAVIGATION", name: "Home", icon: Home, action: () => runCommand(() => window.scrollTo({ top: 0, behavior: 'smooth' })) },
-    { category: "NAVIGATION", name: "About & Journey", icon: UserIcon, action: () => runCommand(() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })) },
-    { category: "NAVIGATION", name: "Projects", icon: Folder, action: () => runCommand(() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })) },
-    { category: "NAVIGATION", name: "Skills Matrix", icon: Cpu, action: () => runCommand(() => document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth' })) },
-    { category: "NAVIGATION", name: "Engineering Lab", icon: Terminal, action: () => runCommand(() => document.getElementById('lab')?.scrollIntoView({ behavior: 'smooth' })) },
-    { category: "NAVIGATION", name: "Maps & Exploration", icon: Globe, action: () => runCommand(() => document.getElementById('maps')?.scrollIntoView({ behavior: 'smooth' })) },
-    { category: "NAVIGATION", name: "Contact", icon: MessageSquare, action: () => runCommand(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })) },
+    { category: "NAVIGATION", name: "Search Knowledge Base", icon: Search, action: () => runCommand(() => window.location.href = '/search') },
+    { category: "NAVIGATION", name: "Home", icon: Home, action: () => runCommand(() => window.location.href = '/') },
+    { category: "NAVIGATION", name: "About", icon: User, action: () => runCommand(() => window.location.href = '/about') },
+    { category: "NAVIGATION", name: "Experience & Skills", icon: Terminal, action: () => runCommand(() => window.location.href = '/experience') },
+
+    { category: "NAVIGATION", name: "Journey & Timeline", icon: Activity, action: () => runCommand(() => window.location.href = '/about#timeline') },
+    { category: "NAVIGATION", name: "Resume", icon: Briefcase, action: () => runCommand(() => window.location.href = '/resume') },
+    { category: "NAVIGATION", name: "Projects", icon: Folder, action: () => runCommand(() => window.location.href = '/projects') },
+    { category: "NAVIGATION", name: "Engineering Lab", icon: Terminal, action: () => runCommand(() => window.location.href = '/engineering-lab') },
+    { category: "NAVIGATION", name: "Notes", icon: Box, action: () => runCommand(() => window.location.href = '/notes') },
+    { category: "NAVIGATION", name: "Journal", icon: Box, action: () => runCommand(() => window.location.href = '/journal') },
+    { category: "NAVIGATION", name: "Maps & Exploration", icon: Globe, action: () => runCommand(() => window.location.href = '/exploration') },
+    { category: "NAVIGATION", name: "Contact", icon: MessageSquare, action: () => runCommand(() => window.location.href = '/contact') },
     
     // WORK / QUICK EXPLORE
     ...PROJECTS_DATA.map(p => ({
@@ -78,6 +84,12 @@ export function CommandMenu() {
       })
     })),
     
+    // EXPERIENCE LENSES
+    { category: "EXPERIENCE LENSES", name: `View as: Engineer`, icon: Terminal, action: () => runCommand(() => { setLens('engineer'); window.location.href = '/projects'; }) },
+    { category: "EXPERIENCE LENSES", name: `View as: Professional / Recruiter`, icon: Briefcase, action: () => runCommand(() => { setLens('professional'); window.location.href = '/resume'; }) },
+    { category: "EXPERIENCE LENSES", name: `View as: Explorer`, icon: Globe, action: () => runCommand(() => { setLens('explorer'); window.location.href = '/exploration'; }) },
+    { category: "EXPERIENCE LENSES", name: `View as: General (Default)`, icon: Home, action: () => runCommand(() => { setLens('general'); window.location.href = '/'; }) },
+
     // PREFERENCES
     { category: "PREFERENCES", name: `Toggle 3D: \${spatial3D ? 'OFF' : 'ON'}`, icon: Box, action: () => runCommand(() => toggle3D()) },
     { category: "PREFERENCES", name: `Change Theme: \${theme === 'dark' ? 'Light' : 'Dark'}`, icon: Palette, action: () => runCommand(() => setTheme(theme === 'dark' ? 'light' : 'dark')) },
@@ -87,7 +99,7 @@ export function CommandMenu() {
     // CONNECT
     { category: "CONNECT", name: "LinkedIn", icon: LinkedinIcon, action: () => runCommand(() => window.open(SOCIAL_LINKS.find(l => l.id === "linkedin")?.url || "", '_blank')) },
     { category: "CONNECT", name: "GitHub", icon: GithubIcon, action: () => runCommand(() => window.open(SOCIAL_LINKS.find(l => l.id === "github")?.url || "", '_blank')) },
-    { category: "CONNECT", name: "Email", icon: Mail, action: () => runCommand(() => window.location.href = `mailto:\${SOCIAL_LINKS.find(l => l.id === "gmail")?.url || ""}`) },
+    { category: "CONNECT", name: "Email", icon: Mail, action: () => runCommand(() => window.location.href = SOCIAL_LINKS.find(l => l.id === "gmail")?.url || "") },
   ];
 
   const filteredCommands = search === "" 
@@ -144,21 +156,20 @@ export function CommandMenu() {
                 </div>
               ) : (
                 Object.keys(grouped).map((category) => (
-                  <div key={category} className="mb-4 last:mb-0">
+                  <motion.div layout key={category} className="mb-4 last:mb-0">
                     <div className="px-3 py-1.5 text-[10px] font-bold tracking-widest text-muted uppercase">
                       {category}
                     </div>
                     {grouped[category].map((cmd, i) => (
-                      <button
-                        key={i}
+                      <motion.button layout key={cmd.name}
                         onClick={cmd.action}
                         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-foreground/80 hover:text-foreground hover:bg-primary/10 hover:shadow-[0_0_10px_rgba(var(--primary),0.2)_inset] transition-all duration-200 text-left group"
                       >
                         <cmd.icon className="w-4 h-4 text-muted group-hover:text-primary transition-colors" />
                         {cmd.name}
-                      </button>
+                      </motion.button>
                     ))}
-                  </div>
+                  </motion.div>
                 ))
               )}
             </div>
@@ -179,7 +190,7 @@ export function CommandMenu() {
   );
 }
 
-function UserIcon(props: any) {
+function User(props: any) {
   return (
     <svg
       {...props}

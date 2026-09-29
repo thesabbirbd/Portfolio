@@ -11,7 +11,7 @@ export function CommunitySection() {
   const professional = COMMUNITY_DATA.activities.filter((a) => a.category === "technical" || a.category === "media");
 
   return (
-    <section id="community" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full overflow-hidden">
+    <section id="community" className="py-12 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full overflow-hidden">
       {/* Section Header */}
       <div className="flex flex-col items-center text-center mb-16">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-subtle border border-[var(--border-glass)] text-xs font-semibold uppercase tracking-wider text-[var(--color-primary)] mb-4">
@@ -60,7 +60,7 @@ export function CommunitySection() {
                 <div className="pt-3 mt-3 border-t border-[var(--border-glass)]">
                   <a
                     href={act.url}
-                    target="_blank"
+                    target="_blank" rel="noopener noreferrer"
                     rel="noopener noreferrer"
                     onClick={() => sound.click()}
                     className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-primary)] hover:underline"
@@ -105,7 +105,7 @@ export function CommunitySection() {
                 <div className="pt-3 mt-3 border-t border-[var(--border-glass)]">
                   <a
                     href={act.url}
-                    target="_blank"
+                    target="_blank" rel="noopener noreferrer"
                     rel="noopener noreferrer"
                     onClick={() => sound.click()}
                     className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-accent)] dark:text-[var(--color-accent)] hover:underline"
@@ -150,7 +150,7 @@ export function CommunitySection() {
                 <div className="pt-3 mt-3 border-t border-[var(--border-glass)]">
                   <a
                     href={act.url}
-                    target="_blank"
+                    target="_blank" rel="noopener noreferrer"
                     rel="noopener noreferrer"
                     onClick={() => sound.click()}
                     className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-secondary)] hover:underline"

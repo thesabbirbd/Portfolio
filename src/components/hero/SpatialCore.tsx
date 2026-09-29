@@ -81,30 +81,30 @@ export function SpatialCore() {
       <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/25 via-cyan-400/20 to-purple-600/25 rounded-full blur-2xl sm:blur-3xl -z-10 animate-pulse-soft pointer-events-none" />
 
       <motion.div
-        style={shouldReduceMotion ? undefined : { rotateX, rotateY, transformStyle: "preserve-3d" }}
+        style={shouldReduceMotion || isMobile ? undefined : { rotateX, rotateY, transformStyle: "preserve-3d" }}
         className="relative w-full h-full flex items-center justify-center"
       >
         {/* ================= 3D GYROSCOPIC GIMBAL RINGS ================= */}
         {/* Ring 1: Electric Cyan (XY Plane) */}
-        <div className="absolute w-[310px] sm:w-[440px] h-[310px] sm:h-[440px] rounded-full border border-dashed border-[var(--color-secondary)]/30 animate-[spin_36s_linear_infinite]" />
+        <div className="absolute w-[min(240px,70vw)] xs:w-[min(280px,75vw)] sm:w-[440px] h-[min(240px,70vw)] xs:h-[min(280px,75vw)] sm:h-[440px] rounded-full border border-dashed border-[var(--color-secondary)]/30 animate-[spin_36s_linear_infinite]" />
 
         {/* Ring 2: Neon Purple (Tilted Gimbal 3D) */}
         <div
           style={{ transform: "rotateX(68deg)" }}
-          className="absolute w-[280px] sm:w-[400px] h-[280px] sm:h-[400px] rounded-full border border-purple-500/30 animate-[spin_24s_linear_infinite_reverse]"
+          className="absolute w-[min(220px,65vw)] xs:w-[min(250px,70vw)] sm:w-[400px] h-[min(220px,65vw)] xs:h-[min(250px,70vw)] sm:h-[400px] rounded-full border border-purple-500/30 animate-[spin_24s_linear_infinite_reverse]"
         />
 
         {/* Ring 3: Radiant Emerald (Opposite Tilted Gimbal 3D) */}
         <div
           style={{ transform: "rotateY(68deg)" }}
-          className="absolute w-[210px] sm:w-[310px] h-[210px] sm:h-[310px] rounded-full border border-[var(--color-accent)]/30 animate-[spin_30s_linear_infinite]"
+          className="absolute w-[min(170px,50vw)] xs:w-[min(190px,55vw)] sm:w-[310px] h-[min(170px,50vw)] xs:h-[min(190px,55vw)] sm:h-[310px] rounded-full border border-[var(--color-accent)]/30 animate-[spin_30s_linear_infinite]"
         />
 
         {/* ================= CENTRAL SPATIAL GLASS SPHERE ================= */}
         <motion.div
           animate={{ y: [0, -8, 0] }}
           transition={{ duration: 5, repeat: Infinity, ease: [0.16, 1, 0.3, 1] }}
-          className="relative z-10 w-56 sm:w-80 h-56 sm:h-80 rounded-full p-2 glass-spatial border border-white/50 dark:border-[var(--color-secondary)]/35 shadow-[0_20px_50px_rgba(0,114,255,0.25)] dark:shadow-[0_20px_60px_rgba(0,240,255,0.25)] flex items-center justify-center overflow-hidden group glass-specular-top"
+          className="relative z-10 w-[min(160px,45vw)] xs:w-[min(190px,50vw)] sm:w-80 h-[min(160px,45vw)] xs:h-[min(190px,50vw)] sm:h-80 rounded-full p-2 glass-spatial border border-white/50 dark:border-[var(--color-secondary)]/35 shadow-[0_20px_50px_rgba(0,114,255,0.25)] dark:shadow-[0_20px_60px_rgba(0,240,255,0.25)] flex items-center justify-center overflow-hidden group glass-specular-top"
         >
           {/* Specular Edge Highlight Overlay */}
           <div className="absolute inset-0 bg-gradient-to-tr from-white/30 via-transparent to-cyan-400/25 pointer-events-none rounded-full" />

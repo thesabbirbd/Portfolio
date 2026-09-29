@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ContentItem } from '@/lib/content';
 import { MDXContent } from './MDXContent';
+import { ConnectedKnowledge } from './ConnectedKnowledge';
 
 export function ContentLayout({ item, baseUrl, breadcrumbLabel }: { item: ContentItem; baseUrl: string; breadcrumbLabel: string }) {
   const { meta, content } = item;
@@ -45,6 +46,8 @@ export function ContentLayout({ item, baseUrl, breadcrumbLabel }: { item: Conten
           <MDXContent source={content} />
         </main>
         
+        <ConnectedKnowledge meta={meta} />
+
         <footer className="mt-16 pt-8 border-t border-border/50">
           <div className="flex flex-wrap gap-2 mb-8">
             {meta.tags?.map(tag => (

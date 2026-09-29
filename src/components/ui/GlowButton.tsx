@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { hoverSoft, pressSoft } from "@/lib/motion-presets";
+import { hoverLift, pressScale } from "@/lib/motion-presets";
 import { sound } from "@/lib/sound";
 
 interface GlowButtonProps {
@@ -12,7 +12,7 @@ interface GlowButtonProps {
   href?: string;
   onClick?: () => void;
   variant?: "primary" | "secondary" | "outline" | "ghost" | "glass";
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "icon";
   className?: string;
   icon?: React.ReactNode;
   external?: boolean;
@@ -29,9 +29,10 @@ export function GlowButton({
   external = false,
 }: GlowButtonProps) {
   const sizeStyles = {
-    sm: "px-4 py-1.5 text-xs font-medium gap-1.5",
-    md: "px-6 py-2.5 text-sm font-semibold gap-2",
-    lg: "px-8 py-3.5 text-base font-semibold gap-2.5",
+    sm: "px-3 py-1.5 text-[11px] sm:text-xs font-medium gap-1.5",
+    md: "px-4 py-2 sm:px-6 sm:py-2.5 text-xs sm:text-sm font-semibold gap-2",
+    lg: "px-5 py-2.5 sm:px-8 sm:py-3.5 text-sm sm:text-base font-semibold gap-2 sm:gap-2.5",
+    icon: "p-2 sm:p-2.5",
   };
 
   const variantStyles = {
@@ -50,9 +51,8 @@ export function GlowButton({
 
   const buttonContent = (
     <motion.div
-      whileHover={{ scale: 1.03 }}
-      whileTap={{ scale: 0.96 }}
-      transition={{ type: "spring", stiffness: 400, damping: 20 }}
+      whileHover={hoverLift}
+      whileTap={pressScale}
       className={cn(
         "inline-flex items-center justify-center rounded-full transition-all duration-300 select-none cursor-pointer group",
         sizeStyles[size],

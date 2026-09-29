@@ -25,7 +25,7 @@ export function EngineeringLabSection() {
     : LAB_EXPERIMENTS.filter((exp) => exp.category === selectedCategory);
 
   return (
-    <section id="lab" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full overflow-hidden">
+    <section id="lab" className="py-12 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full overflow-hidden">
       <SectionReveal className="w-full">
       {/* Section Header */}
       <div className="flex flex-col items-center text-center mb-12">
@@ -80,7 +80,7 @@ export function EngineeringLabSection() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="group relative flex flex-col justify-between p-6 rounded-2xl glass-interactive border border-[var(--border-glass)] hover:border-[var(--border-glass-hover)] transition-all"
+              className="group relative flex flex-col justify-between p-4 sm:p-5 md:p-6 rounded-2xl glass-interactive border border-[var(--border-glass)] hover:border-[var(--border-glass-hover)] transition-all"
             >
               <div>
                 {/* Header info */}

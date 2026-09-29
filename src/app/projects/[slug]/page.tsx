@@ -1,5 +1,5 @@
 import { getContentBySlug, getSlugs } from '@/lib/content';
-import { ContentLayout } from '@/components/content/ContentLayout';
+import { ProjectLayout } from '@/components/content/ProjectLayout';
 import { notFound } from 'next/navigation';
 
 export async function generateStaticParams() {
@@ -25,9 +25,9 @@ export default async function Page(props: { params: Promise<{ slug: string }> })
   const params = await props.params;
   const item = getContentBySlug('projects', params.slug);
   
-  if (!item) {
+  if (!item || (process.env.NODE_ENV !== 'development' && item.meta.status === 'draft')) {
     notFound();
   }
 
-  return <ContentLayout item={item} baseUrl="/projects" breadcrumbLabel="Projects" />;
+  return <ProjectLayout item={item} />;
 }

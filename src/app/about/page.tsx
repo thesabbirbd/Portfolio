@@ -30,9 +30,30 @@ export default function AboutPage() {
         <p className="text-xl text-muted-foreground mb-6 max-w-3xl leading-relaxed">
           I am a Management student at Rajshahi College with a deep passion for technology and engineering. Known online as <strong>THE SABBiR</strong>, my journey bridges the gap between business management and technical problem-solving.
         </p>
-        <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
+        <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed mb-8">
           Based in Rajshahi, Bangladesh, I explore Backend Engineering, DevOps, Local AI (such as Ollama), Linux, and IT Systems. I believe in learning by doing, which has led me to build projects like Omnidesk BD and contribute actively as a Google Maps Local Guide. You can find my open-source work on <a href="https://github.com/thesabbirbd" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">GitHub</a> or connect with me professionally on <a href="https://bd.linkedin.com/in/thesabbirbd" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">LinkedIn</a>.
         </p>
+
+        <div className="p-6 rounded-2xl bg-muted/30 border border-border/50 max-w-3xl mb-12">
+          <h2 className="text-2xl font-bold mb-4">Evidence & Exploration</h2>
+          <p className="text-muted-foreground mb-6">
+            My work is documented through real-world implementation, experimental research, and open process logs. Explore my personal knowledge base below.
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <Link href="/projects" className="px-5 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
+              Explore Projects
+            </Link>
+            <Link href="/engineering-lab" className="px-5 py-2.5 bg-muted text-foreground border border-border/50 rounded-xl text-sm font-semibold hover:bg-muted/80 transition-colors">
+              Engineering Lab
+            </Link>
+            <Link href="/notes" className="px-5 py-2.5 bg-muted text-foreground border border-border/50 rounded-xl text-sm font-semibold hover:bg-muted/80 transition-colors">
+              Read Notes
+            </Link>
+            <Link href="/journal" className="px-5 py-2.5 bg-muted text-foreground border border-border/50 rounded-xl text-sm font-semibold hover:bg-muted/80 transition-colors">
+              Process Logs
+            </Link>
+          </div>
+        </div>
       </div>
       <AboutSection />
     </div>

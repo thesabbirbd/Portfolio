@@ -49,7 +49,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
               sound.click();
             }}
             className="absolute top-5 right-5 p-2 rounded-full glass-interactive text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors focus:outline-none"
-            aria-label="Close Project Modal"
+            aria-label="Close Project Modal" title="Close"
           >
             <X className="w-5 h-5" />
           </button>
@@ -139,10 +139,19 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
 
           {/* Links & Actions */}
           <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-[var(--border-glass)]">
+            {/* Detailed Case Study Link */}
+            <a 
+              href={`/projects/${project.id}`}
+              onClick={() => sound.click()}
+              className="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 transition-all font-medium text-sm"
+            >
+              <ExternalLink className="w-4 h-4" /> View Full Case Study
+            </a>
+
             {project.githubUrl && (
               <a
                 href={project.githubUrl}
-                target="_blank"
+                target="_blank" rel="noopener noreferrer"
                 rel="noopener noreferrer"
                 onClick={() => sound.click()}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm bg-[var(--text-primary)] text-[var(--bg-primary)] hover:opacity-90 transition-opacity"
@@ -153,7 +162,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
             {project.liveUrl && (
               <a
                 href={project.liveUrl}
-                target="_blank"
+                target="_blank" rel="noopener noreferrer"
                 rel="noopener noreferrer"
                 onClick={() => sound.click()}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm border border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10 transition-colors"

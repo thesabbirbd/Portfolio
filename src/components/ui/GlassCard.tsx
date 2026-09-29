@@ -1,48 +1,96 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
+import { motion, HTMLMotionProps, useMotionValue, useSpring } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { motion, HTMLMotionProps } from "framer-motion";
 
-interface GlassCardProps extends HTMLMotionProps<"div"> {
-  children: React.ReactNode;
-  className?: string;
+export interface GlassCardProps extends HTMLMotionProps<"div"> {
+  children?: React.ReactNode;
+  heavy?: boolean;
+  glare?: boolean;
   hoverEffect?: boolean;
-  glow?: "none" | "blue" | "cyan" | "purple";
+  glow?: "none" | "blue" | "cyan" | "purple" | "primary";
 }
 
 export function GlassCard({
   children,
   className,
-  hoverEffect = true,
-  glow = "blue",
+  heavy = false,
+  glare = true,
+  hoverEffect = false,
+  glow = "none",
+  onMouseMove,
+  onMouseLeave,
   ...props
 }: GlassCardProps) {
   const glowStyles = {
     none: "",
     blue: "hover:shadow-[0_12px_40px_-10px_rgba(0,114,255,0.22)] hover:border-blue-500/30",
-    cyan: "hover:shadow-[0_12px_40px_-10px_rgba(0,240,255,0.22)] hover:border-[var(--color-secondary)]/30",
+    cyan: "hover:shadow-[0_12px_40px_-10px_rgba(0,240,255,0.22)] hover:border-cyan-500/30",
     purple: "hover:shadow-[0_12px_40px_-10px_rgba(121,40,202,0.22)] hover:border-purple-500/30",
+    primary: "hover:shadow-[0_12px_40px_-10px_rgba(var(--color-primary),0.22)] hover:border-primary/30",
+  };
+
+  const cardRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const smoothX = useSpring(mouseX, { stiffness: 300, damping: 30 });
+  const smoothY = useSpring(mouseY, { stiffness: 300, damping: 30 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+    if (cardRef.current) {
+      const rect = cardRef.current.getBoundingClientRect();
+      mouseX.set(e.clientX - rect.left);
+      mouseY.set(e.clientY - rect.top);
+    }
+    onMouseMove?.(e);
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    mouseX.set(0);
+    mouseY.set(0);
+    onMouseLeave?.(e);
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 15 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       whileHover={hoverEffect ? { y: -4, transition: { duration: 0.2 } } : undefined}
       className={cn(
-        "glass-panel rounded-2xl p-6 relative overflow-hidden transition-all duration-300",
-        hoverEffect && "glass-panel-hover cursor-pointer",
-        glowStyles[glow],
+        "relative rounded-3xl overflow-hidden group transition-all duration-300",
+        heavy ? "spatial-glass-heavy" : "spatial-glass",
+        hoverEffect && "cursor-pointer",
+        glow !== "none" && glowStyles[glow],
         className
       )}
       {...props}
     >
-      {/* Subtle top edge refraction highlight */}
-      <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 dark:via-white/10 to-transparent pointer-events-none" />
-      {children}
+      {glare && (
+        <motion.div 
+          className="pointer-events-none absolute top-0 left-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden md:block"
+          style={{
+            background: "radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 60%)",
+            x: smoothX,
+            y: smoothY,
+            marginLeft: -250,
+            marginTop: -250,
+            width: 500,
+            height: 500,
+          }}
+        />
+      )}
+      
+      {/* Mobile Glare Fallback */}
+      {glare && (
+        <div className="md:hidden spatial-glare opacity-0 group-hover:opacity-50 transition-opacity duration-700 pointer-events-none absolute inset-0 z-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent" />
+      )}
+
+      <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 dark:via-white/10 to-transparent pointer-events-none z-10" />
+      
+      <div className="relative z-10 w-full h-full">{children as any}</div>
     </motion.div>
   );
 }

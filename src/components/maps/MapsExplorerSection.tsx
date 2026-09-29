@@ -18,7 +18,7 @@ export function MapsExplorerSection() {
   const { spatial3D } = useSettings();
 
   return (
-    <section id="maps" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full overflow-hidden">
+    <section id="maps" className="py-12 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full overflow-hidden">
       <SectionReveal className="w-full">
       {/* Section Header */}
       <div className="flex flex-col items-center text-center mb-12">
@@ -89,7 +89,7 @@ export function MapsExplorerSection() {
               <div className="flex flex-wrap items-center gap-3 pt-4">
                 <a
                   href={maps.profileUrl}
-                  target="_blank"
+                  target="_blank" rel="noopener noreferrer"
                   rel="noopener noreferrer"
                   onClick={() => sound.click()}
                   className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm bg-[var(--color-accent)] hover:bg-[var(--color-accent)] text-white transition-colors shadow-md shadow-emerald-600/20"
@@ -100,7 +100,7 @@ export function MapsExplorerSection() {
 
                 <a
                   href={maps.featuredLocationUrl}
-                  target="_blank"
+                  target="_blank" rel="noopener noreferrer"
                   rel="noopener noreferrer"
                   onClick={() => sound.click()}
                   className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm glass-subtle border border-[var(--color-accent)]/30 text-[var(--color-accent)] dark:text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 transition-colors"

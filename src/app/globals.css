@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-@plugin 'lightswind/plugin';
 @plugin '@tailwindcss/typography';
 
 @custom-variant dark (&:is(.dark *));
@@ -454,4 +453,72 @@ body {
   z-index: 50;
   opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
+/* Typography Text Wrap Utilities */
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+
+@media (max-height: 450px) and (orientation: landscape) {
+  .py-24 {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+  .mt-24 {
+    margin-top: 3rem !important;
+  }
+  .mb-24 {
+    margin-bottom: 3rem !important;
+  }
+  .min-h-screen {
+    min-height: 120vh !important;
+  }
+}
+
+@media print {
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+  .dark {
+    background-color: white !important;
+    color: black !important;
+  }
+  nav, footer, .spatial-glass, button, .no-print {
+    display: none !important;
+  }
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    backdrop-filter: none !important;
+    transition: none !important;
+  }
+  a {
+    text-decoration: underline;
+    color: black !important;
+  }
+}
+
+
+.icon-3d-punchy {
+  filter: drop-shadow(0px 2px 8px currentColor) drop-shadow(0px 4px 16px currentColor);
+  transform: translateZ(0);
+}
+
+.icon-3d-glow {
+  filter: drop-shadow(0 0 12px currentColor);
+  transform: translateZ(0);
 }

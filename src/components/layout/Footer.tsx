@@ -2,9 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { PROFILE_DATA } from "@/data/profile";
 import { SOCIAL_LINKS } from "@/data/socials";
-import { Mail, ArrowUp, MapPin } from "lucide-react";
+import { Mail, ArrowUp, MapPin, Terminal, Activity, FileText, Briefcase, Command, Compass } from "lucide-react";
 import { 
   GithubIcon, 
   LinkedinIcon, 
@@ -14,6 +13,8 @@ import {
 } from "@/components/ui/BrandIcons";
 import { sound } from "@/lib/sound";
 
+import { motion } from "framer-motion";
+
 export function Footer() {
   const scrollToTop = () => {
     sound.click();
@@ -21,88 +22,111 @@ export function Footer() {
   };
 
   const getSocialIcon = (icon: string) => {
+    const baseClass = "w-5 h-5 icon-3d-punchy transition-transform group-hover:scale-110";
     switch (icon) {
       case "github":
-        return <GithubIcon className="w-4 h-4" />;
+        return <GithubIcon className={`${baseClass} text-indigo-400`} />;
       case "linkedin":
-        return <LinkedinIcon className="w-4 h-4" />;
+        return <LinkedinIcon className={`${baseClass} text-blue-500`} />;
       case "facebook":
-        return <FacebookIcon className="w-4 h-4" />;
+        return <FacebookIcon className={`${baseClass} text-blue-600`} />;
       case "instagram":
-        return <InstagramIcon className="w-4 h-4" />;
+        return <InstagramIcon className={`${baseClass} text-pink-500`} />;
       case "x":
-        return <TwitterIcon className="w-4 h-4" />;
+        return <TwitterIcon className={`${baseClass} text-zinc-300`} />;
       case "maps":
-        return <MapPin className="w-4 h-4" />;
+        return <MapPin className={`${baseClass} text-emerald-500`} />;
       case "gmail":
       default:
-        return <Mail className="w-4 h-4" />;
+        return <Mail className={`${baseClass} text-red-500`} />;
     }
   };
 
   return (
-    <footer className="relative border-t border-slate-200/60 dark:border-white/10 bg-white/40 dark:bg-slate-950/40 backdrop-blur-md pt-16 pb-24 md:pb-16 overflow-hidden">
-      {/* Background ambient lighting */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
-      <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-blue-500/10 dark:bg-[var(--color-secondary)]/10 blur-3xl pointer-events-none" />
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-          {/* Main Statement */}
-          <div className="space-y-2">
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
-              Crafted with precision by{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-400 dark:from-cyan-400 dark:to-blue-400">
-                {PROFILE_DATA.shortName}
-              </span>
-              .
-            </h2>
-            <p className="text-xs sm:text-sm font-mono text-gray-600 dark:text-slate-700 dark:text-slate-300 tracking-wide">
-              Business × Engineering × AI × Systems × Creativity
+    <motion.footer 
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ duration: 0.5 }}
+      className="relative z-10 w-full mt-32 border-t border-border/50 bg-background/50 backdrop-blur-xl"
+    >
+      <div className="container mx-auto px-4 md:px-6 pt-16 pb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10 mb-16">
+          
+          <div className="col-span-2 lg:col-span-2 space-y-6">
+            <h3 className="text-xl font-bold tracking-tight text-foreground">THE SABBiR</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
+              An engineering-first platform documenting my journey through backend systems, local AI orchestration, DevOps, and network architecture.
             </p>
-            <p className="text-xs text-slate-700 dark:text-slate-300 dark:text-slate-700 dark:text-slate-300">
-              Built to Learn • Build • Deploy • Explore
-            </p>
-          </div>
-
-          {/* Social Links & Back to Top */}
-          <div className="flex flex-col items-center md:items-end gap-4">
-            <div className="flex flex-wrap items-center justify-center md:justify-end gap-2">
+            <div className="flex items-center gap-3">
               {SOCIAL_LINKS.map((social) => (
                 <a
                   key={social.id}
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={social.name}
-                  onClick={() => sound.click()}
-                  className="p-2.5 rounded-full glass-panel hover:border-[var(--color-secondary)]/50 hover:text-[var(--color-secondary)] transition-all hover:scale-110 text-gray-600 dark:text-gray-300"
+                  className="p-2.5 rounded-xl bg-zinc-900/30 border border-border/50 text-muted-foreground hover:text-foreground hover:bg-zinc-800 transition-all group"
+                  aria-label={social.platform}
                 >
                   {getSocialIcon(social.icon)}
                 </a>
               ))}
             </div>
+          </div>
 
-            <button
-              onClick={scrollToTop}
-              className="inline-flex items-center gap-1.5 text-xs text-gray-600 dark:text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-[var(--color-secondary)] transition-colors"
-            >
-              <span>Back to surface</span>
-              <ArrowUp className="w-3.5 h-3.5" />
-            </button>
+          <div className="space-y-4">
+            <h4 className="text-xs font-semibold text-foreground uppercase tracking-wider flex items-center gap-2 mb-6">
+              <Compass className="w-3 h-3 text-primary" /> Explore
+            </h4>
+            <ul className="space-y-3">
+              <li><Link href="/" className="text-sm text-muted-foreground hover:text-primary transition-colors">Home</Link></li>
+              <li><Link href="/about" className="text-sm text-muted-foreground hover:text-primary transition-colors">Identity</Link></li>
+              <li><Link href="/resume" className="text-sm text-muted-foreground hover:text-primary transition-colors">Resume</Link></li>
+              <li><Link href="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact</Link></li>
+            </ul>
+          </div>
+
+          <div className="space-y-4">
+            <h4 className="text-xs font-semibold text-foreground uppercase tracking-wider flex items-center gap-2 mb-6">
+              <Terminal className="w-3 h-3 text-primary" /> Engineering
+            </h4>
+            <ul className="space-y-3">
+              <li><Link href="/projects" className="text-sm text-muted-foreground hover:text-primary transition-colors">Projects</Link></li>
+              <li><Link href="/engineering-lab" className="text-sm text-muted-foreground hover:text-primary transition-colors">Laboratory</Link></li>
+              <li><Link href="/experience" className="text-sm text-muted-foreground hover:text-primary transition-colors">Skills & Tech</Link></li>
+            </ul>
+          </div>
+
+          <div className="space-y-4">
+            <h4 className="text-xs font-semibold text-foreground uppercase tracking-wider flex items-center gap-2 mb-6">
+              <FileText className="w-3 h-3 text-primary" /> Knowledge
+            </h4>
+            <ul className="space-y-3">
+              <li><Link href="/notes" className="text-sm text-muted-foreground hover:text-primary transition-colors">Engineering Notes</Link></li>
+              <li><Link href="/journal" className="text-sm text-muted-foreground hover:text-primary transition-colors">Process Logs</Link></li>
+              <li><Link href="/exploration" className="text-sm text-muted-foreground hover:text-primary transition-colors">Exploration</Link></li>
+              <li><Link href="/search" className="text-sm text-muted-foreground hover:text-primary transition-colors">Search Graph</Link></li>
+            </ul>
           </div>
         </div>
 
-        <div className="mt-12 pt-6 border-t border-slate-200/50 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600 dark:text-slate-700 dark:text-slate-300">
-          <div className="flex items-center gap-2">
-            <span className="inline-block w-2 h-2 rounded-full bg-[var(--color-accent)] animate-ping" />
-            <span className="font-mono">SYSTEM ONLINE • sabbir.nav.bd</span>
+        <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-border/30 gap-4">
+          <div className="text-xs text-muted-foreground flex flex-col md:flex-row items-center gap-2 md:gap-4">
+            <span>&copy; {new Date().getFullYear()} Md Sabbirul Islam Khan.</span>
+            <span className="hidden md:inline text-border/50">|</span>
+            <span className="flex items-center gap-2"><Command className="w-3 h-3" /> Press <kbd className="px-1.5 py-0.5 bg-muted rounded border border-border/50 font-mono text-[10px]">Ctrl+K</kbd> for Command Center</span>
           </div>
-          <div>
-            &copy; 2026 {PROFILE_DATA.fullName}. All rights reserved.
-          </div>
+          
+          <button
+            onClick={scrollToTop}
+            className="group flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900/30 border border-border/50 hover:bg-zinc-800 transition-all text-xs font-medium text-muted-foreground hover:text-foreground"
+            aria-label="Scroll to top"
+          >
+            Back to top
+            <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-1 transition-transform" />
+          </button>
         </div>
       </div>
-    </footer>
+    </motion.footer>
   );
 }

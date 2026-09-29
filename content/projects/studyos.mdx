@@ -1,0 +1,66 @@
+---
+title: "StudyOS (Local AI Prototype)"
+slug: "studyos"
+description: "An experimental, fully local AI orchestration layer designed to manage personal tasks, learning workflows, and system automation without cloud dependencies."
+date: "2026-09-18"
+type: "projects"
+category: "AI & Automation"
+tags: ["Local AI", "Ollama", "Python", "Automation"]
+status: "published"
+featured: true
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+projectStatus: "experimental"
+projectRole: "Solo Developer"
+technologies: ["Ollama", "Qwen 0.5B / Llama 3", "Python", "FastAPI", "Bash"]
+githubUrl: "https://github.com/thesabbirbd"
+dateStarted: "2026-08-01"
+relatedLab: ["qwen-automation-limitations"]
+relatedJournal: ["changing-local-ai-strategy"]
+architecture:
+  nodes:
+    - CLI Interface
+    - Python Orchestrator (FastAPI)
+    - Ollama (Local LLM Daemon)
+    - System Shell (Bash)
+    - Local Vector DB
+  edges:
+    - CLI Interface -> Python Orchestrator (FastAPI)
+    - Python Orchestrator (FastAPI) -> Ollama (Local LLM Daemon)
+    - Python Orchestrator (FastAPI) -> Local Vector DB
+    - Python Orchestrator (FastAPI) -> System Shell (Bash)
+changelog:
+  - date: "2026-08-01"
+    title: "Prototype Initialization"
+    summary: "Basic integration between Python and Ollama API established."
+  - date: "2026-08-20"
+    title: "Shell Command Execution"
+    summary: "Added a risk-gated execution environment allowing the LLM to write and run basic Bash scripts."
+---
+
+## Overview
+
+StudyOS began as a research experiment into data sovereignty. I wanted to see if I could build a competent daily assistant that operated entirely off-grid, ensuring that my personal schedules, study notes, and system automation scripts never left my local hardware.
+
+## The Approach
+
+The core of the system is a Python orchestrator (built with FastAPI for modularity). It intercepts user commands, queries a local Ollama instance running quantized open-weights models (like Llama 3 8B or Qwen 0.5B), and then maps the LLM's structured JSON output to actual system commands.
+
+## Engineering Decisions
+
+**Decision:** Relying heavily on small parameter models (under 8B).  
+*Context:* I did not have enterprise-grade GPUs at my disposal. The system needed to run alongside my normal development tools without starving my IDE or browser of RAM.  
+*Choice:* I opted to use highly quantized versions of Qwen and Llama.  
+*Trade-off:* What I gained in execution speed (low latency) and memory footprint, I lost in reasoning capability.
+
+## Iteration & Failures
+
+The most significant failure in this project was attempting to use a 0.5B model to generate reliable, structured JSON payloads for the automation layer. 
+
+Small models struggle with strict syntax. When asked to output `{"action": "create_folder", "target": "/docs"}`, the model would frequently hallucinate markdown blocks or forget the closing brace, causing the Python JSON parser to throw fatal exceptions.
+
+## Current State & Lessons Learned
+
+StudyOS remains an active experiment. 
+
+The biggest lesson learned is that **prompt engineering cannot substitute for raw model capacity when it comes to deterministic outputs.** I am currently refactoring the architecture to offload complex reasoning to cloud APIs while keeping the local models strictly for summarization and offline semantic search, as documented in my journal entry about changing my local AI strategy.

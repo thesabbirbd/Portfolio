@@ -1,45 +1,73 @@
 ---
-title: "Omnidesk BD: Engineering a Modern Service Platform"
+title: "Omnidesk BD"
 slug: "omnidesk"
-description: "Architectural decisions and technical challenges in building Omnidesk BD, a practical service and management platform."
-date: "2026-08-15"
-type: "project"
-category: "Backend"
-tags: ["Architecture", "System Design", "Backend"]
+description: "A commercial e-commerce platform for custom PC builds and ergonomic furniture, focusing on performance, modularity, and smooth user checkout flows."
+date: "2026-09-01"
+type: "projects"
+category: "E-Commerce"
+tags: ["Next.js", "React", "Node.js", "Backend"]
 status: "published"
 featured: true
 author: "Md Sabbirul Islam Khan"
 brand: "THE SABBiR"
+projectStatus: "active"
+projectRole: "Lead Developer (Backend & Architecture)"
+technologies: ["Next.js", "Tailwind CSS", "Node.js", "PostgreSQL", "Prisma", "Redis", "Docker"]
+demoUrl: "https://omnidesk.com.bd"
+githubUrl: "https://github.com/thesabbirbd"
+dateStarted: "2024-01-15"
+relatedNotes: ["openwrt-nas"]
+relatedJournal: ["ubuntu-dev-environment"]
+architecture:
+  nodes:
+    - Next.js (Frontend)
+    - Node.js API (Backend)
+    - PostgreSQL (Database)
+    - Redis (Cache)
+    - Admin Panel
+  edges:
+    - Next.js (Frontend) -> Node.js API (Backend)
+    - Admin Panel -> Node.js API (Backend)
+    - Node.js API (Backend) -> Redis (Cache)
+    - Node.js API (Backend) -> PostgreSQL (Database)
+changelog:
+  - date: "2024-01-15"
+    title: "Project Inception"
+    summary: "Started architectural planning and database schema design for the custom PC builder logic."
+  - date: "2024-03-10"
+    title: "V1 Core Release"
+    summary: "Launched the initial storefront with secure JWT authentication and order management."
+  - date: "2024-06-05"
+    title: "Redis Caching Integration"
+    summary: "Integrated Redis to cache heavy product-catalog queries, dropping API latency by 60%."
 ---
 
-## Overview
+## The Problem
 
-Omnidesk BD is one of my core structural projects that translates business requirements into a functional web platform. The goal was to build something scalable, maintainable, and aligned with modern operational needs.
+Building a generic e-commerce site is simple, but building one that supports complex, conditionally-dependent products (like a custom PC builder where choosing a specific CPU limits your choice of Motherboard) is a significant relational data challenge. Omnidesk BD needed a highly responsive interface combined with a strict backend rule engine to prevent users from placing invalid or physically incompatible orders.
 
-## The Problem Space
+## The Approach
 
-Managing service requests, user interactions, and operational tasks requires a system that is both reliable and fast. Traditional monolithic approaches often become cumbersome when scaling small-to-medium teams. I needed a solution that would be lightweight yet robust enough to handle structured data flow.
+The platform is split into a decoupled frontend (Next.js) and backend (Node.js/Express). The backend acts as the source of truth for product availability, pricing calculations, and compatibility validation.
 
-## Architectural Decisions
+### Architecture Evolution
 
-When designing the backend for this platform, I focused heavily on **Separation of Concerns** and **API-First Design**. 
+Initially, the database handled all compatibility checks on every page load. As the product catalog grew, this became a bottleneck. 
 
-1. **Stateless API:** Building the core as a stateless API allowed the frontend components to remain entirely decoupled.
-2. **Database Schema:** The relational integrity of the data was paramount. I structured the database to ensure fast read times while maintaining strict foreign key constraints for user and service logs.
-3. **Deployment Strategy:** Utilizing containerization (Docker) ensures that the development environment matches the production environment, reducing "it works on my machine" issues.
+I introduced **Redis** as a caching layer between the Node API and PostgreSQL. Now, standard product queries hit the cache, while complex build-validations hit the relational database.
 
-## Technical Stack & Implementation
+## Engineering Decisions & Trade-offs
 
-The implementation relied heavily on a structured backend communicating with a modern component-driven frontend.
+**Decision:** Separating the Admin Panel from the Main Storefront  
+*Context:* Both systems needed to access the same database but had vastly different security and bundle-size requirements.  
+*Trade-off:* We accepted the overhead of maintaining two separate frontend codebases in exchange for a drastically lighter customer-facing bundle and tightly locked-down admin security rules.
 
-- **Backend:** Focused on fast, asynchronous request handling.
-- **Infrastructure:** Containerized environments for predictable deployments.
-- **Frontend Integration:** Using a highly componentized UI (like the glass/spatial design seen in this portfolio) to ensure a premium user experience without sacrificing performance.
+## What Didn't Work (Failures & Iterations)
 
-## What I Learned
+During early testing, the custom PC builder form was entirely client-side. This seemed fast, but it allowed tech-savvy users to manipulate the DOM and bypass compatibility warnings before submitting the cart payload. 
 
-The biggest lesson from Omnidesk BD was understanding the balance between **over-engineering** and **future-proofing**. Initially, I considered complex microservices, but realized a well-structured modular monolith was far more appropriate for the scale of the operation.
+*The Fix:* We had to rewrite the validation logic so that the backend re-validates the entire build graph at checkout, completely ignoring client-side compatibility flags.
 
-## Future Direction
+## Current State & Future Direction
 
-The next phase involves integrating more automated tooling—potentially tying into my Local AI experiments to handle basic triage and categorization of incoming requests before they hit a human operator.
+Omnidesk BD is currently active and processing live orders. The next engineering phase involves migrating the monolithic Node API into smaller, domain-specific microservices (e.g., separating the Order Service from the Product Catalog Service) using Docker to prepare for future horizontal scaling.
