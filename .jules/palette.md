@@ -1,0 +1,3 @@
+## 2026-09-29 - [IdentityDock ARIA Labels]
+**Learning:** Found several floating and interactive UI components in the design system relying purely on icons or profile images without accompanying text or aria-labels, which diminishes screen reader accessibility for primary navigation features like the dock and profile panels.
+**Action:** Always verify custom components with mapped icons or toggle buttons (like `IdentityDock.tsx`) for `aria-label`s, especially since these components often use titles that don't effectively override generic button roles for all assistive technologies.
