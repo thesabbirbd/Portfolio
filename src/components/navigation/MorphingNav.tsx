@@ -109,6 +109,7 @@ export function MorphingNav() {
                 "p-2 rounded-full transition-colors flex items-center justify-center",
                 spatial3D ? "text-blue-500 bg-blue-500/10" : "text-foreground/80 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10"
               )}
+              aria-label="Toggle 3D effect"
             >
               {spatial3D ? <Zap className="w-4 h-4" /> : <ZapOff className="w-4 h-4" />}
             </button>
@@ -137,7 +138,7 @@ export function MorphingNav() {
             </Link>
           ))}
         </div>
-        <button onClick={openCmdk} className="p-2 text-foreground/80 hover:text-foreground group">
+        <button onClick={openCmdk} className="p-2 text-foreground/80 hover:text-foreground group" aria-label="Search Command Menu">
           <Search className="w-5 h-5 text-fuchsia-500 icon-3d-punchy transition-transform hover:scale-110" />
         </button>
       </div>
