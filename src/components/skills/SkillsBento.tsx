@@ -53,13 +53,13 @@ export function SkillsBento() {
               <GlassCard heavy className="w-full h-full p-6 flex flex-col transition-colors border-black/5 dark:border-white/5 hover:border-black/20 dark:hover:border-white/20">
                 <div className="flex items-center gap-3 mb-4">
                   <div className={cn("p-3 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10", cat.color)}>
-                    <cat.icon className="w-6 h-6" />
+                    <cat.icon className="w-4 h-4 sm:w-6 sm:h-6" />
                   </div>
                   <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100">{cat.title}</h3>
                 </div>
 
                 <div className="flex-1 overflow-hidden relative">
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2 sm:mt-0">
                     {/* Always show a few skills */}
                     {cat.skills.slice(0, 3).map((skill) => (
                       <span key={skill} className="px-2.5 py-1 text-xs font-mono font-medium rounded-md bg-black/5 dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-black/10 dark:border-white/10">

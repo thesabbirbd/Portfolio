@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValueEvent } from "framer-motion";
+import { useSpatialScroll } from "@/hooks/useSpatialScroll";
 import { Terminal, X, CornerDownLeft, Sparkles } from "lucide-react";
 
 interface LogEntry {
@@ -22,6 +23,28 @@ export function TerminalModal() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Keyboard shortcut `~` or `Ctrl+K`
+
+  const { scrollY } = useSpatialScroll();
+  const [isNavHidden, setIsNavHidden] = useState(false);
+
+  const [isDesktop, setIsDesktop] = useState(true);
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const prev = scrollY.getPrevious() ?? 0;
+    if (latest > prev && latest > 150) {
+      setIsNavHidden(true); // scrolling down
+    } else {
+      setIsNavHidden(false); // scrolling up/idle
+    }
+  });
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey && e.key === "k") || e.key === "`") {
@@ -110,7 +133,11 @@ export function TerminalModal() {
   return (
     <>
       {/* Floating Mini Launcher Pill in bottom left */}
-      <div className="fixed bottom-20 left-4 sm:bottom-6 sm:left-6 z-40 mb-[env(safe-area-inset-bottom)] sm:mb-0">
+      <motion.div 
+        animate={{ y: (!isDesktop && !isNavHidden) ? -76 : 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-40 mb-[env(safe-area-inset-bottom)] sm:mb-0"
+      >
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -124,7 +151,7 @@ export function TerminalModal() {
             Ctrl+K
           </span>
         </motion.button>
-      </div>
+      </motion.div>
 
       {/* Terminal Overlay Window */}
       <AnimatePresence>

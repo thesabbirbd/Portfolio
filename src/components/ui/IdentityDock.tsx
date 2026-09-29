@@ -20,6 +20,15 @@ export function IdentityDock() {
   const { spatial3D, toggle3D } = useSettings();
   const { scrollY } = useSpatialScroll();
   const [isNavHidden, setIsNavHidden] = useState(false);
+
+  const [isDesktop, setIsDesktop] = useState(true);
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
   
   useMotionValueEvent(scrollY, "change", (latest) => {
     const prev = scrollY.getPrevious() ?? 0;
@@ -116,22 +125,21 @@ export function IdentityDock() {
       </AnimatePresence>
 
       {/* Dock */}
-      {/* Dynamic Position Wrapper */}
-      <motion.div 
-        layout
-        className={`fixed z-[90] flex transition-all duration-700 ease-in-out ${
-          !isNavHidden 
-            ? "bottom-[130px] right-4 sm:bottom-[90px] sm:right-6" 
-            : "bottom-12 left-0 right-0 justify-center"
-        }`}
-      >
+            {/* Dynamic Position Wrapper */}
+      <div className="fixed inset-x-0 bottom-0 z-[90] pointer-events-none">
         <motion.div 
+          layout
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className={`flex w-full ${(!isDesktop && !isNavHidden) ? "justify-end pb-[90px] pr-4" : "justify-center pb-4 sm:pb-6"}`}
+        >
+        <motion.div 
+          layout
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 1, type: "spring" }}
+          transition={{ delay: 1, type: "spring", stiffness: 300, damping: 30 }}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          className="flex items-center gap-1.5 glass-panel rounded-full p-1.5 shadow-2xl border border-white/10 backdrop-blur-2xl bg-background/50"
+          className="pointer-events-auto flex items-center gap-1.5 glass-panel rounded-full p-1.5 shadow-2xl border border-white/10 backdrop-blur-2xl bg-background/50"
         >
           <button
             onClick={() => { sound.click(); setProfileOpen(true); }}
@@ -197,7 +205,8 @@ export function IdentityDock() {
             </motion.div>
           </button>
         </motion.div>
-      </motion.div>
+        </motion.div>
+      </div>
     </>
   );
 }

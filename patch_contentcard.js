@@ -1,7 +1,9 @@
-import Link from 'next/link';
-import { ContentItem } from '@/lib/content';
+const fs = require('fs');
 
+let file = fs.readFileSync('src/components/content/ContentCard.tsx', 'utf8');
 
+if (!file.includes('getCardTheme')) {
+  const helper = `
 const getCardTheme = (cat: string) => {
   const normalized = (cat || '').toLowerCase();
   if (normalized.includes('ai') || normalized.includes('model') || normalized.includes('llm')) {
@@ -35,35 +37,19 @@ const getBadgeTheme = (cat: string) => {
   }
   return "bg-slate-500/10 text-slate-600 dark:text-slate-400";
 };
+`;
 
-export function ContentCard({ item, baseUrl }: { item: ContentItem; baseUrl: string }) {
-  const { meta } = item;
-  
-  return (
-    <Link href={`${baseUrl}/${meta.slug}`} className="block group">
-      <div className={`flex flex-col h-full p-4 sm:p-6 rounded-2xl border border-border/50 bg-background/50 transition-all duration-500 hover:shadow-xl ${getCardTheme(meta.category || "")}`}>
-        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-4">
-          <span className={`text-[9px] sm:text-xs font-medium px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full ${getBadgeTheme(meta.category || "")}`}>
-            {meta.category || 'Note'}
-          </span>
-          <span className="text-[9px] sm:text-xs text-muted-foreground">
-            {new Date(meta.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-          </span>
-        </div>
-        <h3 className="text-sm sm:text-xl font-semibold mb-1 sm:mb-2 group-hover:text-primary transition-colors line-clamp-2">
-          {meta.title}
-        </h3>
-        <p className="text-muted-foreground line-clamp-2 sm:line-clamp-3 text-[11px] sm:text-sm leading-snug sm:leading-relaxed mb-2 sm:mb-4 flex-grow">
-          {meta.description}
-        </p>
-        <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2 sm:mt-auto">
-          {meta.tags?.slice(0, 3).map(tag => (
-            <span key={tag} className="text-[8px] sm:text-[10px] uppercase tracking-wider font-semibold text-muted-foreground/80 bg-muted px-2 py-1 rounded">
-              {tag}
-            </span>
-          ))}
-        </div>
-      </div>
-    </Link>
+  file = file.replace('export function ContentCard', helper + '\nexport function ContentCard');
+
+  file = file.replace(
+    'className="flex flex-col h-full p-4 sm:p-6 rounded-2xl border border-border/50 bg-background/50 hover:bg-accent/5 transition-all duration-300"',
+    'className={`flex flex-col h-full p-4 sm:p-6 rounded-2xl border border-border/50 bg-background/50 transition-all duration-500 hover:shadow-xl ${getCardTheme(meta.category || "")}`}'
   );
+
+  file = file.replace(
+    'className="text-[9px] sm:text-xs font-medium px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-primary/10 text-primary"',
+    'className={`text-[9px] sm:text-xs font-medium px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full ${getBadgeTheme(meta.category || "")}`}'
+  );
+
+  fs.writeFileSync('src/components/content/ContentCard.tsx', file);
 }

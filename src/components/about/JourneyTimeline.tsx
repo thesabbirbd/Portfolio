@@ -28,15 +28,15 @@ export function JourneyTimeline() {
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 400, damping: 40 });
 
   return (
-    <div id="timeline" ref={containerRef} className="relative w-full max-w-5xl mx-auto py-24">
-      <div className="text-center mb-24">
-        <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-slate-900 dark:text-white mb-4">
+    <div id="timeline" ref={containerRef} className="relative w-full max-w-5xl mx-auto py-12 sm:py-24">
+      <div className="text-center mb-12 sm:mb-24">
+        <h2 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tighter text-slate-900 dark:text-white mb-2 sm:mb-4">
           THE ENGINEERING <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-400">EVOLUTION</span>
         </h2>
-        <p className="text-slate-700 dark:text-slate-300 max-w-xl mx-auto">A continuous journey from business strategy to systems architecture.</p>
+        <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 max-w-xl mx-auto px-4">A continuous journey from business strategy to systems architecture.</p>
       </div>
 
-      <div className="relative flex gap-12">
+      <div className="relative flex gap-4 sm:gap-12 px-4 sm:px-0">
         {/* Sticky Progress Line */}
         <div className="hidden md:block w-1 bg-slate-200 dark:bg-white/10 rounded-full relative ml-8 shrink-0">
           <motion.div 
@@ -46,7 +46,7 @@ export function JourneyTimeline() {
         </div>
 
         {/* Cinematic Scroll Items */}
-        <div className="flex-1 space-y-32">
+        <div className="flex-1 space-y-8 sm:space-y-32">
           {JOURNEY_STEPS.map((step, i) => {
             const Icon = step.icon;
             return (
@@ -72,25 +72,25 @@ function JourneyNode({ step, index, total, scrollYProgress }: any) {
   const end = (index + 1) / total;
   
   const opacity = useTransform(scrollYProgress, [Math.max(0, start - 0.1), start, end, Math.min(1, end + 0.1)], [0.3, 1, 1, 0.3]);
-  const scale = useTransform(scrollYProgress, [Math.max(0, start - 0.1), start, end, Math.min(1, end + 0.1)], [0.9, 1, 1, 0.9]);
-  const y = useTransform(scrollYProgress, [Math.max(0, start - 0.2), start], [50, 0]);
+  const scale = useTransform(scrollYProgress, [Math.max(0, start - 0.1), start, end, Math.min(1, end + 0.1)], [0.95, 1, 1, 0.95]);
+  const y = useTransform(scrollYProgress, [Math.max(0, start - 0.2), start], [20, 0]); // reduced Y motion for mobile
   
   return (
     <motion.div style={{ opacity, scale, y }} className="relative flex items-center gap-8">
       {/* Mobile-only connector dot */}
-      <div className="md:hidden absolute -left-4 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-blue-500" />
+      <div className="md:hidden absolute -left-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-blue-500/50" />
       
-      <GlassCard heavy hoverEffect={true} className="p-8 w-full backdrop-blur-xl border-white/10 hover:border-[var(--color-primary)]/50 transition-colors group/card">
-        <div className="flex items-center gap-6 mb-4">
-          <div className={`p-4 rounded-2xl bg-white/5 border border-white/10 shadow-lg ${step.color}`}>
-            <Icon className="w-8 h-8" />
+      <GlassCard heavy hoverEffect={true} className="p-4 sm:p-8 w-full backdrop-blur-xl border-white/10 hover:border-[var(--color-primary)]/50 transition-colors group/card">
+        <div className="flex items-center gap-3 sm:gap-6 mb-2 sm:mb-4">
+          <div className={`p-2 sm:p-4 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 shadow-lg ${step.color}`}>
+            <Icon className="w-5 h-5 sm:w-8 sm:h-8" />
           </div>
           <div>
-            <div className="text-xs font-mono tracking-widest text-slate-700 dark:text-slate-300 mb-1">PHASE 0{index + 1}</div>
-            <h3 className="text-2xl font-black tracking-tight text-white">{step.title}</h3>
+            <div className="text-[10px] sm:text-xs font-mono tracking-widest text-slate-700 dark:text-slate-300 mb-0.5 sm:mb-1">PHASE 0{index + 1}</div>
+            <h3 className="text-base sm:text-2xl font-black tracking-tight text-white">{step.title}</h3>
           </div>
         </div>
-        <p className="text-slate-700 dark:text-slate-300 leading-relaxed text-lg">
+        <p className="text-xs sm:text-lg text-slate-700 dark:text-slate-300 leading-relaxed sm:leading-relaxed">
           {step.desc}
         </p>
       </GlassCard>

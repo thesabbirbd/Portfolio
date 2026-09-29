@@ -1,16 +1,39 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValueEvent } from "framer-motion";
 import { Settings, X, Volume2, VolumeX, Sun, Moon, Monitor, Eye, Sparkles } from "lucide-react";
 import { useTheme } from "next-themes";
 import { sound } from "@/lib/sound";
 import { useSettings } from "@/contexts/SettingsContext";
+import { useSpatialScroll } from "@/hooks/useSpatialScroll";
 
 export function SettingsPanel() {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const { colorTheme, setColorTheme, spatial3D, toggle3D, reducedMotion, toggleMotion, soundEnabled, toggleSound, isHydrated } = useSettings();
+
+  
+  const { scrollY } = useSpatialScroll();
+  const [isNavHidden, setIsNavHidden] = useState(false);
+
+  const [isDesktop, setIsDesktop] = useState(true);
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const prev = scrollY.getPrevious() ?? 0;
+    if (latest > prev && latest > 150) {
+      setIsNavHidden(true); // scrolling down
+    } else {
+      setIsNavHidden(false); // scrolling up/idle
+    }
+  });
 
   if (!isHydrated) return null;
 
@@ -18,16 +41,18 @@ export function SettingsPanel() {
   return (
     <>
       {/* Floating Trigger Button */}
-      <button
+      <motion.button
+        animate={{ y: (!isDesktop && !isNavHidden) ? -76 : 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
         onClick={() => {
           setIsOpen(!isOpen);
           sound.click();
         }}
         aria-label="Open System Settings"
-        className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-40 mb-[env(safe-area-inset-bottom)] sm:mb-0 p-3 rounded-full glass-panel shadow-lg text-[var(--text-secondary)] hover:text-[var(--color-primary)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 mb-[env(safe-area-inset-bottom)] sm:mb-0 p-3 rounded-full glass-panel shadow-lg text-[var(--text-secondary)] hover:text-[var(--color-primary)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
       >
         <Settings className="w-5 h-5 animate-spin-slow" />
-      </button>
+      </motion.button>
 
       {/* Settings Modal */}
       <AnimatePresence>

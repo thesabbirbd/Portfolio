@@ -75,7 +75,7 @@ export function MorphingNav() {
           </Link>
 
           {/* Links */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.name}
@@ -98,7 +98,7 @@ export function MorphingNav() {
               className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-foreground/80 hover:text-foreground"
               aria-label="Search Command Menu"
             >
-              <Search className="w-5 h-5 text-fuchsia-500 icon-3d-punchy transition-transform hover:scale-110" />
+              <Search className="w-4 h-4 text-fuchsia-500 icon-3d-punchy transition-transform hover:scale-110" />
             </button>
             <button
               onClick={() => {
@@ -125,16 +125,16 @@ export function MorphingNav() {
       </header>
 
       {/* ================= MOBILE COMPACT NAV ================= */}
-      <div className={cn("fixed inset-x-4 bottom-4 mb-[env(safe-area-inset-bottom)] z-50 flex md:hidden justify-between items-center px-4 py-3 rounded-full glass-panel backdrop-blur-2xl bg-background/50 transition-transform duration-500", hidden ? "translate-y-[150%]" : "translate-y-0")}>
+      <div className={cn("fixed left-1/2 bottom-4 mb-[env(safe-area-inset-bottom)] z-50 flex md:hidden justify-between items-center px-3 py-2 gap-2 rounded-full glass-panel backdrop-blur-2xl bg-background/50 transition-transform duration-500 w-max", hidden ? "translate-y-[150%] -translate-x-1/2" : "translate-y-0 -translate-x-1/2")}>
         <Link href="/#hero" onClick={() => sound.click()} className="flex items-center gap-2 font-bold font-mono text-foreground">
-          <div className="relative w-8 h-8 overflow-hidden rounded-full border border-white/20">
+          <div className="relative w-7 h-7 overflow-hidden rounded-full border border-white/20">
             <Image src="/assets/sabbir-uploaded-avatar.png" alt="Sabbir Logo" fill className="object-cover" sizes="32px" />
           </div>
         </Link>
         <div className="flex items-center gap-1">
           {NAV_ITEMS.map((item) => (
-            <Link key={item.name} href={item.href} onClick={() => sound.click()} className="p-2 text-foreground/80 hover:text-foreground group">
-              <item.icon className={`w-5 h-5 ${item.colorClass} icon-3d-punchy transition-transform group-hover:scale-110`} />
+            <Link key={item.name} href={item.href} onClick={() => sound.click()} className="p-1.5 text-foreground/80 hover:text-foreground group">
+              <item.icon className={`w-4 h-4 ${item.colorClass} icon-3d-punchy transition-transform group-hover:scale-110`} />
             </Link>
           ))}
         </div>

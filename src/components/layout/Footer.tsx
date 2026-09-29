@@ -65,7 +65,7 @@ export function Footer() {
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2.5 rounded-xl bg-zinc-900/30 border border-border/50 text-muted-foreground hover:text-foreground hover:bg-zinc-800 transition-all group"
+                  className="p-2.5 rounded-2xl bg-zinc-900/30 hover:bg-zinc-800 text-muted-foreground hover:text-foreground transition-all duration-300 group hover:-translate-y-2 hover:shadow-xl hover:shadow-black/20"
                   aria-label={social.platform}
                 >
                   {getSocialIcon(social.icon)}

@@ -11,23 +11,23 @@ export function CommunitySection() {
   const professional = COMMUNITY_DATA.activities.filter((a) => a.category === "technical" || a.category === "media");
 
   return (
-    <section id="community" className="py-12 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full overflow-hidden">
+    <section id="community" className="py-8 sm:py-12 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full overflow-hidden">
       {/* Section Header */}
-      <div className="flex flex-col items-center text-center mb-16">
+      <div className="flex flex-col items-center text-center mb-6 sm:mb-16">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-subtle border border-[var(--border-glass)] text-xs font-semibold uppercase tracking-wider text-[var(--color-primary)] mb-4">
           <Users className="w-3.5 h-3.5" />
           Campus Leadership &bull; Social Impact
         </div>
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[var(--text-primary)] mb-4">
+        <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[var(--text-primary)] mb-2 sm:mb-4">
           🤝 Community &amp; Activities
         </h2>
-        <p className="max-w-2xl text-base sm:text-lg text-[var(--text-muted)]">
+        <p className="max-w-2xl text-xs sm:text-lg text-[var(--text-muted)] px-4 sm:px-0">
           Active collegiate leadership, grassroots humanitarian volunteering, and technical operations beyond the code editor.
         </p>
       </div>
 
       {/* 3-Column Categorized Activity Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
         {/* Column 1: Campus Leadership */}
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2.5 pb-2 border-b border-[var(--border-glass)]">
@@ -38,32 +38,32 @@ export function CommunitySection() {
           {leadership.map((act: ActivityItem) => (
             <div
               key={act.id}
-              className="p-5 rounded-2xl glass-interactive border border-[var(--border-glass)] flex flex-col justify-between"
+              className="p-3 sm:p-5 rounded-xl sm:rounded-2xl glass-interactive border border-[var(--border-glass)] flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)]">
+                <div className="flex items-center justify-between gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+                  <span className="text-[9px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)]">
                     {act.role}
                   </span>
                   {act.badge && (
                     <span className="text-[11px] font-mono text-[var(--text-muted)]">{act.badge}</span>
                   )}
                 </div>
-                <h4 className="text-base font-bold text-[var(--text-primary)] mb-1.5">
+                <h4 className="text-[11px] sm:text-base font-bold text-[var(--text-primary)] mb-1 sm:mb-1.5 leading-snug sm:leading-normal">
                   {act.organization}
                 </h4>
-                <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+                <p className="text-[10px] sm:text-sm text-[var(--text-secondary)] leading-tight sm:leading-relaxed">
                   {act.description}
                 </p>
               </div>
               {act.url && (
-                <div className="pt-3 mt-3 border-t border-[var(--border-glass)]">
+                <div className="pt-2 mt-2 sm:pt-3 sm:mt-3 border-t border-[var(--border-glass)]">
                   <a
                     href={act.url}
                     target="_blank" rel="noopener noreferrer"
                     rel="noopener noreferrer"
                     onClick={() => sound.click()}
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-primary)] hover:underline"
+                    className="inline-flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-xs font-medium text-[var(--color-primary)] hover:underline"
                   >
                     View Official Club Page <ExternalLink className="w-3 h-3" />
                   </a>
@@ -83,10 +83,10 @@ export function CommunitySection() {
           {volunteering.map((act: ActivityItem) => (
             <div
               key={act.id}
-              className="p-5 rounded-2xl glass-interactive border border-[var(--border-glass)] flex flex-col justify-between"
+              className="p-3 sm:p-5 rounded-xl sm:rounded-2xl glass-interactive border border-[var(--border-glass)] flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between gap-2 mb-2">
+                <div className="flex items-center justify-between gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                   <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-[var(--color-accent)]/10 text-[var(--color-accent)] dark:text-[var(--color-accent)]">
                     {act.role}
                   </span>
@@ -94,15 +94,15 @@ export function CommunitySection() {
                     <span className="text-[11px] font-mono text-[var(--text-muted)]">{act.badge}</span>
                   )}
                 </div>
-                <h4 className="text-base font-bold text-[var(--text-primary)] mb-1.5">
+                <h4 className="text-[11px] sm:text-base font-bold text-[var(--text-primary)] mb-1 sm:mb-1.5 leading-snug sm:leading-normal">
                   {act.organization}
                 </h4>
-                <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+                <p className="text-[10px] sm:text-sm text-[var(--text-secondary)] leading-tight sm:leading-relaxed">
                   {act.description}
                 </p>
               </div>
               {act.url && (
-                <div className="pt-3 mt-3 border-t border-[var(--border-glass)]">
+                <div className="pt-2 mt-2 sm:pt-3 sm:mt-3 border-t border-[var(--border-glass)]">
                   <a
                     href={act.url}
                     target="_blank" rel="noopener noreferrer"
@@ -128,10 +128,10 @@ export function CommunitySection() {
           {professional.map((act: ActivityItem) => (
             <div
               key={act.id}
-              className="p-5 rounded-2xl glass-interactive border border-[var(--border-glass)] flex flex-col justify-between"
+              className="p-3 sm:p-5 rounded-xl sm:rounded-2xl glass-interactive border border-[var(--border-glass)] flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between gap-2 mb-2">
+                <div className="flex items-center justify-between gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                   <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-[var(--color-secondary)]/10 text-[var(--color-secondary)]">
                     {act.role}
                   </span>
@@ -139,15 +139,15 @@ export function CommunitySection() {
                     <span className="text-[11px] font-mono text-[var(--text-muted)]">{act.badge}</span>
                   )}
                 </div>
-                <h4 className="text-base font-bold text-[var(--text-primary)] mb-1.5">
+                <h4 className="text-[11px] sm:text-base font-bold text-[var(--text-primary)] mb-1 sm:mb-1.5 leading-snug sm:leading-normal">
                   {act.organization}
                 </h4>
-                <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+                <p className="text-[10px] sm:text-sm text-[var(--text-secondary)] leading-tight sm:leading-relaxed">
                   {act.description}
                 </p>
               </div>
               {act.url && (
-                <div className="pt-3 mt-3 border-t border-[var(--border-glass)]">
+                <div className="pt-2 mt-2 sm:pt-3 sm:mt-3 border-t border-[var(--border-glass)]">
                   <a
                     href={act.url}
                     target="_blank" rel="noopener noreferrer"
