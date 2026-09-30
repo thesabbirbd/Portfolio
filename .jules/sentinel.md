@@ -6,3 +6,7 @@
 **Vulnerability:** Missing standard HTTP security headers (X-Frame-Options, X-Content-Type-Options, etc.), which could leave the app vulnerable to clickjacking or MIME-type sniffing.
 **Learning:** Next.js applications can easily configure security headers globally in `next.config.ts`. A wildcard `source: "/:path*"` applies the headers to all routes.
 **Prevention:** Include standard security headers in Next.js configuration by default on new projects.
+## 2026-09-30 - [Safe Window Open Pattern]
+**Vulnerability:** A missing `rel="noopener noreferrer"` attribute equivalent on external `window.open` calls (specifically in UI interaction handlers like dock/command menu) can potentially allow the newly opened window to access the originating window's object via `window.opener`. This is a known cross-origin vulnerability pattern (TabNabbing).
+**Learning:** `window.open(url, '_blank')` must always be paired with `noopener,noreferrer` as the third argument to prevent the opened tab from having access to the original page's execution context.
+**Prevention:** Always use `window.open(url, '_blank', 'noopener,noreferrer')` when opening untrusted or external links programmatically via JavaScript.
