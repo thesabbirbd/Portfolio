@@ -105,8 +105,8 @@ export function CommandMenu() {
     { category: "PREFERENCES", name: `Toggle Motion: \${reducedMotion ? 'Enable' : 'Reduce'}`, icon: Activity, action: () => runCommand(() => toggleMotion()) },
     
     // CONNECT
-    { category: "CONNECT", name: "LinkedIn", icon: LinkedinIcon, action: () => runCommand(() => window.open(SOCIAL_LINKS.find(l => l.id === "linkedin")?.url || "", '_blank')) },
-    { category: "CONNECT", name: "GitHub", icon: GithubIcon, action: () => runCommand(() => window.open(SOCIAL_LINKS.find(l => l.id === "github")?.url || "", '_blank')) },
+    { category: "CONNECT", name: "LinkedIn", icon: LinkedinIcon, action: () => runCommand(() => window.open(SOCIAL_LINKS.find(l => l.id === "linkedin")?.url || "", '_blank', 'noopener,noreferrer')) },
+    { category: "CONNECT", name: "GitHub", icon: GithubIcon, action: () => runCommand(() => window.open(SOCIAL_LINKS.find(l => l.id === "github")?.url || "", '_blank', 'noopener,noreferrer')) },
     { category: "CONNECT", name: "Email", icon: Mail, action: () => runCommand(() => window.location.href = SOCIAL_LINKS.find(l => l.id === "gmail")?.url || "") },
   ];
 

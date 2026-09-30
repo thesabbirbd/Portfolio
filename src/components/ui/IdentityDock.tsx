@@ -75,7 +75,7 @@ export function IdentityDock() {
     { id: "cmd", name: "Command", icon: Command, onClick: triggerCmdK, colorClass: "text-amber-500" },
     { id: "theme", name: "Theme", icon: Palette, onClick: () => { sound.click(); setTheme(theme === 'dark' ? 'light' : 'dark'); }, colorClass: "text-fuchsia-500" },
     { id: "3d", name: "3D Effect", icon: Box, onClick: () => { sound.click(); toggle3D(); }, colorClass: "text-cyan-500" },
-    { id: "github", name: "GitHub", icon: GithubIcon, onClick: () => { sound.click(); window.open(SOCIAL_LINKS.find(l => l.id === "github")?.url || "", '_blank'); }, colorClass: "text-indigo-400" },
+    { id: "github", name: "GitHub", icon: GithubIcon, onClick: () => { sound.click(); window.open(SOCIAL_LINKS.find(l => l.id === "github")?.url || "", '_blank', 'noopener,noreferrer'); }, colorClass: "text-indigo-400" },
     { id: "contact", name: "Contact", icon: MessageSquare, onClick: () => { sound.click(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }, colorClass: "text-emerald-500" },
   ];
 
@@ -116,8 +116,8 @@ export function IdentityDock() {
                 Rajshahi, Bangladesh
               </div>
               <div className="flex gap-2 w-full">
-                <GlassButton className="flex-1 text-xs py-2" onClick={() => { setProfileOpen(false); window.open(SOCIAL_LINKS.find(l => l.id === "github")?.url || "", '_blank'); }}>GitHub</GlassButton>
-                <GlassButton className="flex-1 text-xs py-2" onClick={() => { setProfileOpen(false); window.open(SOCIAL_LINKS.find(l => l.id === "linkedin")?.url || "", '_blank'); }}>LinkedIn</GlassButton>
+                <GlassButton className="flex-1 text-xs py-2" onClick={() => { setProfileOpen(false); window.open(SOCIAL_LINKS.find(l => l.id === "github")?.url || "", '_blank', 'noopener,noreferrer'); }}>GitHub</GlassButton>
+                <GlassButton className="flex-1 text-xs py-2" onClick={() => { setProfileOpen(false); window.open(SOCIAL_LINKS.find(l => l.id === "linkedin")?.url || "", '_blank', 'noopener,noreferrer'); }}>LinkedIn</GlassButton>
               </div>
             </motion.div>
           </div>
