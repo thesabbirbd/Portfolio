@@ -31,19 +31,15 @@ export function SpatialCore() {
 
   useEffect(() => {
     setMounted(true);
-    const checkMobile = () => setIsMobile(window.innerWidth < 640);
-    checkMobile();
-
+    // ⚡ Bolt: Use matchMedia instead of resize event for better performance
+    const mql = window.matchMedia('(max-width: 639px)');
+    const checkMobile = (e: MediaQueryListEvent) => setIsMobile(e.matches);
     
-
-    
-
-    window.addEventListener("resize", checkMobile);
-    
+    setIsMobile(mql.matches);
+    mql.addEventListener("change", checkMobile);
 
     return () => {
-      window.removeEventListener("resize", checkMobile);
-      
+      mql.removeEventListener("change", checkMobile);
     };
   }, [mouseX, mouseY]);
 

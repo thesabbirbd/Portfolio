@@ -12,14 +12,18 @@ export function useIsMobile() {
   React.useEffect(() => {
     if (typeof window === 'undefined') return
 
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    // ⚡ Bolt: Use matchMedia instead of resize event for better performance
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const onChange = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches)
     }
 
-    window.addEventListener('resize', checkMobile)
-    checkMobile() // Initial check
-    
-    return () => window.removeEventListener('resize', checkMobile)
+    // Initial check
+    setIsMobile(mql.matches)
+
+    mql.addEventListener('change', onChange)
+
+    return () => mql.removeEventListener('change', onChange)
   }, [])
 
   return isMobile

@@ -19,10 +19,16 @@ export function SettingsPanel() {
 
   const [isDesktop, setIsDesktop] = useState(true);
   useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= 768);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
+    // ⚡ Bolt: Use matchMedia instead of resize event for better performance
+    const mql = window.matchMedia('(min-width: 768px)');
+    const onChange = (e: MediaQueryListEvent) => {
+      setIsDesktop(e.matches);
+    };
+
+    setIsDesktop(mql.matches);
+    mql.addEventListener('change', onChange);
+
+    return () => mql.removeEventListener('change', onChange);
   }, []);
 
   
