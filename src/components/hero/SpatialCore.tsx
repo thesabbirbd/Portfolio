@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { Terminal, Database, Server, Cpu, Cloud, Shield } from "lucide-react";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 const ORBITING_NODES = [
   { label: "FastAPI", icon: Server, color: "#00f0ff", angle: 30 },
@@ -16,7 +17,7 @@ const ORBITING_NODES = [
 
 export function SpatialCore() {
   const [mounted, setMounted] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useMediaQuery('(max-width: 639px)', false);
 
   // 3D Parallax & Gyro Physics
   const mouseX = useMotionValue(0);
@@ -31,16 +32,6 @@ export function SpatialCore() {
 
   useEffect(() => {
     setMounted(true);
-    // ⚡ Bolt: Use matchMedia instead of resize event for better performance
-    const mql = window.matchMedia('(max-width: 639px)');
-    const checkMobile = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    
-    setIsMobile(mql.matches);
-    mql.addEventListener("change", checkMobile);
-
-    return () => {
-      mql.removeEventListener("change", checkMobile);
-    };
   }, [mouseX, mouseY]);
 
   const shouldReduceMotion = useReducedMotion();

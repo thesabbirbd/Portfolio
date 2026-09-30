@@ -7,6 +7,7 @@ import { useTheme } from "next-themes";
 import { sound } from "@/lib/sound";
 import { useSettings } from "@/contexts/SettingsContext";
 import { useSpatialScroll } from "@/hooks/useSpatialScroll";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 export function SettingsPanel() {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,19 +18,7 @@ export function SettingsPanel() {
   const { scrollY } = useSpatialScroll();
   const [isNavHidden, setIsNavHidden] = useState(false);
 
-  const [isDesktop, setIsDesktop] = useState(true);
-  useEffect(() => {
-    // ⚡ Bolt: Use matchMedia instead of resize event for better performance
-    const mql = window.matchMedia('(min-width: 768px)');
-    const onChange = (e: MediaQueryListEvent) => {
-      setIsDesktop(e.matches);
-    };
-
-    setIsDesktop(mql.matches);
-    mql.addEventListener('change', onChange);
-
-    return () => mql.removeEventListener('change', onChange);
-  }, []);
+  const isDesktop = useMediaQuery('(min-width: 768px)', true);
 
   
   useMotionValueEvent(scrollY, "change", (latest) => {

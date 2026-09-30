@@ -5,3 +5,7 @@
 ## 2024-03-24 - [Refactor resize listeners to matchMedia]
 **Learning:** Using `window.addEventListener('resize', ...)` in React components can cause unnecessary rapid state evaluations during window resizing.
 **Action:** Refactor these to use `window.matchMedia(query).addEventListener('change', ...)` which only triggers an event when the breakpoint is crossed, improving responsiveness and performance.
+
+## 2024-03-24 - [Avoid Code Duplication for matchMedia]
+**Learning:** CI enforces strict duplication limits (SonarCloud Quality Gate: ≤ 3%). Repeating the `matchMedia` listener setup across components causes CI to fail.
+**Action:** Always extract shared logic (like media query event listeners) into a reusable custom hook (e.g. `useMediaQuery`) rather than implementing it per component.

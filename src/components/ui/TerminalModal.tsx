@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useMotionValueEvent } from "framer-motion";
 import { useSpatialScroll } from "@/hooks/useSpatialScroll";
 import { Terminal, X, CornerDownLeft, Sparkles } from "lucide-react";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 interface LogEntry {
   command?: string;
@@ -27,19 +28,7 @@ export function TerminalModal() {
   const { scrollY } = useSpatialScroll();
   const [isNavHidden, setIsNavHidden] = useState(false);
 
-  const [isDesktop, setIsDesktop] = useState(true);
-  useEffect(() => {
-    // ⚡ Bolt: Use matchMedia instead of resize event for better performance
-    const mql = window.matchMedia('(min-width: 768px)');
-    const onChange = (e: MediaQueryListEvent) => {
-      setIsDesktop(e.matches);
-    };
-
-    setIsDesktop(mql.matches);
-    mql.addEventListener('change', onChange);
-
-    return () => mql.removeEventListener('change', onChange);
-  }, []);
+  const isDesktop = useMediaQuery('(min-width: 768px)', true);
 
   
   useMotionValueEvent(scrollY, "change", (latest) => {

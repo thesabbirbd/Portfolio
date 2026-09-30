@@ -11,6 +11,7 @@ import { SOCIAL_LINKS } from "@/data/socials";
 import { sound } from "@/lib/sound";
 import Image from "next/image";
 import { GlassButton } from "./glass/GlassButton";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 export function IdentityDock() {
   const [expanded, setExpanded] = useState(false);
@@ -21,19 +22,7 @@ export function IdentityDock() {
   const { scrollY } = useSpatialScroll();
   const [isNavHidden, setIsNavHidden] = useState(false);
 
-  const [isDesktop, setIsDesktop] = useState(true);
-  useEffect(() => {
-    // ⚡ Bolt: Use matchMedia instead of resize event for better performance
-    const mql = window.matchMedia('(min-width: 768px)');
-    const onChange = (e: MediaQueryListEvent) => {
-      setIsDesktop(e.matches);
-    };
-
-    setIsDesktop(mql.matches);
-    mql.addEventListener('change', onChange);
-
-    return () => mql.removeEventListener('change', onChange);
-  }, []);
+  const isDesktop = useMediaQuery('(min-width: 768px)', true);
 
   
   useMotionValueEvent(scrollY, "change", (latest) => {
