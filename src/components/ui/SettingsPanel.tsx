@@ -7,6 +7,7 @@ import { useTheme } from "next-themes";
 import { sound } from "@/lib/sound";
 import { useSettings } from "@/contexts/SettingsContext";
 import { useSpatialScroll } from "@/hooks/useSpatialScroll";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 export function SettingsPanel() {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,13 +18,7 @@ export function SettingsPanel() {
   const { scrollY } = useSpatialScroll();
   const [isNavHidden, setIsNavHidden] = useState(false);
 
-  const [isDesktop, setIsDesktop] = useState(true);
-  useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= 768);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
+  const isDesktop = useMediaQuery('(min-width: 768px)', true);
 
   
   useMotionValueEvent(scrollY, "change", (latest) => {
