@@ -1,7 +1,11 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import createGlobe from "cobe";
+import createGlobe, { COBEOptions } from "cobe";
+
+type ExtendedCOBEOptions = COBEOptions & {
+  onRender?: (state: Record<string, any>) => void;
+};
 
 export default function Globe() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -10,7 +14,7 @@ export default function Globe() {
     let phi = 0;
     if (!canvasRef.current) return;
 
-    const globe = createGlobe(canvasRef.current, { // @ts-ignore
+    const globe = createGlobe(canvasRef.current, {
       devicePixelRatio: 2,
       width: 800,
       height: 800,
@@ -27,13 +31,12 @@ export default function Globe() {
         // Rajshahi, Bangladesh (Approx: 24.37, 88.60)
         { location: [24.3745, 88.6042], size: 0.1 },
       ],
-      // @ts-ignore
       onRender: (state) => {
         // Rotate globe slowly
         state.phi = phi;
         phi += 0.003;
       },
-    } as any);
+    } as ExtendedCOBEOptions);
 
     return () => {
       globe.destroy();
