@@ -43,10 +43,22 @@ const mouseEvents = `
     >
 `;
 
-content = content.replace(
-  'return (\n    <div className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[500px] aspect-square mx-auto flex items-center justify-center select-none perspective-1000">\n      {/* 3 Vibrant Ambient Glow Backdrops */}',
-  mouseEvents + '\n      {/* 3 Vibrant Ambient Glow Backdrops */}'
-);
+// Safely replace only if not already containing onMouseMove to prevent double injection
+if (!content.includes('onMouseMove={handleMouseMove}')) {
+  // If we can match the exact old string, do that.
+  if (content.includes('return (\n    <div className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[500px] aspect-square mx-auto flex items-center justify-center select-none perspective-1000">\n      {/* 3 Vibrant Ambient Glow Backdrops */}')) {
+    content = content.replace(
+      'return (\n    <div className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[500px] aspect-square mx-auto flex items-center justify-center select-none perspective-1000">\n      {/* 3 Vibrant Ambient Glow Backdrops */}',
+      mouseEvents + '\n      {/* 3 Vibrant Ambient Glow Backdrops */}'
+    );
+  } else {
+    // Fallback if formatting changed but not patched yet
+    content = content.replace(
+      /return \([\s\S]*?<div[\s\S]*?className="relative w-full max-w-\[280px\] xs:max-w-\[320px\] sm:max-w-\[500px\] aspect-square mx-auto flex items-center justify-center select-none perspective-1000"(?!\s*onMouseMove)[\s\S]*?>/,
+      mouseEvents
+    );
+  }
+}
 
 // Fix direction mapping. 
 // If mouse is at top (negative Y), we want the top to tilt backwards (positive rotateX).
