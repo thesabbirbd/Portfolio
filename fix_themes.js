@@ -2,9 +2,11 @@ const fs = require('fs');
 
 // Fix globals.css specificity
 let css = fs.readFileSync('src/app/globals.css', 'utf8');
-css = css.replace(/\[data-theme-color="orange"\]/g, ':root[data-theme-color="orange"], .dark[data-theme-color="orange"]');
-css = css.replace(/\[data-theme-color="blue"\]/g, ':root[data-theme-color="blue"], .dark[data-theme-color="blue"]');
-css = css.replace(/\[data-theme-color="green"\]/g, ':root[data-theme-color="green"], .dark[data-theme-color="green"]');
+
+css = css.replace(/(?<!:root)(?<!\.dark)\[data-theme-color="orange"\]/g, ':root[data-theme-color="orange"], .dark[data-theme-color="orange"]');
+css = css.replace(/(?<!:root)(?<!\.dark)\[data-theme-color="blue"\]/g, ':root[data-theme-color="blue"], .dark[data-theme-color="blue"]');
+css = css.replace(/(?<!:root)(?<!\.dark)\[data-theme-color="green"\]/g, ':root[data-theme-color="green"], .dark[data-theme-color="green"]');
+
 fs.writeFileSync('src/app/globals.css', css);
 
 // Fix SettingsPanel dots
