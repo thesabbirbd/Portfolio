@@ -6,19 +6,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Utility function to format a number with currency
-export function formatCurrency(
-  amount: number,
-  currency = "USD",
-  options?: Omit<Intl.NumberFormatOptions, "style" | "currency">
-) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    ...options,
-  }).format(amount);
-}
-
 // Utility function to generate a unique ID
 export function generateUniqueId(prefix = "id") {
   return `${prefix}-${Math.random().toString(36).substring(2, 9)}`;
