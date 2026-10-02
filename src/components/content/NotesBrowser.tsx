@@ -44,9 +44,10 @@ export function NotesBrowser({ notes }: { notes: ContentItem[] }) {
   }, [notes]);
 
   const filteredNotes = useMemo(() => {
+    const query = debouncedQuery.toLowerCase();
     return notes.filter(note => {
-      const matchesSearch = note.meta.title.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
-                            note.meta.description.toLowerCase().includes(debouncedQuery.toLowerCase());
+      const matchesSearch = note.meta.title.toLowerCase().includes(query) ||
+                            note.meta.description.toLowerCase().includes(query);
       const matchesCategory = selectedCategory ? note.meta.category === selectedCategory : true;
       return matchesSearch && matchesCategory;
     });

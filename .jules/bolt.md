@@ -9,3 +9,7 @@
 ## 2024-03-24 - [Avoid Code Duplication for matchMedia]
 **Learning:** CI enforces strict duplication limits (SonarCloud Quality Gate: ≤ 3%). Repeating the `matchMedia` listener setup across components causes CI to fail.
 **Action:** Always extract shared logic (like media query event listeners) into a reusable custom hook (e.g. `useMediaQuery`) rather than implementing it per component.
+
+## 2024-05-18 - [Extract string operations out of filter loops]
+**Learning:** Performing string operations like `toLowerCase()` inside a high-frequency array method (e.g. `filter` on a large list of notes) is redundant when the operand (e.g. the search query) does not change per iteration.
+**Action:** Extract string normalization operations like `toLowerCase()` outside of loop/array method callbacks to avoid repeated work, thereby reducing CPU overhead and speeding up the loop.
