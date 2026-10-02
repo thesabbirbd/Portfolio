@@ -169,7 +169,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </Script>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
         />
       </head>
       <body className="bg-background text-foreground transition-colors duration-500 min-h-screen flex flex-col selection:bg-[var(--color-secondary)]/10 selection:text-[var(--color-secondary)]">
