@@ -127,7 +127,7 @@ body {
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border-glass);
   box-shadow: var(--shadow-glass);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .glass-interactive:hover {
   border-color: var(--border-glass-hover);
@@ -190,7 +190,7 @@ body {
 }
 
 .glass-panel-hover {
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-panel-hover:hover {
@@ -521,4 +521,15 @@ p {
 .icon-3d-glow {
   filter: drop-shadow(0 0 12px currentColor);
   transform: translateZ(0);
+}
+
+
+/* Hardware acceleration utilities for smoother mobile animations */
+.transform-gpu {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+.will-change-transform {
+  will-change: transform, opacity;
 }

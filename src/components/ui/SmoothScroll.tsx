@@ -7,11 +7,14 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
+      lerp: 0.1, // added for smoother interpolation
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
       touchMultiplier: 2,
+      wheelMultiplier: 1,
+      normalizeWheel: true,
     });
 
     function raf(time: number) {

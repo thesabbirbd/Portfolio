@@ -12,6 +12,8 @@ export const ease = {
   standard: [0.2, 0, 0, 1], // Deceleration
   emphasized: [0.2, 0, 0.2, 1], // Standard symmetric
   spatial: [0.16, 1, 0.3, 1], // Apple-like smooth spatial ease
+  mobileStandard: [0.4, 0, 0.2, 1], // optimized for mobile
+  mobileSpatial: [0.2, 0.8, 0.2, 1], // smoother for mobile
 };
 
 export const springs = {

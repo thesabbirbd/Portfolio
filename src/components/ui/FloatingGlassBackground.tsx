@@ -40,15 +40,15 @@ export function FloatingGlassBackground() {
       {/* Fixed ambient glow that doesn't scroll much */}
       <motion.div
         style={{ y: yGlow1, background: "radial-gradient(circle, var(--vibrant-cyan) 0%, transparent 60%)", opacity: 0.25 }}
-        className="absolute top-[5%] right-[5%] w-[320px] sm:w-[500px] h-[320px] sm:h-[500px] rounded-full blur-[100px] sm:blur-[140px] animate-float-slow"
+        className="absolute top-[5%] right-[5%] w-[320px] sm:w-[500px] h-[320px] sm:h-[500px] rounded-full blur-[100px] sm:blur-[140px] animate-float-slow" will-change-transform transform-gpu
       />
       <motion.div
         style={{ y: yGlow2, background: "radial-gradient(circle, var(--vibrant-purple) 0%, transparent 60%)", opacity: 0.25 }}
-        className="absolute top-[40%] left-[2%] w-[300px] sm:w-[460px] h-[300px] sm:h-[460px] rounded-full blur-[90px] sm:blur-[130px] animate-float-reverse"
+        className="absolute top-[40%] left-[2%] w-[300px] sm:w-[460px] h-[300px] sm:h-[460px] rounded-full blur-[90px] sm:blur-[130px] animate-float-reverse" will-change-transform transform-gpu
       />
       <motion.div
         style={{ y: yGlow3, background: "radial-gradient(circle, var(--vibrant-emerald) 0%, transparent 60%)", opacity: 0.25 }}
-        className="absolute top-[75%] right-[8%] w-[280px] sm:w-[440px] h-[280px] sm:h-[440px] rounded-full blur-[80px] sm:blur-[120px] animate-float-drift"
+        className="absolute top-[75%] right-[8%] w-[280px] sm:w-[440px] h-[280px] sm:h-[440px] rounded-full blur-[80px] sm:blur-[120px] animate-float-drift" will-change-transform transform-gpu
       />
       <div 
         style={{ background: "radial-gradient(circle, var(--color-primary) 0%, transparent 70%)", opacity: 0.1 }}
