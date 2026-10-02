@@ -17,7 +17,7 @@ type SearchItem = {
   url: string;
 };
 
-export function SearchInterface({ initialData }: { initialData: any[] }) {
+export function SearchInterface({ initialData }: { initialData: SearchItem[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
