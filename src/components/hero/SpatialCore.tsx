@@ -27,8 +27,8 @@ export function SpatialCore() {
   const smoothX = useSpring(mouseX, springConfig);
   const smoothY = useSpring(mouseY, springConfig);
 
-  const rotateX = useTransform(smoothY, [-250, 250], [-16, 16]);
-  const rotateY = useTransform(smoothX, [-250, 250], [16, -16]);
+  const rotateX = useTransform(smoothY, [-250, 250], [16, -16]);
+  const rotateY = useTransform(smoothX, [-250, 250], [-16, 16]);
 
   useEffect(() => {
     setMounted(true);
