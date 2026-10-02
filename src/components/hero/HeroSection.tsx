@@ -5,7 +5,9 @@ import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import { ArrowRight, Terminal, Sparkles, Send, ShieldCheck } from "lucide-react";
 import { PROFILE_DATA } from "@/data/profile";
 import { GlowButton } from "@/components/ui/GlowButton";
-import { SpatialCore } from "@/components/hero/SpatialCore";
+import dynamic from "next/dynamic";
+
+const SpatialCore = dynamic(() => import("@/components/hero/SpatialCore").then(mod => mod.SpatialCore), { ssr: false });
 
 export function HeroSection() {
   const { scrollY } = useScroll();
@@ -51,7 +53,7 @@ export function HeroSection() {
             </motion.h2>
 
             <motion.h1
-              initial={{ opacity: 0, scale: 0.96 }}
+              initial={{ opacity: 1, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-[clamp(2.5rem,8vw,5.5rem)] font-black tracking-tighter leading-none"

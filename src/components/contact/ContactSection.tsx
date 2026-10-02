@@ -184,8 +184,9 @@ export function ContactSection() {
 
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5 block">Name</label>
+                        <label htmlFor="contact-name" className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5 block">Name</label>
                         <GlassInput 
+                          id="contact-name"
                           required 
                           placeholder="John Doe" 
                           value={formData.name}
@@ -193,8 +194,9 @@ export function ContactSection() {
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5 block">Email</label>
+                        <label htmlFor="contact-email" className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5 block">Email</label>
                         <GlassInput 
+                          id="contact-email"
                           required 
                           type="email" 
                           placeholder="john@example.com"
@@ -205,8 +207,9 @@ export function ContactSection() {
                     </div>
                     
                     <div>
-                      <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5 block">Message</label>
+                      <label htmlFor="contact-message" className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5 block">Message</label>
                       <textarea
+                        id="contact-message"
                         required
                         rows={5}
                         placeholder="Detailed message..."
