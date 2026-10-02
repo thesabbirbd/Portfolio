@@ -109,8 +109,15 @@ export function getContentBySlug(type: ContentType, slug: string): ContentItem |
   }
 }
 
+const contentCache = new Map<ContentType, ContentItem[]>();
+
 export function getAllContent(type: ContentType): ContentItem[] {
   const isDev = process.env.NODE_ENV === 'development';
+
+  if (!isDev && contentCache.has(type)) {
+    return contentCache.get(type)!;
+  }
+
   const slugs = getSlugs(type);
   const items = slugs
     .map(slug => getContentBySlug(type, slug))
@@ -121,7 +128,13 @@ export function getAllContent(type: ContentType): ContentItem[] {
     });
 
   // Sort by date descending
-  return items.sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime());
+  const sortedItems = items.sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime());
+
+  if (!isDev) {
+    contentCache.set(type, sortedItems);
+  }
+
+  return sortedItems;
 }
 
 export function getLatestContent(count: number = 3): ContentItem[] {
