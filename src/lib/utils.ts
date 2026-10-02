@@ -30,16 +30,6 @@ export function truncateText(text: string, maxLength: number) {
   return text.substring(0, maxLength) + "...";
 }
 
-// Utility function to format date
-export function formatDate(date: Date, options?: Intl.DateTimeFormatOptions) {
-  return new Intl.DateTimeFormat("en-US", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    ...options,
-  }).format(date);
-}
-
 // Utility function to debounce function calls
 export function debounce<T extends (...args: any[]) => void>(func: T, wait: number) {
   let timeout: ReturnType<typeof setTimeout> | null = null;
