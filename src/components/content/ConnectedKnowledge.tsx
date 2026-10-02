@@ -109,11 +109,7 @@ export function ConnectedKnowledge({ meta }: { meta: ContentItem['meta'], }) {
               <Activity className="w-4 h-4 text-primary" /> Direct References
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[...explicitContent, ...backlinks].map((item, idx) => {
-                // Deduplicate if an item is both explicit and a backlink
-                if (idx > 0 && [...explicitContent, ...backlinks].findIndex(i => i.meta.slug === item.meta.slug) !== idx) return null;
-                
-                return (
+              {Array.from(new Map([...explicitContent, ...backlinks].map(item => [item.meta.slug, item])).values()).map((item) => (
                   <Link 
                     key={item.meta.slug} 
                     href={`${getBasePath(item._type)}/${item.meta.slug}`}
@@ -129,8 +125,7 @@ export function ConnectedKnowledge({ meta }: { meta: ContentItem['meta'], }) {
                       {item.meta.title}
                     </span>
                   </Link>
-                );
-              })}
+              ))}
             </div>
           </div>
         )}
