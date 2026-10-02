@@ -9,3 +9,7 @@
 ## 2024-03-24 - [Avoid Code Duplication for matchMedia]
 **Learning:** CI enforces strict duplication limits (SonarCloud Quality Gate: ≤ 3%). Repeating the `matchMedia` listener setup across components causes CI to fail.
 **Action:** Always extract shared logic (like media query event listeners) into a reusable custom hook (e.g. `useMediaQuery`) rather than implementing it per component.
+
+## 2024-03-24 - [Optimize nested array scans to Set lookups]
+**Learning:** Using `Array.some()` or `.includes()` inside loops like `.filter()` results in an O(M*N) time complexity which becomes a severe bottleneck as the array size grows.
+**Action:** Before performing membership checks inside a loop, precompute a `Set` from the target array to reduce lookups to O(1) time complexity.

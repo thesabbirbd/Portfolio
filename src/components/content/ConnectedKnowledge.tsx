@@ -42,10 +42,13 @@ export function ConnectedKnowledge({ meta }: { meta: ContentItem['meta'], }) {
   const myTechs = meta.technologies || [];
   const myTags = meta.tags || [];
   
+  const explicitContentSlugs = new Set(explicitContent.map(e => e.meta.slug));
+  const backlinkSlugs = new Set(backlinks.map(b => b.meta.slug));
+
   const implicitConnections = globalContent
     .filter(c => c.meta.slug !== meta.slug)
-    .filter(c => !explicitContent.some(e => e.meta.slug === c.meta.slug))
-    .filter(c => !backlinks.some(b => b.meta.slug === c.meta.slug))
+    .filter(c => !explicitContentSlugs.has(c.meta.slug))
+    .filter(c => !backlinkSlugs.has(c.meta.slug))
     .map(c => {
       const theirTechs = c.meta.technologies || [];
       const theirTags = c.meta.tags || [];
