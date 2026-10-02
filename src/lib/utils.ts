@@ -19,11 +19,6 @@ export function formatCurrency(
   }).format(amount);
 }
 
-// Utility function to generate a unique ID
-export function generateUniqueId(prefix = "id") {
-  return `${prefix}-${Math.random().toString(36).substring(2, 9)}`;
-}
-
 // Utility function to truncate text
 export function truncateText(text: string, maxLength: number) {
   if (text.length <= maxLength) return text;
