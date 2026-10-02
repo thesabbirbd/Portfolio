@@ -24,12 +24,6 @@ export function generateUniqueId(prefix = "id") {
   return `${prefix}-${Math.random().toString(36).substring(2, 9)}`;
 }
 
-// Utility function to truncate text
-export function truncateText(text: string, maxLength: number) {
-  if (text.length <= maxLength) return text;
-  return text.substring(0, maxLength) + "...";
-}
-
 // Utility function to format date
 export function formatDate(date: Date, options?: Intl.DateTimeFormatOptions) {
   return new Intl.DateTimeFormat("en-US", {
