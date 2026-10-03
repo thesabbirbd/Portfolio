@@ -10,3 +10,7 @@
 **Vulnerability:** A missing `rel="noopener noreferrer"` attribute equivalent on external `window.open` calls (specifically in UI interaction handlers like dock/command menu) can potentially allow the newly opened window to access the originating window's object via `window.opener`. This is a known cross-origin vulnerability pattern (TabNabbing).
 **Learning:** `window.open(url, '_blank')` must always be paired with `noopener,noreferrer` as the third argument to prevent the opened tab from having access to the original page's execution context.
 **Prevention:** Always use `window.open(url, '_blank', 'noopener,noreferrer')` when opening untrusted or external links programmatically via JavaScript.
+## Security Learnings
+
+- **Issue:** Using `dangerouslySetInnerHTML` for inline scripts triggers security hygiene alerts.
+- **Solution:** In Next.js, use the `<Script>` component with a unique `id` and pass the raw script string as a child. This improves code hygiene and avoids security flags while maintaining the same behavior.

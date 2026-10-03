@@ -157,7 +157,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           `}
         </Script>
 
-        <script dangerouslySetInnerHTML={{ __html: `if ("serviceWorker" in navigator) { window.addEventListener("load", function() { navigator.serviceWorker.register("/sw.js").then(function(registration) { console.log("SW registered"); }, function(err) { console.log("SW registration failed: ", err); }); }); }` }} />
+        <Script id="service-worker" strategy="afterInteractive">
+          {`if ("serviceWorker" in navigator) { window.addEventListener("load", function() { navigator.serviceWorker.register("/sw.js").then(function(registration) { console.log("SW registered"); }, function(err) { console.log("SW registration failed: ", err); }); }); }`}
+        </Script>
         <Script id="microsoft-clarity" strategy="afterInteractive">
           {`
             (function(c,l,a,r,i,t,y){
