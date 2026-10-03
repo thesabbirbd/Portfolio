@@ -9,3 +9,7 @@
 ## 2024-03-24 - [Avoid Code Duplication for matchMedia]
 **Learning:** CI enforces strict duplication limits (SonarCloud Quality Gate: ≤ 3%). Repeating the `matchMedia` listener setup across components causes CI to fail.
 **Action:** Always extract shared logic (like media query event listeners) into a reusable custom hook (e.g. `useMediaQuery`) rather than implementing it per component.
+
+## 2024-10-02 - [Fix LCP Delays from framer-motion Opacity]
+**Learning:** Initializing text components with `opacity: 0` in `framer-motion` causes the browser to delay painting the element until after JS execution, severely impacting Largest Contentful Paint (LCP).
+**Action:** Always ensure critical text elements animated with `framer-motion` start with an initial opacity of 1 (e.g., `initial={{ opacity: 1 }}`) to prevent LCP degradation, adjusting animation variants accordingly.
