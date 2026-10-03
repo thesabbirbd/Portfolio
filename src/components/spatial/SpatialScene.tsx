@@ -21,7 +21,7 @@ function ScrollCamera() {
 }
 
 function SpatialObject({ type, position, color, speed = 1, floatIntensity = 2 }: any) {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const meshRef = useRef<THREE.Mesh>(null!);
   
   useFrame((state) => {
     if (meshRef.current) {
@@ -47,12 +47,12 @@ function SpatialObject({ type, position, color, speed = 1, floatIntensity = 2 }:
 
   return (
     <Float speed={speed} rotationIntensity={0.5} floatIntensity={floatIntensity}>
-      {type === 'orb' && <Sphere ref={meshRef as any} args={[1.2, 64, 64]} position={position}>{material}</Sphere>}
-      {type === 'server' && <Box ref={meshRef as any} args={[1.5, 0.3, 1.2]} position={position}>{material}</Box>}
-      {type === 'database' && <Cylinder ref={meshRef as any} args={[0.8, 0.8, 1.8, 32]} position={position}>{material}</Cylinder>}
-      {type === 'network' && <Torus ref={meshRef as any} args={[1.2, 0.15, 16, 100]} position={position}>{material}</Torus>}
-      {type === 'cpu' && <Box ref={meshRef as any} args={[1, 0.1, 1]} position={position}>{material}</Box>}
-      {type === 'ai' && <Icosahedron ref={meshRef as any} args={[1, 0]} position={position}>{material}</Icosahedron>}
+      {type === 'orb' && <Sphere ref={meshRef} args={[1.2, 64, 64]} position={position}>{material}</Sphere>}
+      {type === 'server' && <Box ref={meshRef} args={[1.5, 0.3, 1.2]} position={position}>{material}</Box>}
+      {type === 'database' && <Cylinder ref={meshRef} args={[0.8, 0.8, 1.8, 32]} position={position}>{material}</Cylinder>}
+      {type === 'network' && <Torus ref={meshRef} args={[1.2, 0.15, 16, 100]} position={position}>{material}</Torus>}
+      {type === 'cpu' && <Box ref={meshRef} args={[1, 0.1, 1]} position={position}>{material}</Box>}
+      {type === 'ai' && <Icosahedron ref={meshRef} args={[1, 0]} position={position}>{material}</Icosahedron>}
     </Float>
   );
 }
