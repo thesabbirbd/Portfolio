@@ -16,14 +16,14 @@ export function ConnectedKnowledge({ meta }: { meta: ContentItem['meta'], }) {
 
 
   // 2. Explicit Relationships (Forward)
-  const explicitSlugs = [
+  const explicitSlugs = new Set([
     ...(meta.relatedProjects || []),
     ...(meta.relatedNotes || []),
     ...(meta.relatedLab || []),
     ...(meta.relatedJournal || [])
-  ];
+  ]);
 
-  const explicitContent = globalContent.filter(c => explicitSlugs.includes(c.meta.slug) && c.meta.slug !== meta.slug);
+  const explicitContent = globalContent.filter(c => explicitSlugs.has(c.meta.slug) && c.meta.slug !== meta.slug);
 
   // 3. Backlinks (Items pointing to this item)
   const backlinks = globalContent.filter(c => {

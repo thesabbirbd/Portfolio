@@ -112,7 +112,10 @@ export function CommandMenu() {
 
   const filteredCommands = debouncedSearch === ""
     ? commands 
-    : commands.filter(c => c.name.toLowerCase().includes(debouncedSearch.toLowerCase()) || c.category.toLowerCase().includes(debouncedSearch.toLowerCase()));
+    : (() => {
+        const q = debouncedSearch.toLowerCase();
+        return commands.filter(c => c.name.toLowerCase().includes(q) || c.category.toLowerCase().includes(q));
+      })();
 
   // Group by category
   const grouped = filteredCommands.reduce((acc, curr) => {

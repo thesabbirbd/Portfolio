@@ -47,6 +47,8 @@ export interface ContentItem {
   content: string;
 }
 
+const contentCache = new Map<string, ContentItem>();
+
 export function getSlugs(type: ContentType): string[] {
   const dirPath = path.join(contentDirectory, type);
   if (!fs.existsSync(dirPath)) return [];
@@ -55,6 +57,11 @@ export function getSlugs(type: ContentType): string[] {
 }
 
 export function getContentBySlug(type: ContentType, slug: string): ContentItem | null {
+  const cacheKey = `${type}:${slug}`;
+  if (contentCache.has(cacheKey)) {
+    return contentCache.get(cacheKey)!;
+  }
+
   try {
     const dirPath = path.join(contentDirectory, type);
     const mdxPath = path.join(dirPath, `${slug}.mdx`);
@@ -69,7 +76,7 @@ export function getContentBySlug(type: ContentType, slug: string): ContentItem |
     const fileContents = fs.readFileSync(filePath, 'utf8');
     const { data, content } = matter(fileContents);
 
-    return {
+    const parsedContent = {
       meta: {
         slug,
         title: data.title || 'Untitled',
@@ -103,6 +110,9 @@ export function getContentBySlug(type: ContentType, slug: string): ContentItem |
       },
       content
     };
+
+    contentCache.set(cacheKey, parsedContent);
+    return parsedContent;
   } catch (error) {
     console.error(`Error reading ${type}/${slug}`, error);
     return null;
