@@ -65,11 +65,11 @@ if (!content.includes('onMouseMove={handleMouseMove}')) {
 // If mouse is at right (positive X), we want the right to tilt backwards (positive rotateY).
 content = content.replace(
   'const rotateX = useTransform(smoothY, [-180, 180], [16, -16]);',
-  'const rotateX = useTransform(smoothY, [-250, 250], [-16, 16]);'
+  'const rotateX = useTransform(smoothY, [-250, 250], [16, -16]);'
 );
 content = content.replace(
   'const rotateY = useTransform(smoothX, [-180, 180], [-16, 16]);',
-  'const rotateY = useTransform(smoothX, [-250, 250], [16, -16]);'
+  'const rotateY = useTransform(smoothX, [-250, 250], [-16, 16]);'
 );
 
 fs.writeFileSync('src/components/hero/SpatialCore.tsx', content);
