@@ -8,6 +8,7 @@ export default defineConfig({
     environment: 'jsdom',
     alias: {
       '@': path.resolve(import.meta.dirname, './src')
-    }
+    },
+    exclude: ['**/node_modules/**', '**/dist/**', '**/cypress/**', '**/.{idea,git,cache,output,temp}/**', '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*']
   }
 })
