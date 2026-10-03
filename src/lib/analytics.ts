@@ -23,10 +23,5 @@ export function trackEvent(eventName: EventName, properties?: EventProperties) {
   // Check if standard web analytics (e.g., Vercel Analytics window.va) is available
   if (typeof window !== 'undefined' && (window as any).va) {
     (window as any).va('event', eventName, properties);
-  } else {
-    // Development fallback
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`📊 [Analytics] ${eventName}`, properties || '');
-    }
   }
 }
