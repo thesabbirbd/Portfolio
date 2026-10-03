@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import * as React from "react";
 
 // Define the ToastActionElement type
@@ -38,7 +36,7 @@ const TOAST_REMOVE_DELAY = 1000;
 // ID generation for toasts
 let count = 0;
 
-function genId() {
+function genId(): string {
   count = (count + 1) % Number.MAX_VALUE;
   return count.toString();
 }
@@ -133,7 +131,7 @@ const listeners: Array<(state: State) => void> = [];
 let memoryState: State = { toasts: [] };
 
 // Dispatch function to update state and notify listeners
-function dispatch(action: Action) {
+function dispatch(action: Action): void {
   memoryState = reducer(memoryState, action);
   listeners.forEach((listener) => {
     listener(memoryState);
@@ -143,7 +141,13 @@ function dispatch(action: Action) {
 // Toast function for creating toasts
 type ToastOptions = Omit<ToastItem, "id">;
 
-function toast(props: ToastOptions) {
+interface ToastReturn {
+  id: string;
+  dismiss: () => void;
+  update: (props: ToastOptions) => string;
+}
+
+function toast(props: ToastOptions): ToastReturn {
   const id = genId();
 
   // Auto-dismiss after duration
@@ -163,7 +167,7 @@ function toast(props: ToastOptions) {
   }
 
   // Methods for the toast
-  const update = (props: ToastOptions) => {
+  const update = (props: ToastOptions): string => {
     dispatch({
       type: actionTypes.UPDATE_TOAST,
       toast: { ...props, id },
@@ -171,7 +175,7 @@ function toast(props: ToastOptions) {
     return id;
   };
 
-  const dismiss = () => {
+  const dismiss = (): void => {
     dispatch({ type: actionTypes.DISMISS_TOAST, toastId: id });
 
     // Clear any existing timeout
@@ -216,7 +220,12 @@ toast.warning = (props: Omit<ToastOptions, "type">) => toast({ ...props, type: "
 toast.info = (props: Omit<ToastOptions, "type">) => toast({ ...props, type: "info" });
 
 // Hook for consuming toasts
-function useToast() {
+export interface UseToastReturn extends State {
+  toast: typeof toast;
+  dismiss: (toastId?: string) => void;
+}
+
+function useToast(): UseToastReturn {
   const [state, setState] = React.useState<State>(memoryState);
 
   React.useEffect(() => {
