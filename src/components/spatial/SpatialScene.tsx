@@ -20,7 +20,15 @@ function ScrollCamera() {
   return null;
 }
 
-function SpatialObject({ type, position, color, speed = 1, floatIntensity = 2 }: any) {
+interface SpatialObjectProps {
+  type: 'orb' | 'network' | 'cpu' | 'server' | 'database' | 'ai';
+  position: [number, number, number];
+  color: string;
+  speed?: number;
+  floatIntensity?: number;
+}
+
+function SpatialObject({ type, position, color, speed = 1, floatIntensity = 2 }: SpatialObjectProps) {
   const meshRef = useRef<THREE.Mesh>(null!);
   
   useFrame((state) => {
