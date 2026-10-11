@@ -87,23 +87,28 @@ describe('getContentBySlug', () => {
 });
 
 describe('getAllContent', () => {
+  const setupMocks = (files: Record<string, string | Error>) => {
+    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+    mock.spyOn(fs, 'readdirSync').mockReturnValue(Object.keys(files) as any);
+    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
+      const match = Object.entries(files).find(([name]) => filePath.includes(name));
+      if (match) {
+        if (match[1] instanceof Error) throw match[1];
+        return match[1];
+      }
+      return '';
+    });
+  };
+
   beforeEach(() => {
     mock.restoreAllMocks();
     mock.unstubAllEnvs();
   });
 
   it('should return all content sorted by date descending', () => {
-    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
-    mock.spyOn(fs, 'readdirSync').mockReturnValue(['sort-post1.mdx', 'sort-post2.mdx'] as any);
-
-    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
-      if (filePath.includes('sort-post1.mdx')) {
-        return '---\ntitle: Sort Post 1\ndate: 2023-01-01T00:00:00.000Z\nstatus: published\n---\nContent 1';
-      }
-      if (filePath.includes('sort-post2.mdx')) {
-        return '---\ntitle: Sort Post 2\ndate: 2023-01-02T00:00:00.000Z\nstatus: published\n---\nContent 2';
-      }
-      return '';
+    setupMocks({
+      'sort-post1.mdx': '---\ntitle: Sort Post 1\ndate: 2023-01-01T00:00:00.000Z\nstatus: published\n---\nContent 1',
+      'sort-post2.mdx': '---\ntitle: Sort Post 2\ndate: 2023-01-02T00:00:00.000Z\nstatus: published\n---\nContent 2'
     });
 
     const results = getAllContent('notes');
@@ -114,18 +119,9 @@ describe('getAllContent', () => {
 
   it('should filter out draft items in production', () => {
     mock.stubEnv('NODE_ENV', 'production');
-
-    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
-    mock.spyOn(fs, 'readdirSync').mockReturnValue(['prod-draft.mdx', 'prod-published.mdx'] as any);
-
-    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
-      if (filePath.includes('prod-draft.mdx')) {
-        return '---\ntitle: Prod Draft\nstatus: draft\ndate: 2023-01-02T00:00:00.000Z\n---\nDraft Content';
-      }
-      if (filePath.includes('prod-published.mdx')) {
-        return '---\ntitle: Prod Published\nstatus: published\ndate: 2023-01-01T00:00:00.000Z\n---\nPublished Content';
-      }
-      return '';
+    setupMocks({
+      'prod-draft.mdx': '---\ntitle: Prod Draft\nstatus: draft\ndate: 2023-01-02T00:00:00.000Z\n---\nDraft Content',
+      'prod-published.mdx': '---\ntitle: Prod Published\nstatus: published\ndate: 2023-01-01T00:00:00.000Z\n---\nPublished Content'
     });
 
     const results = getAllContent('notes');
@@ -135,18 +131,9 @@ describe('getAllContent', () => {
 
   it('should include draft items in development', () => {
     mock.stubEnv('NODE_ENV', 'development');
-
-    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
-    mock.spyOn(fs, 'readdirSync').mockReturnValue(['dev-draft.mdx', 'dev-published.mdx'] as any);
-
-    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
-      if (filePath.includes('dev-draft.mdx')) {
-        return '---\ntitle: Dev Draft\nstatus: draft\ndate: 2023-01-02T00:00:00.000Z\n---\nDraft Content';
-      }
-      if (filePath.includes('dev-published.mdx')) {
-        return '---\ntitle: Dev Published\nstatus: published\ndate: 2023-01-01T00:00:00.000Z\n---\nPublished Content';
-      }
-      return '';
+    setupMocks({
+      'dev-draft.mdx': '---\ntitle: Dev Draft\nstatus: draft\ndate: 2023-01-02T00:00:00.000Z\n---\nDraft Content',
+      'dev-published.mdx': '---\ntitle: Dev Published\nstatus: published\ndate: 2023-01-01T00:00:00.000Z\n---\nPublished Content'
     });
 
     const results = getAllContent('notes');
@@ -157,18 +144,9 @@ describe('getAllContent', () => {
 
   it('should filter out null items (failed to read/parse)', () => {
     mock.stubEnv('NODE_ENV', 'production');
-
-    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
-    mock.spyOn(fs, 'readdirSync').mockReturnValue(['null-valid.mdx', 'null-invalid.mdx'] as any);
-
-    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
-      if (filePath.includes('null-invalid.mdx')) {
-        throw new Error('Failed to read');
-      }
-      if (filePath.includes('null-valid.mdx')) {
-        return '---\ntitle: Null Valid\nstatus: published\ndate: 2023-01-01T00:00:00.000Z\n---\nValid Content';
-      }
-      return '';
+    setupMocks({
+      'null-invalid.mdx': new Error('Failed to read'),
+      'null-valid.mdx': '---\ntitle: Null Valid\nstatus: published\ndate: 2023-01-01T00:00:00.000Z\n---\nValid Content'
     });
 
     const originalConsoleError = console.error;
