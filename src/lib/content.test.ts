@@ -1,7 +1,7 @@
-import { describe, it, vi as mock, beforeEach, expect } from 'vitest';
+import { describe, it, vi as mock, beforeEach, afterEach, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
-import { getContentBySlug } from './content.ts';
+import { getContentBySlug, getLatestContent } from './content.ts';
 
 describe('getContentBySlug', () => {
   beforeEach(() => {
@@ -83,5 +83,94 @@ describe('getContentBySlug', () => {
     expect(result).toBeNull();
 
     console.error = originalConsoleError;
+  });
+});
+
+describe('getLatestContent', () => {
+  beforeEach(() => {
+    mock.restoreAllMocks();
+  });
+
+  it('should combine, sort by date descending, and slice content across multiple types', () => {
+    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+    const readdirSyncSpy = mock.spyOn(fs, 'readdirSync').mockImplementation((dirPath) => {
+      if (typeof dirPath === 'string') {
+        if (dirPath.includes('notes')) return ['note1.mdx'] as any;
+        if (dirPath.includes('journal')) return ['journal1.mdx'] as any;
+        if (dirPath.includes('lab')) return ['lab1.mdx'] as any;
+      }
+      return [];
+    });
+
+    const readFileSyncSpy = mock.spyOn(fs, 'readFileSync').mockImplementation((filePath) => {
+      if (typeof filePath === 'string') {
+        if (filePath.includes('note1.mdx')) return '---\ntitle: Note 1\ndate: 2023-01-01T00:00:00Z\nstatus: published\n---\nNote content';
+        if (filePath.includes('journal1.mdx')) return '---\ntitle: Journal 1\ndate: 2023-01-02T00:00:00Z\nstatus: published\n---\nJournal content';
+        if (filePath.includes('lab1.mdx')) return '---\ntitle: Lab 1\ndate: 2023-01-03T00:00:00Z\nstatus: published\n---\nLab content';
+      }
+      return '';
+    });
+
+    const result = getLatestContent(2);
+
+    expect(readdirSyncSpy).toHaveBeenCalled();
+    expect(readFileSyncSpy).toHaveBeenCalled();
+
+    expect(result.length).toBe(2);
+    expect(new Date(result[0].meta.date).toISOString()).toBe('2023-01-03T00:00:00.000Z'); // Newest first
+    expect(new Date(result[1].meta.date).toISOString()).toBe('2023-01-02T00:00:00.000Z'); // Second newest
+  });
+
+  it('should return default count of 3 items if no count is provided', () => {
+    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+    mock.spyOn(fs, 'readdirSync').mockImplementation((dirPath) => {
+      if (typeof dirPath === 'string') {
+        if (dirPath.includes('notes')) return ['note1.mdx', 'note2.mdx'] as any;
+        if (dirPath.includes('journal')) return ['journal1.mdx'] as any;
+        if (dirPath.includes('lab')) return ['lab1.mdx'] as any;
+      }
+      return [];
+    });
+
+    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath) => {
+      if (typeof filePath === 'string') {
+        if (filePath.includes('note1.mdx')) return '---\ntitle: Note 1\ndate: 2023-01-01T00:00:00Z\nstatus: published\n---\nNote content';
+        if (filePath.includes('note2.mdx')) return '---\ntitle: Note 2\ndate: 2023-01-04T00:00:00Z\nstatus: published\n---\nNote content';
+        if (filePath.includes('journal1.mdx')) return '---\ntitle: Journal 1\ndate: 2023-01-02T00:00:00Z\nstatus: published\n---\nJournal content';
+        if (filePath.includes('lab1.mdx')) return '---\ntitle: Lab 1\ndate: 2023-01-03T00:00:00Z\nstatus: published\n---\nLab content';
+      }
+      return '';
+    });
+
+    const result = getLatestContent();
+
+    expect(result.length).toBe(3);
+    expect(new Date(result[0].meta.date).toISOString()).toBe('2023-01-04T00:00:00.000Z');
+    expect(new Date(result[1].meta.date).toISOString()).toBe('2023-01-03T00:00:00.000Z');
+    expect(new Date(result[2].meta.date).toISOString()).toBe('2023-01-02T00:00:00.000Z');
+  });
+
+  it('should handle cases where there is less content than requested', () => {
+    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+    mock.spyOn(fs, 'readdirSync').mockImplementation((dirPath) => {
+      if (typeof dirPath === 'string') {
+        if (dirPath.includes('notes')) return ['note1.mdx'] as any;
+        if (dirPath.includes('journal')) return [] as any;
+        if (dirPath.includes('lab')) return [] as any;
+      }
+      return [];
+    });
+
+    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath) => {
+      if (typeof filePath === 'string') {
+        if (filePath.includes('note1.mdx')) return '---\ntitle: Note 1\ndate: 2023-01-01T00:00:00Z\nstatus: published\n---\nNote content';
+      }
+      return '';
+    });
+
+    const result = getLatestContent(5);
+
+    expect(result.length).toBe(1);
+    expect(new Date(result[0].meta.date).toISOString()).toBe('2023-01-01T00:00:00.000Z');
   });
 });
