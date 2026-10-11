@@ -1,7 +1,45 @@
 import { describe, it, vi as mock, beforeEach, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
-import { getContentBySlug } from './content.ts';
+import { getContentBySlug, getSlugs } from './content.ts';
+
+describe('getSlugs', () => {
+  beforeEach(() => {
+    mock.restoreAllMocks();
+  });
+
+  it('should return an empty array if the directory does not exist', () => {
+    mock.spyOn(fs, 'existsSync').mockReturnValue(false);
+
+    const result = getSlugs('notes');
+    expect(result).toEqual([]);
+  });
+
+  it('should return an array of slugs for md and mdx files', () => {
+    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+    mock.spyOn(fs, 'readdirSync').mockReturnValue([
+      'test-note.md' as unknown as fs.Dirent,
+      'another-note.mdx' as unknown as fs.Dirent,
+    ]);
+
+    const result = getSlugs('notes');
+    expect(result).toEqual(['test-note', 'another-note']);
+  });
+
+  it('should ignore files that are not md or mdx', () => {
+    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+    mock.spyOn(fs, 'readdirSync').mockReturnValue([
+      'test-note.md' as unknown as fs.Dirent,
+      'image.png' as unknown as fs.Dirent,
+      'data.json' as unknown as fs.Dirent,
+      'draft.txt' as unknown as fs.Dirent,
+      'another-note.mdx' as unknown as fs.Dirent,
+    ]);
+
+    const result = getSlugs('notes');
+    expect(result).toEqual(['test-note', 'another-note']);
+  });
+});
 
 describe('getContentBySlug', () => {
   beforeEach(() => {
