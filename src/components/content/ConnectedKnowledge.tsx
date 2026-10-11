@@ -1,16 +1,10 @@
 import Link from 'next/link';
-import { ContentItem, getAllContent } from '@/lib/content';
+import { ContentItem, getGlobalContent } from '@/lib/content';
 import { Network, ArrowRight, Tag, Activity } from 'lucide-react';
 
 export function ConnectedKnowledge({ meta }: { meta: ContentItem['meta'], }) {
   // 1. Gather all content
-  const allProjects = getAllContent('projects').map(c => ({ ...c, _type: 'projects' }));
-  const allNotes = getAllContent('notes').map(c => ({ ...c, _type: 'notes' }));
-  const allLab = getAllContent('lab').map(c => ({ ...c, _type: 'lab' }));
-  const allJournal = getAllContent('journal').map(c => ({ ...c, _type: 'journal' }));
-  
-  const globalContent = [...allProjects, ...allNotes, ...allLab, ...allJournal];
-
+  const globalContent = getGlobalContent();
   
   const currentTypeInferred = globalContent.find(c => c.meta.slug === meta.slug)?._type || 'notes';
 

@@ -49,11 +49,18 @@ export interface ContentItem {
 
 const contentCache = new Map<string, ContentItem>();
 
+const slugsCache = new Map<ContentType, string[]>();
+
 export function getSlugs(type: ContentType): string[] {
+  if (slugsCache.has(type)) {
+    return slugsCache.get(type)!;
+  }
   const dirPath = path.join(contentDirectory, type);
   if (!fs.existsSync(dirPath)) return [];
   const files = fs.readdirSync(dirPath);
-  return files.filter(file => file.endsWith('.mdx') || file.endsWith('.md')).map(file => file.replace(/\.mdx?$/, ''));
+  const slugs = files.filter(file => file.endsWith('.mdx') || file.endsWith('.md')).map(file => file.replace(/\.mdx?$/, ''));
+  slugsCache.set(type, slugs);
+  return slugs;
 }
 
 export function getContentBySlug(type: ContentType, slug: string): ContentItem | null {
@@ -132,6 +139,25 @@ export function getAllContent(type: ContentType): ContentItem[] {
 
   // Sort by date descending
   return items.sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime());
+}
+
+let globalContentCache: (ContentItem & { _type: ContentType })[] | null = null;
+
+export function getGlobalContent(): (ContentItem & { _type: ContentType })[] {
+  if (globalContentCache) return globalContentCache;
+
+  const types: ContentType[] = ['projects', 'notes', 'lab', 'journal'];
+  const allContent: (ContentItem & { _type: ContentType })[] = [];
+
+  for (const type of types) {
+    const items = getAllContent(type);
+    for (const item of items) {
+      allContent.push({ ...item, _type: type });
+    }
+  }
+
+  globalContentCache = allContent;
+  return globalContentCache;
 }
 
 export function getLatestContent(count: number = 3): ContentItem[] {
