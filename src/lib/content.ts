@@ -48,12 +48,26 @@ export interface ContentItem {
 }
 
 const contentCache = new Map<string, ContentItem>();
+const slugsCache = new Map<ContentType, string[]>();
 
 export function getSlugs(type: ContentType): string[] {
+  if (slugsCache.has(type)) {
+    return slugsCache.get(type)!;
+  }
+
   const dirPath = path.join(contentDirectory, type);
-  if (!fs.existsSync(dirPath)) return [];
+  if (!fs.existsSync(dirPath)) {
+    slugsCache.set(type, []);
+    return [];
+  }
+
   const files = fs.readdirSync(dirPath);
-  return files.filter(file => file.endsWith('.mdx') || file.endsWith('.md')).map(file => file.replace(/\.mdx?$/, ''));
+  const slugs = files
+    .filter(file => file.endsWith('.mdx') || file.endsWith('.md'))
+    .map(file => file.replace(/\.mdx?$/, ''));
+
+  slugsCache.set(type, slugs);
+  return slugs;
 }
 
 export function getContentBySlug(type: ContentType, slug: string): ContentItem | null {
