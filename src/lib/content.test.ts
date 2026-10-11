@@ -15,18 +15,7 @@ describe('getSlugs', () => {
     expect(result).toEqual([]);
   });
 
-  it('should return an array of slugs for md and mdx files', () => {
-    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
-    mock.spyOn(fs, 'readdirSync').mockReturnValue([
-      'test-note.md' as unknown as fs.Dirent,
-      'another-note.mdx' as unknown as fs.Dirent,
-    ]);
-
-    const result = getSlugs('notes');
-    expect(result).toEqual(['test-note', 'another-note']);
-  });
-
-  it('should ignore files that are not md or mdx', () => {
+  it('should return an array of slugs for md and mdx files and ignore others', () => {
     mock.spyOn(fs, 'existsSync').mockReturnValue(true);
     mock.spyOn(fs, 'readdirSync').mockReturnValue([
       'test-note.md' as unknown as fs.Dirent,
