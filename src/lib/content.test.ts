@@ -1,7 +1,7 @@
 import { describe, it, vi as mock, beforeEach, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
-import { getContentBySlug } from './content.ts';
+import { getContentBySlug, getLatestContent } from './content.ts';
 
 describe('getContentBySlug', () => {
   beforeEach(() => {
@@ -83,5 +83,66 @@ describe('getContentBySlug', () => {
     expect(result).toBeNull();
 
     console.error = originalConsoleError;
+  });
+});
+
+describe('getLatestContent', () => {
+  beforeEach(() => {
+    mock.restoreAllMocks();
+  });
+
+  it('should combine, sort, and slice content from notes, journal, and lab correctly', () => {
+    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+
+    mock.spyOn(fs, 'readdirSync').mockImplementation((dirPath: any) => {
+      if (dirPath.includes('notes')) return ['unique-note1.md', 'unique-note2.md'];
+      if (dirPath.includes('journal')) return ['unique-journal1.md'];
+      if (dirPath.includes('lab')) return ['unique-lab1.md', 'unique-lab2.md'];
+      return [];
+    });
+
+    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
+      if (filePath.includes('unique-note1')) return '---\ntitle: Note 1\ndate: "2023-01-01"\n---';
+      if (filePath.includes('unique-note2')) return '---\ntitle: Note 2\ndate: "2023-01-05"\n---';
+      if (filePath.includes('unique-journal1')) return '---\ntitle: Journal 1\ndate: "2023-01-03"\n---';
+      if (filePath.includes('unique-lab1')) return '---\ntitle: Lab 1\ndate: "2023-01-04"\n---';
+      if (filePath.includes('unique-lab2')) return '---\ntitle: Lab 2\ndate: "2023-01-02"\n---';
+      return '';
+    });
+
+    const result = getLatestContent(3);
+
+    expect(result.length).toBe(3);
+    // Should be sorted descending by date
+    expect(result[0].meta.title).toBe('Note 2'); // 2023-01-05
+    expect(result[1].meta.title).toBe('Lab 1'); // 2023-01-04
+    expect(result[2].meta.title).toBe('Journal 1'); // 2023-01-03
+  });
+
+  it('should use default count of 3', () => {
+    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+
+    mock.spyOn(fs, 'readdirSync').mockImplementation((dirPath: any) => {
+      if (dirPath.includes('notes')) return ['def-note1.md', 'def-note2.md'];
+      if (dirPath.includes('journal')) return ['def-journal1.md'];
+      if (dirPath.includes('lab')) return ['def-lab1.md'];
+      return [];
+    });
+
+    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
+      if (filePath.includes('def-note1')) return '---\ntitle: Note 1\ndate: "2023-01-01"\n---';
+      if (filePath.includes('def-note2')) return '---\ntitle: Note 2\ndate: "2023-01-05"\n---';
+      if (filePath.includes('def-journal1')) return '---\ntitle: Journal 1\ndate: "2023-01-03"\n---';
+      if (filePath.includes('def-lab1')) return '---\ntitle: Lab 1\ndate: "2023-01-04"\n---';
+      return '';
+    });
+
+    const result = getLatestContent(); // No count provided
+
+    expect(result.length).toBe(3);
+    // It has 4 items in total across mock directories, should only return 3
+    expect(result[0].meta.title).toBe('Note 2'); // 2023-01-05
+    expect(result[1].meta.title).toBe('Lab 1'); // 2023-01-04
+    expect(result[2].meta.title).toBe('Journal 1'); // 2023-01-03
   });
 });
