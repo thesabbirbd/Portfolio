@@ -1,5 +1,23 @@
 import { test, describe, expect } from 'vitest';
-import { generateUniqueId } from './utils.ts';
+import { generateUniqueId, cn } from './utils.ts';
+
+describe('cn', () => {
+  test('should merge basic classes', () => {
+    expect(cn('p-2', 'm-2')).toBe('p-2 m-2');
+  });
+
+  test('should resolve tailwind class conflicts', () => {
+    expect(cn('p-2', 'p-4')).toBe('p-4');
+  });
+
+  test('should handle conditional classes', () => {
+    expect(cn(true && 'p-2', false && 'm-2')).toBe('p-2');
+  });
+
+  test('should handle arrays and objects', () => {
+    expect(cn(['p-2'], { 'm-2': true, 'p-4': false })).toBe('p-2 m-2');
+  });
+});
 
 describe('generateUniqueId', () => {
   test('should use default prefix "id" and follow the format', () => {
