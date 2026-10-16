@@ -67,14 +67,14 @@ export function JourneyTimeline() {
   );
 }
 
-interface JourneyNodeProps {
+type JourneyNodePropsType = {
   step: JourneyStep;
   index: number;
   total: number;
   scrollYProgress: MotionValue<number>;
 }
 
-function JourneyNode({ step, index, total, scrollYProgress }: JourneyNodeProps) {
+function JourneyNode({ step, index, total, scrollYProgress }: JourneyNodePropsType) {
   const Icon = step.icon;
   // Calculate when this specific node should be active based on scroll progress
   const start = index / total;
