@@ -1,5 +1,7 @@
 import { getAllContent } from '@/lib/content';
 
+export const revalidate = 3600;
+
 export async function GET() {
   const allContent = [
     ...getAllContent('notes'),
