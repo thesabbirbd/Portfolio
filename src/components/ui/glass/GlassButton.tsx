@@ -75,8 +75,7 @@ export function GlassButton({
   };
 
   return (
-    <>
-      <motion.button
+    <motion.button
       ref={ref}
       style={{ x: springX, y: springY }}
       onMouseMove={handleMouseMove}
@@ -121,6 +120,5 @@ export function GlassButton({
         </motion.span>
       )}
     </motion.button>
-    </>
   );
 }
