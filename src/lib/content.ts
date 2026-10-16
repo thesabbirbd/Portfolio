@@ -80,13 +80,22 @@ export function getContentBySlug(type: ContentType, slug: string): ContentItem |
     const mdxPath = path.join(dirPath, `${slug}.mdx`);
     const mdPath = path.join(dirPath, `${slug}.md`);
     
-    let filePath = mdxPath;
-    if (!fs.existsSync(filePath)) {
-      if (fs.existsSync(mdPath)) filePath = mdPath;
-      else return null;
+    let fileContents: string;
+    try {
+      fileContents = fs.readFileSync(mdxPath, 'utf8');
+    } catch (err: any) {
+      if (err.code === 'ENOENT') {
+        try {
+          fileContents = fs.readFileSync(mdPath, 'utf8');
+        } catch (err2: any) {
+          if (err2.code === 'ENOENT') return null;
+          throw err2;
+        }
+      } else {
+        throw err;
+      }
     }
 
-    const fileContents = fs.readFileSync(filePath, 'utf8');
     const { data, content } = matter(fileContents);
 
     const parsedContent = {

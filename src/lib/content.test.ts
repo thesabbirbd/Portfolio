@@ -38,15 +38,23 @@ describe('getContentBySlug', () => {
   });
 
   it('should return null if neither mdx nor md file exists', () => {
-    mock.spyOn(fs, 'existsSync').mockReturnValue(false);
+    mock.spyOn(fs, 'readFileSync').mockImplementation(() => {
+      const error = new Error('ENOENT: no such file or directory');
+      (error as any).code = 'ENOENT';
+      throw error;
+    });
 
     const result = getContentBySlug('notes', 'non-existent');
     expect(result).toBeNull();
   });
 
   it('should read and parse an mdx file if it exists', () => {
-    mock.spyOn(fs, 'existsSync').mockImplementation((filePath: any) => filePath.endsWith('.mdx'));
-    mock.spyOn(fs, 'readFileSync').mockReturnValue('---\ntitle: Test Note\ndescription: A test description\n---\n# Content here');
+    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
+      if (filePath.endsWith('.mdx')) return '---\ntitle: Test Note\ndescription: A test description\n---\n# Content here';
+      const error = new Error('ENOENT: no such file or directory');
+      (error as any).code = 'ENOENT';
+      throw error;
+    });
 
     const result = getContentBySlug('notes', 'test-note');
 
@@ -57,8 +65,12 @@ describe('getContentBySlug', () => {
   });
 
   it('should read and parse an md file if mdx does not exist but md does', () => {
-    mock.spyOn(fs, 'existsSync').mockImplementation((filePath: any) => filePath.endsWith('.md'));
-    mock.spyOn(fs, 'readFileSync').mockReturnValue('---\ntitle: MD Test Note\n---\n# MD Content');
+    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
+      if (filePath.endsWith('.md')) return '---\ntitle: MD Test Note\n---\n# MD Content';
+      const error = new Error('ENOENT: no such file or directory');
+      (error as any).code = 'ENOENT';
+      throw error;
+    });
 
     const result = getContentBySlug('notes', 'md-test-note');
 
@@ -68,7 +80,6 @@ describe('getContentBySlug', () => {
   });
 
   it('should catch errors and return null', () => {
-    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
     mock.spyOn(fs, 'readFileSync').mockImplementation(() => {
       throw new Error('Read error');
     });
@@ -84,8 +95,12 @@ describe('getContentBySlug', () => {
   });
 
   it('should fallback to missing metadata when matter returns incomplete data', () => {
-    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
-    mock.spyOn(fs, 'readFileSync').mockReturnValue('# Content only with no frontmatter');
+    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
+      if (filePath.endsWith('.mdx')) return '# Content only with no frontmatter';
+      const error = new Error('ENOENT: no such file or directory');
+      (error as any).code = 'ENOENT';
+      throw error;
+    });
 
     const result = getContentBySlug('notes', 'missing-meta');
 
@@ -99,8 +114,8 @@ describe('getContentBySlug', () => {
   });
 
   it('should return null on generic catch block exception handling', () => {
-    mock.spyOn(fs, 'existsSync').mockImplementation(() => {
-      throw new Error('Unexpected IO exception during existsSync');
+    mock.spyOn(fs, 'readFileSync').mockImplementation(() => {
+      throw new Error('Unexpected IO exception');
     });
 
     const originalConsoleError = console.error;
