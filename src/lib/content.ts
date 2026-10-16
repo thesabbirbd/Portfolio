@@ -53,6 +53,10 @@ const slugsCache = new Map<ContentType, string[]>();
 
 const allContentCache = new Map<string, ContentItem[]>();
 
+const sortByDateDesc = (a: { meta: { date: string } }, b: { meta: { date: string } }) => {
+  return new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime();
+};
+
 export function _clearContentCache(): void {
   contentCache.clear();
   slugsCache.clear();
@@ -159,7 +163,7 @@ export function getAllContent(type: ContentType): ContentItem[] {
     });
 
   // Sort by date descending
-  const sortedItems = items.sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime());
+  const sortedItems = items.sort(sortByDateDesc);
 
   if (!isDev) {
     allContentCache.set(cacheKey, sortedItems);
@@ -192,6 +196,6 @@ export function getLatestContent(count: number = 3): ContentItem[] {
   const journal = getAllContent('journal');
   const lab = getAllContent('lab');
   
-  const all = [...notes, ...journal, ...lab].sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime());
+  const all = [...notes, ...journal, ...lab].sort(sortByDateDesc);
   return all.slice(0, count);
 }
