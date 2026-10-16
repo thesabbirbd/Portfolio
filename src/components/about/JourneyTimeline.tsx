@@ -2,7 +2,7 @@
 
 import React, { useRef } from "react";
 import { SectionReveal } from "@/components/ui/SectionReveal";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, type MotionValue } from "framer-motion";
 import { Briefcase, Monitor, Network, Terminal, Code, Cpu, Server, Workflow } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 
@@ -16,6 +16,8 @@ const JOURNEY_STEPS = [
   { id: "backend", title: "BACKEND", icon: Server, color: "text-indigo-500", desc: "Architected high-performance APIs with FastAPI. Implemented PostgreSQL databases and Redis caching." },
   { id: "devops", title: "DEVOPS", icon: Workflow, color: "text-pink-500", desc: "Containerized everything with Docker. Built CI/CD pipelines and infrastructure as code to deploy seamlessly." },
 ];
+
+type JourneyStep = typeof JOURNEY_STEPS[number];
 
 export function JourneyTimeline() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -65,7 +67,14 @@ export function JourneyTimeline() {
   );
 }
 
-function JourneyNode({ step, index, total, scrollYProgress }: any) {
+interface JourneyNodeProps {
+  step: JourneyStep;
+  index: number;
+  total: number;
+  scrollYProgress: MotionValue<number>;
+}
+
+function JourneyNode({ step, index, total, scrollYProgress }: JourneyNodeProps) {
   const Icon = step.icon;
   // Calculate when this specific node should be active based on scroll progress
   const start = index / total;
