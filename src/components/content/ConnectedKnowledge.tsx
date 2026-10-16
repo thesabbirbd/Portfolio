@@ -22,13 +22,13 @@ export function ConnectedKnowledge({ meta }: { meta: ContentItem['meta'], }) {
   // 3. Backlinks (Items pointing to this item)
   const backlinks = globalContent.filter(c => {
     if (c.meta.slug === meta.slug) return false;
-    const theirRefs = [
-      ...(c.meta.relatedProjects || []),
-      ...(c.meta.relatedNotes || []),
-      ...(c.meta.relatedLab || []),
-      ...(c.meta.relatedJournal || [])
-    ];
-    return theirRefs.includes(meta.slug);
+    const m = c.meta;
+    return (
+      (m.relatedProjects && m.relatedProjects.includes(meta.slug)) ||
+      (m.relatedNotes && m.relatedNotes.includes(meta.slug)) ||
+      (m.relatedLab && m.relatedLab.includes(meta.slug)) ||
+      (m.relatedJournal && m.relatedJournal.includes(meta.slug))
+    );
   });
 
   // 4. Implicit (Shared technologies or tags)
@@ -36,21 +36,40 @@ export function ConnectedKnowledge({ meta }: { meta: ContentItem['meta'], }) {
   const myTechs = meta.technologies || [];
   const myTags = meta.tags || [];
   
-  const implicitConnections = globalContent
-    .filter(c => c.meta.slug !== meta.slug)
-    .filter(c => !explicitContent.some(e => e.meta.slug === c.meta.slug))
-    .filter(c => !backlinks.some(b => b.meta.slug === c.meta.slug))
-    .map(c => {
-      const theirTechs = c.meta.technologies || [];
-      const theirTags = c.meta.tags || [];
-      
-      const sharedTechs = myTechs.filter(t => theirTechs.includes(t));
-      const sharedTags = myTags.filter(t => theirTags.includes(t));
-      
-      const strength = sharedTechs.length * 2 + sharedTags.length;
-      return { item: c, strength, shared: [...sharedTechs, ...sharedTags] };
-    })
-    .filter(c => c.strength >= 2)
+  const explicitSlugsSet = new Set(explicitContent.map(e => e.meta.slug));
+  const backlinkSlugsSet = new Set(backlinks.map(b => b.meta.slug));
+
+  const allImplicit = [];
+  for (let i = 0; i < globalContent.length; i++) {
+    const c = globalContent[i];
+    if (c.meta.slug === meta.slug || explicitSlugsSet.has(c.meta.slug) || backlinkSlugsSet.has(c.meta.slug)) continue;
+
+    const theirTechs = c.meta.technologies || [];
+    const theirTags = c.meta.tags || [];
+
+    let strength = 0;
+    const shared = [];
+
+    for (const t of myTechs) {
+      if (theirTechs.includes(t)) {
+        strength += 2;
+        shared.push(t);
+      }
+    }
+
+    for (const t of myTags) {
+      if (theirTags.includes(t)) {
+        strength += 1;
+        shared.push(t);
+      }
+    }
+
+    if (strength >= 2) {
+      allImplicit.push({ item: c, strength, shared });
+    }
+  }
+
+  const implicitConnections = allImplicit
     .sort((a, b) => b.strength - a.strength)
     .slice(0, 4); // Limit to top 4 implicit to avoid clutter
 
