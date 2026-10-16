@@ -1,3 +1,4 @@
+import { renderHook } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useSpatialScroll } from './useSpatialScroll';
 
@@ -21,16 +22,16 @@ describe('useSpatialScroll', () => {
   });
 
   it('should return the data from useScroll', () => {
-    const scrollData = useSpatialScroll();
+    const { result } = renderHook(() => useSpatialScroll());
 
-    expect(scrollData).toEqual({
+    expect(result.current).toEqual({
       scrollY: { current: 100 },
       scrollYProgress: { current: 0.5 },
     });
   });
 
   it('should call framer-motion useScroll', () => {
-    useSpatialScroll();
+    renderHook(() => useSpatialScroll());
 
     expect(mockUseScroll).toHaveBeenCalledTimes(1);
   });
