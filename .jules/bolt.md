@@ -12,13 +12,15 @@
 - **What**: Refactored the `ConnectedKnowledge` lookup from an Array `.includes()` check to a `Set` `.has()` check.
 - **Why**: Accelerated explicit slug matching from $O(n)$ to $O(1)$.
 
-## API Search Index Caching
+## API Search Index Caching & Global Cache Fetching
 - When caching aggregated data globally in a Next.js API route using a module-level variable, bypass the cache during development (`process.env.NODE_ENV === 'development'`) to ensure content changes reflect instantly without requiring a server restart.
 - Caching CPU-intensive operations (like markdown parsing and aggregating multiple directories) in-memory can decrease API response times dramatically (e.g., from ~40-60ms to ~0.1-0.4ms) under load.
+- Utilize `getGlobalContent()` when all content paths are needed at once, as it manages an internal `globalContentCache`, reducing initial blocking time from ~38ms to ~11ms.
 
 ## Performance Optimization: Caching global content aggregation
 - **What**: Introduced `getGlobalContent()` and `slugsCache` in `src/lib/content.ts` to cache the global content array across the 4 content categories in memory. Updated `ConnectedKnowledge` to call `getGlobalContent()` instead of multiple independent array generations.
 - **Why**: Avoids redundant `getAllContent` calls computing all categories linearly and separately, repeatedly executing synchronous filesystem reads.
+
 ## O(n) rendering filters
 - **What**: Replaced implicit `.some()` loop filters array creations with single `for` loops in `src/components/content/ConnectedKnowledge.tsx`, as well as removed `.filter` spread instantiations on backlinks.
 - **Why**: Reduced CPU overhead massively for knowledge base components by stopping multiple temporary array `Set`/spread allocations on every global list iteration.

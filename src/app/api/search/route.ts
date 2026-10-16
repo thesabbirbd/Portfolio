@@ -1,4 +1,4 @@
-import { getAllContent } from '@/lib/content';
+import { getGlobalContent } from '@/lib/content';
 
 type SearchIndexItem = {
   title: string;
@@ -15,22 +15,17 @@ let cachedSearchIndex: SearchIndexItem[] | null = null;
 
 export async function GET() {
   if (!cachedSearchIndex || process.env.NODE_ENV === 'development') {
-    const allContent = [
-      ...getAllContent('notes'),
-      ...getAllContent('journal'),
-      ...getAllContent('projects'),
-      ...getAllContent('lab'),
-    ];
+    const allContent = getGlobalContent();
 
     cachedSearchIndex = allContent.map(item => ({
       title: item.meta.title,
       description: item.meta.description,
       slug: item.meta.slug,
-      type: item.meta.type,
+      type: item._type,
       category: item.meta.category,
       tags: item.meta.tags || [],
       date: item.meta.date,
-      url: `/${item.meta.type === 'lab' ? 'engineering-lab' : item.meta.type}/${item.meta.slug}`
+      url: `/${item._type === 'lab' ? 'engineering-lab' : item._type}/${item.meta.slug}`
     }));
   }
 
