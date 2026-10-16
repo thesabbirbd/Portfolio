@@ -39,8 +39,8 @@ describe('getContentBySlug', () => {
 
   it('should return null if neither mdx nor md file exists', () => {
     mock.spyOn(fs, 'readFileSync').mockImplementation(() => {
-      const error = new Error('ENOENT: no such file or directory');
-      (error as any).code = 'ENOENT';
+      const error = new Error('ENOENT: no such file or directory') as NodeJS.ErrnoException;
+      error.code = 'ENOENT';
       throw error;
     });
 
@@ -49,10 +49,10 @@ describe('getContentBySlug', () => {
   });
 
   it('should read and parse an mdx file if it exists', () => {
-    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
-      if (filePath.endsWith('.mdx')) return '---\ntitle: Test Note\ndescription: A test description\n---\n# Content here';
-      const error = new Error('ENOENT: no such file or directory');
-      (error as any).code = 'ENOENT';
+    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: unknown) => {
+      if (typeof filePath === 'string' && filePath.endsWith('.mdx')) return '---\ntitle: Test Note\ndescription: A test description\n---\n# Content here';
+      const error = new Error('ENOENT: no such file or directory') as NodeJS.ErrnoException;
+      error.code = 'ENOENT';
       throw error;
     });
 
@@ -65,10 +65,10 @@ describe('getContentBySlug', () => {
   });
 
   it('should read and parse an md file if mdx does not exist but md does', () => {
-    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
-      if (filePath.endsWith('.md')) return '---\ntitle: MD Test Note\n---\n# MD Content';
-      const error = new Error('ENOENT: no such file or directory');
-      (error as any).code = 'ENOENT';
+    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: unknown) => {
+      if (typeof filePath === 'string' && filePath.endsWith('.md')) return '---\ntitle: MD Test Note\n---\n# MD Content';
+      const error = new Error('ENOENT: no such file or directory') as NodeJS.ErrnoException;
+      error.code = 'ENOENT';
       throw error;
     });
 
@@ -95,10 +95,10 @@ describe('getContentBySlug', () => {
   });
 
   it('should fallback to missing metadata when matter returns incomplete data', () => {
-    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
-      if (filePath.endsWith('.mdx')) return '# Content only with no frontmatter';
-      const error = new Error('ENOENT: no such file or directory');
-      (error as any).code = 'ENOENT';
+    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: unknown) => {
+      if (typeof filePath === 'string' && filePath.endsWith('.mdx')) return '# Content only with no frontmatter';
+      const error = new Error('ENOENT: no such file or directory') as NodeJS.ErrnoException;
+      error.code = 'ENOENT';
       throw error;
     });
 
@@ -133,13 +133,16 @@ describe('getAllContent', () => {
   const setupMocks = (files: Record<string, string | Error>) => {
     mock.spyOn(fs, 'existsSync').mockReturnValue(true);
     mock.spyOn(fs, 'readdirSync').mockReturnValue(Object.keys(files) as any);
-    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
+    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: unknown) => {
+      if (typeof filePath !== 'string') return '';
       const match = Object.entries(files).find(([name]) => filePath.includes(name));
       if (match) {
         if (match[1] instanceof Error) throw match[1];
         return match[1];
       }
-      return '';
+      const error = new Error('ENOENT: no such file or directory') as NodeJS.ErrnoException;
+      error.code = 'ENOENT';
+      throw error;
     });
   };
 

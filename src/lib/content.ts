@@ -51,9 +51,12 @@ const contentCache = new Map<string, ContentItem>();
 
 const slugsCache = new Map<ContentType, string[]>();
 
+const allContentCache = new Map<string, ContentItem[]>();
+
 export function _clearContentCache(): void {
   contentCache.clear();
   slugsCache.clear();
+  allContentCache.clear();
   globalContentCache = null;
 }
 
@@ -80,21 +83,18 @@ export function getContentBySlug(type: ContentType, slug: string): ContentItem |
     const mdxPath = path.join(dirPath, `${slug}.mdx`);
     const mdPath = path.join(dirPath, `${slug}.md`);
     
-    let fileContents: string;
-    try {
-      fileContents = fs.readFileSync(mdxPath, 'utf8');
-    } catch (err: any) {
-      if (err.code === 'ENOENT') {
-        try {
-          fileContents = fs.readFileSync(mdPath, 'utf8');
-        } catch (err2: any) {
-          if (err2.code === 'ENOENT') return null;
-          throw err2;
-        }
-      } else {
-        throw err;
+    let fileContents: string | null = null;
+
+    for (const filePath of [mdxPath, mdPath]) {
+      try {
+        fileContents = fs.readFileSync(filePath, 'utf8');
+        break;
+      } catch (err: unknown) {
+        if ((err as NodeJS.ErrnoException).code !== 'ENOENT') throw err;
       }
     }
+
+    if (fileContents === null) return null;
 
     const { data, content } = matter(fileContents);
 
@@ -143,6 +143,12 @@ export function getContentBySlug(type: ContentType, slug: string): ContentItem |
 
 export function getAllContent(type: ContentType): ContentItem[] {
   const isDev = process.env.NODE_ENV === 'development';
+  const cacheKey = `${type}-prod`;
+
+  if (!isDev && allContentCache.has(cacheKey)) {
+    return allContentCache.get(cacheKey)!;
+  }
+
   const slugs = getSlugs(type);
   const items = slugs
     .map(slug => getContentBySlug(type, slug))
@@ -153,7 +159,13 @@ export function getAllContent(type: ContentType): ContentItem[] {
     });
 
   // Sort by date descending
-  return items.sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime());
+  const sortedItems = items.sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime());
+
+  if (!isDev) {
+    allContentCache.set(cacheKey, sortedItems);
+  }
+
+  return sortedItems;
 }
 
 let globalContentCache: (ContentItem & { _type: ContentType })[] | null = null;
