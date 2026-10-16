@@ -51,6 +51,12 @@ const contentCache = new Map<string, ContentItem>();
 
 const slugsCache = new Map<ContentType, string[]>();
 
+export function _clearContentCache(): void {
+  contentCache.clear();
+  slugsCache.clear();
+  globalContentCache = null;
+}
+
 export function getSlugs(type: ContentType): string[] {
   if (slugsCache.has(type)) {
     return slugsCache.get(type)!;

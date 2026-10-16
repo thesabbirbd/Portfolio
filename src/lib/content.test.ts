@@ -1,11 +1,12 @@
 import { describe, it, vi as mock, beforeEach, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
-import { getContentBySlug, getSlugs, getAllContent, getLatestContent } from './content.ts';
+import { getContentBySlug, getSlugs, getAllContent, getLatestContent, _clearContentCache } from './content.ts';
 
 describe('getSlugs', () => {
   beforeEach(() => {
     mock.restoreAllMocks();
+    _clearContentCache();
   });
 
   it('should return an empty array if the directory does not exist', () => {
@@ -33,6 +34,7 @@ describe('getSlugs', () => {
 describe('getContentBySlug', () => {
   beforeEach(() => {
     mock.restoreAllMocks();
+    _clearContentCache();
   });
 
   it('should return null if neither mdx nor md file exists', () => {
@@ -129,6 +131,7 @@ describe('getAllContent', () => {
   beforeEach(() => {
     mock.restoreAllMocks();
     mock.unstubAllEnvs();
+    _clearContentCache();
   });
 
   it('should return all content sorted by date descending', () => {
@@ -189,6 +192,7 @@ describe('getAllContent', () => {
 describe('getLatestContent', () => {
   beforeEach(() => {
     mock.restoreAllMocks();
+    _clearContentCache();
   });
 
   it('should combine, sort by date descending, and slice content across multiple types', () => {
