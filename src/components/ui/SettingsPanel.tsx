@@ -139,7 +139,7 @@ export function SettingsPanel() {
                         colorTheme === "orange" ? "border-[#ff6a00] bg-[#ff6a00]/10 text-[#ff6a00] font-bold" : "border-[var(--border-glass)] hover:border-[#ff6a00]/50 text-[var(--text-secondary)]"
                       }`}
                     >
-                      <div className="w-3 h-3 rounded-full bg-[#ff6a00] shadow-[0_0_8px_rgba(255,106,0,0.8)]" /> Orange
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#ff6a00", boxShadow: "0 0 8px rgba(255,106,0,0.8)" }} /> Orange
                     </button>
                     <button
                       onClick={() => {
@@ -150,7 +150,7 @@ export function SettingsPanel() {
                         colorTheme === "blue" ? "border-[#00f0ff] bg-[#00f0ff]/10 text-[#00f0ff] font-bold" : "border-[var(--border-glass)] hover:border-[#00f0ff]/50 text-[var(--text-secondary)]"
                       }`}
                     >
-                      <div className="w-3 h-3 rounded-full bg-[#00f0ff] shadow-[0_0_8px_rgba(0,240,255,0.8)]" /> Blue
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#00f0ff", boxShadow: "0 0 8px rgba(0,240,255,0.8)" }} /> Blue
                     </button>
                     <button
                       onClick={() => {
@@ -161,7 +161,7 @@ export function SettingsPanel() {
                         colorTheme === "green" ? "border-[#10b981] bg-[#10b981]/10 text-[#10b981] font-bold" : "border-[var(--border-glass)] hover:border-[#10b981]/50 text-[var(--text-secondary)]"
                       }`}
                     >
-                      <div className="w-3 h-3 rounded-full bg-[#10b981] shadow-[0_0_8px_rgba(16,185,129,0.8)]" /> Green
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#10b981", boxShadow: "0 0 8px rgba(16,185,129,0.8)" }} /> Green
                     </button>
                   </div>
                 </div>
