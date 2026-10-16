@@ -51,8 +51,6 @@ const contentCache = new Map<string, ContentItem>();
 
 const slugsCache = new Map<ContentType, string[]>();
 
-const allContentCache = new Map<string, ContentItem[]>();
-
 const sortByDateDesc = (a: { meta: { date: string } }, b: { meta: { date: string } }) => {
   return new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime();
 };
@@ -60,7 +58,6 @@ const sortByDateDesc = (a: { meta: { date: string } }, b: { meta: { date: string
 export function _clearContentCache(): void {
   contentCache.clear();
   slugsCache.clear();
-  allContentCache.clear();
   globalContentCache = null;
 }
 
@@ -147,12 +144,6 @@ export function getContentBySlug(type: ContentType, slug: string): ContentItem |
 
 export function getAllContent(type: ContentType): ContentItem[] {
   const isDev = process.env.NODE_ENV === 'development';
-  const cacheKey = `${type}-prod`;
-
-  if (!isDev && allContentCache.has(cacheKey)) {
-    return allContentCache.get(cacheKey)!;
-  }
-
   const slugs = getSlugs(type);
   const items = slugs
     .map(slug => getContentBySlug(type, slug))
@@ -163,13 +154,7 @@ export function getAllContent(type: ContentType): ContentItem[] {
     });
 
   // Sort by date descending
-  const sortedItems = items.sort(sortByDateDesc);
-
-  if (!isDev) {
-    allContentCache.set(cacheKey, sortedItems);
-  }
-
-  return sortedItems;
+  return items.sort(sortByDateDesc);
 }
 
 let globalContentCache: (ContentItem & { _type: ContentType })[] | null = null;
