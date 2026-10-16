@@ -84,4 +84,39 @@ describe('useDebounce', () => {
 
     expect(clearTimeoutSpy).toHaveBeenCalled();
   });
+
+  it('should update the delay dynamically', () => {
+    const { result, rerender } = renderHook(
+      ({ value, delay }) => useDebounce(value, delay),
+      { initialProps: { value: 'initial', delay: 500 } }
+    );
+
+    // Update value, keeping delay at 500ms. Starts a 500ms timer.
+    rerender({ value: 'updated', delay: 500 });
+
+    // Advance halfway through the timer
+    act(() => {
+      vi.advanceTimersByTime(250);
+    });
+
+    // Update ONLY the delay to 1000ms.
+    // This should restart the timer for 1000ms from now.
+    rerender({ value: 'updated', delay: 1000 });
+
+    // Advance 250ms. If the delay wasn't updated, the original 500ms timer would complete here.
+    act(() => {
+      vi.advanceTimersByTime(250);
+    });
+
+    // Should not be updated yet, because the new 1000ms timer is active.
+    expect(result.current).toBe('initial');
+
+    // Advance the remaining 750ms of the 1000ms timer
+    act(() => {
+      vi.advanceTimersByTime(750);
+    });
+
+    // Now it should be updated
+    expect(result.current).toBe('updated');
+  });
 });
