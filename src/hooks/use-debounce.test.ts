@@ -84,4 +84,30 @@ describe('useDebounce', () => {
 
     expect(clearTimeoutSpy).toHaveBeenCalled();
   });
+
+  it('should handle dynamic delay changes correctly', () => {
+    const { result, rerender } = renderHook(
+      ({ value, delay }) => useDebounce(value, delay),
+      { initialProps: { value: 'initial', delay: 500 } }
+    );
+
+    // Update value and delay
+    rerender({ value: 'updated', delay: 1000 });
+
+    // Fast-forward by old delay
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+
+    // Should still be initial because delay is now 1000
+    expect(result.current).toBe('initial');
+
+    // Fast-forward by remaining new delay
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+
+    // Now it should be updated
+    expect(result.current).toBe('updated');
+  });
 });
