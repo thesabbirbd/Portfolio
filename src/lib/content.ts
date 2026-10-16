@@ -51,6 +51,10 @@ const contentCache = new Map<string, ContentItem>();
 
 const slugsCache = new Map<ContentType, string[]>();
 
+const sortByDateDesc = (a: { meta: { date: string } }, b: { meta: { date: string } }) => {
+  return new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime();
+};
+
 export function _clearContentCache(): void {
   contentCache.clear();
   slugsCache.clear();
@@ -80,13 +84,19 @@ export function getContentBySlug(type: ContentType, slug: string): ContentItem |
     const mdxPath = path.join(dirPath, `${slug}.mdx`);
     const mdPath = path.join(dirPath, `${slug}.md`);
     
-    let filePath = mdxPath;
-    if (!fs.existsSync(filePath)) {
-      if (fs.existsSync(mdPath)) filePath = mdPath;
-      else return null;
+    let fileContents: string | null = null;
+
+    for (const filePath of [mdxPath, mdPath]) {
+      try {
+        fileContents = fs.readFileSync(filePath, 'utf8');
+        break;
+      } catch (err: unknown) {
+        if ((err as NodeJS.ErrnoException).code !== 'ENOENT') throw err;
+      }
     }
 
-    const fileContents = fs.readFileSync(filePath, 'utf8');
+    if (fileContents === null) return null;
+
     const { data, content } = matter(fileContents);
 
     const parsedContent = {
@@ -144,7 +154,7 @@ export function getAllContent(type: ContentType): ContentItem[] {
     });
 
   // Sort by date descending
-  return items.sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime());
+  return items.sort(sortByDateDesc);
 }
 
 let globalContentCache: (ContentItem & { _type: ContentType })[] | null = null;
@@ -171,6 +181,6 @@ export function getLatestContent(count: number = 3): ContentItem[] {
   const journal = getAllContent('journal');
   const lab = getAllContent('lab');
   
-  const all = [...notes, ...journal, ...lab].sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime());
+  const all = [...notes, ...journal, ...lab].sort(sortByDateDesc);
   return all.slice(0, count);
 }
