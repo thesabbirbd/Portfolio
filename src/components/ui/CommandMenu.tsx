@@ -201,7 +201,7 @@ export function CommandMenu() {
   );
 }
 
-function User(props: any) {
+function User(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}

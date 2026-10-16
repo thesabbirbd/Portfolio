@@ -90,7 +90,7 @@ export function GlassCard({
 
       <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 dark:via-white/10 to-transparent pointer-events-none z-10" />
       
-      <div className="relative z-10 w-full h-full">{children as any}</div>
+      <div className="relative z-10 w-full h-full">{children}</div>
     </motion.div>
   );
 }
