@@ -1,7 +1,7 @@
 import { describe, it, vi as mock, beforeEach, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
-import { getContentBySlug, getSlugs } from './content.ts';
+import { getContentBySlug, getSlugs, getAllContent, getLatestContent } from './content.ts';
 
 describe('getSlugs', () => {
   beforeEach(() => {
@@ -72,7 +72,7 @@ describe('getContentBySlug', () => {
     });
 
     const originalConsoleError = console.error;
-    mock.spyOn(console, 'error').mockImplementation(() => {}); // Silencing expected error output
+    mock.spyOn(console, 'error').mockImplementation(() => {});
 
     const result = getContentBySlug('notes', 'error-note');
 
@@ -98,17 +98,179 @@ describe('getContentBySlug', () => {
 
   it('should return null on generic catch block exception handling', () => {
     mock.spyOn(fs, 'existsSync').mockImplementation(() => {
-      // Simulate an error inside the try block unrelated to readFileSync specifically
       throw new Error('Unexpected IO exception during existsSync');
     });
 
     const originalConsoleError = console.error;
-    mock.spyOn(console, 'error').mockImplementation(() => {}); // Silencing expected error output
+    mock.spyOn(console, 'error').mockImplementation(() => {});
 
     const result = getContentBySlug('notes', 'exception-note');
 
     expect(result).toBeNull();
 
     console.error = originalConsoleError;
+  });
+});
+
+describe('getAllContent', () => {
+  const setupMocks = (files: Record<string, string | Error>) => {
+    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+    mock.spyOn(fs, 'readdirSync').mockReturnValue(Object.keys(files) as any);
+    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
+      const match = Object.entries(files).find(([name]) => filePath.includes(name));
+      if (match) {
+        if (match[1] instanceof Error) throw match[1];
+        return match[1];
+      }
+      return '';
+    });
+  };
+
+  beforeEach(() => {
+    mock.restoreAllMocks();
+    mock.unstubAllEnvs();
+  });
+
+  it('should return all content sorted by date descending', () => {
+    setupMocks({
+      'sort-post1.mdx': '---\ntitle: Sort Post 1\ndate: 2023-01-01T00:00:00.000Z\nstatus: published\n---\nContent 1',
+      'sort-post2.mdx': '---\ntitle: Sort Post 2\ndate: 2023-01-02T00:00:00.000Z\nstatus: published\n---\nContent 2'
+    });
+
+    const results = getAllContent('notes');
+    expect(results).toHaveLength(2);
+    expect(results[0].meta.title).toBe('Sort Post 2');
+    expect(results[1].meta.title).toBe('Sort Post 1');
+  });
+
+  it('should filter out draft items in production', () => {
+    mock.stubEnv('NODE_ENV', 'production');
+    setupMocks({
+      'prod-draft.mdx': '---\ntitle: Prod Draft\nstatus: draft\ndate: 2023-01-02T00:00:00.000Z\n---\nDraft Content',
+      'prod-published.mdx': '---\ntitle: Prod Published\nstatus: published\ndate: 2023-01-01T00:00:00.000Z\n---\nPublished Content'
+    });
+
+    const results = getAllContent('notes');
+    expect(results).toHaveLength(1);
+    expect(results[0].meta.title).toBe('Prod Published');
+  });
+
+  it('should include draft items in development', () => {
+    mock.stubEnv('NODE_ENV', 'development');
+    setupMocks({
+      'dev-draft.mdx': '---\ntitle: Dev Draft\nstatus: draft\ndate: 2023-01-02T00:00:00.000Z\n---\nDraft Content',
+      'dev-published.mdx': '---\ntitle: Dev Published\nstatus: published\ndate: 2023-01-01T00:00:00.000Z\n---\nPublished Content'
+    });
+
+    const results = getAllContent('notes');
+    expect(results).toHaveLength(2);
+    expect(results[0].meta.title).toBe('Dev Draft');
+    expect(results[1].meta.title).toBe('Dev Published');
+  });
+
+  it('should filter out null items (failed to read/parse)', () => {
+    mock.stubEnv('NODE_ENV', 'production');
+    setupMocks({
+      'null-invalid.mdx': new Error('Failed to read'),
+      'null-valid.mdx': '---\ntitle: Null Valid\nstatus: published\ndate: 2023-01-01T00:00:00.000Z\n---\nValid Content'
+    });
+
+    const originalConsoleError = console.error;
+    mock.spyOn(console, 'error').mockImplementation(() => {});
+
+    const results = getAllContent('notes');
+    expect(results).toHaveLength(1);
+    expect(results[0].meta.title).toBe('Null Valid');
+
+    console.error = originalConsoleError;
+  });
+});
+
+describe('getLatestContent', () => {
+  beforeEach(() => {
+    mock.restoreAllMocks();
+  });
+
+  it('should combine, sort by date descending, and slice content across multiple types', () => {
+    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+    const readdirSyncSpy = mock.spyOn(fs, 'readdirSync').mockImplementation((dirPath) => {
+      if (typeof dirPath === 'string') {
+        if (dirPath.includes('notes')) return ['note1.mdx'] as any;
+        if (dirPath.includes('journal')) return ['journal1.mdx'] as any;
+        if (dirPath.includes('lab')) return ['lab1.mdx'] as any;
+      }
+      return [];
+    });
+
+    const readFileSyncSpy = mock.spyOn(fs, 'readFileSync').mockImplementation((filePath) => {
+      if (typeof filePath === 'string') {
+        if (filePath.includes('note1.mdx')) return '---\ntitle: Note 1\ndate: 2023-01-01T00:00:00Z\nstatus: published\n---\nNote content';
+        if (filePath.includes('journal1.mdx')) return '---\ntitle: Journal 1\ndate: 2023-01-02T00:00:00Z\nstatus: published\n---\nJournal content';
+        if (filePath.includes('lab1.mdx')) return '---\ntitle: Lab 1\ndate: 2023-01-03T00:00:00Z\nstatus: published\n---\nLab content';
+      }
+      return '';
+    });
+
+    const result = getLatestContent(2);
+
+    expect(readdirSyncSpy).toHaveBeenCalled();
+    expect(readFileSyncSpy).toHaveBeenCalled();
+
+    expect(result.length).toBe(2);
+    expect(new Date(result[0].meta.date).toISOString()).toBe('2023-01-03T00:00:00.000Z');
+    expect(new Date(result[1].meta.date).toISOString()).toBe('2023-01-02T00:00:00.000Z');
+  });
+
+  it('should return default count of 3 items if no count is provided', () => {
+    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+    mock.spyOn(fs, 'readdirSync').mockImplementation((dirPath) => {
+      if (typeof dirPath === 'string') {
+        if (dirPath.includes('notes')) return ['note1.mdx', 'note2.mdx'] as any;
+        if (dirPath.includes('journal')) return ['journal1.mdx'] as any;
+        if (dirPath.includes('lab')) return ['lab1.mdx'] as any;
+      }
+      return [];
+    });
+
+    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath) => {
+      if (typeof filePath === 'string') {
+        if (filePath.includes('note1.mdx')) return '---\ntitle: Note 1\ndate: 2023-01-01T00:00:00Z\nstatus: published\n---\nNote content';
+        if (filePath.includes('note2.mdx')) return '---\ntitle: Note 2\ndate: 2023-01-04T00:00:00Z\nstatus: published\n---\nNote content';
+        if (filePath.includes('journal1.mdx')) return '---\ntitle: Journal 1\ndate: 2023-01-02T00:00:00Z\nstatus: published\n---\nJournal content';
+        if (filePath.includes('lab1.mdx')) return '---\ntitle: Lab 1\ndate: 2023-01-03T00:00:00Z\nstatus: published\n---\nLab content';
+      }
+      return '';
+    });
+
+    const result = getLatestContent();
+
+    expect(result.length).toBe(3);
+    expect(new Date(result[0].meta.date).toISOString()).toBe('2023-01-04T00:00:00.000Z');
+    expect(new Date(result[1].meta.date).toISOString()).toBe('2023-01-03T00:00:00.000Z');
+    expect(new Date(result[2].meta.date).toISOString()).toBe('2023-01-02T00:00:00.000Z');
+  });
+
+  it('should handle cases where there is less content than requested', () => {
+    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+    mock.spyOn(fs, 'readdirSync').mockImplementation((dirPath) => {
+      if (typeof dirPath === 'string') {
+        if (dirPath.includes('notes')) return ['note1.mdx'] as any;
+        if (dirPath.includes('journal')) return [] as any;
+        if (dirPath.includes('lab')) return [] as any;
+      }
+      return [];
+    });
+
+    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath) => {
+      if (typeof filePath === 'string') {
+        if (filePath.includes('note1.mdx')) return '---\ntitle: Note 1\ndate: 2023-01-01T00:00:00Z\nstatus: published\n---\nNote content';
+      }
+      return '';
+    });
+
+    const result = getLatestContent(5);
+
+    expect(result.length).toBe(1);
+    expect(new Date(result[0].meta.date).toISOString()).toBe('2023-01-01T00:00:00.000Z');
   });
 });
