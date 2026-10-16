@@ -17,6 +17,18 @@ describe('cn', () => {
   test('should handle arrays and objects', () => {
     expect(cn(['p-2'], { 'm-2': true, 'p-4': false })).toBe('p-2 m-2');
   });
+
+  test('should handle undefined and null inputs', () => {
+    expect(cn('p-2', undefined, null, 'm-2')).toBe('p-2 m-2');
+  });
+
+  test('should handle nested arrays', () => {
+    expect(cn(['p-2', ['m-2', ['bg-red-500']]])).toBe('p-2 m-2 bg-red-500');
+  });
+
+  test('should correctly override specific tailwind properties with shorthand', () => {
+    expect(cn('px-2 py-1', 'p-4')).toBe('p-4');
+  });
 });
 
 describe('generateUniqueId', () => {
