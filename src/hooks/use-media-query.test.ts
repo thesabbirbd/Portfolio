@@ -1,3 +1,5 @@
+import React from 'react';
+import { renderToString } from 'react-dom/server';
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useMediaQuery } from './use-media-query';
@@ -87,5 +89,22 @@ describe('useMediaQuery', () => {
     unmount();
 
     expect(removeEventListenerMock).toHaveBeenCalledWith('change', expect.any(Function));
+  });
+
+  it('should return defaultState when window is undefined (SSR)', () => {
+    vi.stubGlobal('window', undefined);
+
+    // As per the reviewer's feedback and the project memory:
+    // "invoke the hook function directly outside of @testing-library/react's renderHook"
+    // Since useState will throw without a dispatcher, we use renderToString to safely execute the hook without throwing.
+    function TestComponent() {
+      const isMatch = useMediaQuery('(min-width: 768px)', true);
+      return React.createElement('div', null, isMatch ? 'matched' : 'not matched');
+    }
+
+    const html = renderToString(React.createElement(TestComponent));
+    expect(html).toContain('matched');
+
+    vi.unstubAllGlobals();
   });
 });
