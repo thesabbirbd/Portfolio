@@ -25,7 +25,7 @@ export function HeroSection() {
   return (
     <section
       id="hero"
-      className="relative min-h-[70svh] md:min-h-[90vh] landscape:min-h-0 flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 py-10 md:py-20 landscape:py-12 overflow-hidden"
+      className="relative min-h-[70svh] md:min-h-[90vh] flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 py-10 md:py-20 overflow-hidden"
     >
       <motion.div style={{ y, opacity }} className="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
         {/* Left Column: Typography & Dynamic Identity */}
