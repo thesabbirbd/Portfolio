@@ -1,5 +1,5 @@
 import { test, describe, expect, vi, beforeEach, afterEach } from 'vitest';
-import { generateUniqueId, cn, debounce } from './utils';
+import { generateUniqueId, cn, debounce, formatDate } from './utils';
 
 describe('cn', () => {
   test('should merge basic classes', () => {
@@ -92,5 +92,24 @@ describe('debounce', () => {
 
     vi.advanceTimersByTime(50); // 100ms since second call
     expect(func).toBeCalledTimes(1);
+  });
+});
+
+describe('formatDate', () => {
+  test('should format date with default options (en-US, day: numeric, month: short, year: numeric)', () => {
+    const date = new Date(2023, 0, 1); // January 1, 2023
+    const formatted = formatDate(date);
+    expect(formatted).toBe('Jan 1, 2023');
+  });
+
+  test('should format date with custom options', () => {
+    const date = new Date(2023, 11, 25); // December 25, 2023
+    const formatted = formatDate(date, { month: 'long', day: '2-digit' });
+    expect(formatted).toBe('December 25, 2023');
+  });
+
+  test('should handle invalid date by throwing an error in Intl.DateTimeFormat', () => {
+    const date = new Date('invalid-date');
+    expect(() => formatDate(date)).toThrow('Invalid time value');
   });
 });
