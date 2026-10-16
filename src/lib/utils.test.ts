@@ -112,4 +112,26 @@ describe('formatDate', () => {
     const date = new Date('invalid-date');
     expect(() => formatDate(date)).toThrow('Invalid time value');
   });
+
+  test('should completely override default options if specified', () => {
+    const date = new Date(2023, 10, 5); // November 5, 2023
+    const formatted = formatDate(date, { month: 'numeric', day: 'numeric', year: '2-digit' });
+    expect(formatted).toBe('11/5/23');
+  });
+
+  test('should add additional options like weekday to the output', () => {
+    const date = new Date(2023, 9, 31); // October 31, 2023 (Tuesday)
+    const formatted = formatDate(date, { weekday: 'long' });
+    expect(formatted).toBe('Tuesday, Oct 31, 2023');
+  });
+
+  test('should format time correctly when time options are provided', () => {
+    // Note: Provide a specific UTC date to avoid timezone issues, or keep it localized
+    // We will just use a specific date and time
+    const date = new Date('2023-01-01T15:30:00.000Z');
+    // Using UTC time zone in options to ensure test is deterministic regardless of the environment
+    const formatted = formatDate(date, { hour: 'numeric', minute: '2-digit', timeZone: 'UTC' });
+    // Jan 1, 2023, 3:30 PM (replace narrow no-break space with regular space for Node 18+)
+    expect(formatted.replace(/\u202f/gi, ' ')).toBe('Jan 1, 2023, 3:30 PM');
+  });
 });
