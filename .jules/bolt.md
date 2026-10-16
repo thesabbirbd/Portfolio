@@ -19,3 +19,6 @@
 ## Performance Optimization: Caching global content aggregation
 - **What**: Introduced `getGlobalContent()` and `slugsCache` in `src/lib/content.ts` to cache the global content array across the 4 content categories in memory. Updated `ConnectedKnowledge` to call `getGlobalContent()` instead of multiple independent array generations.
 - **Why**: Avoids redundant `getAllContent` calls computing all categories linearly and separately, repeatedly executing synchronous filesystem reads.
+## O(n) rendering filters
+- **What**: Replaced implicit `.some()` loop filters array creations with single `for` loops in `src/components/content/ConnectedKnowledge.tsx`, as well as removed `.filter` spread instantiations on backlinks.
+- **Why**: Reduced CPU overhead massively for knowledge base components by stopping multiple temporary array `Set`/spread allocations on every global list iteration.
