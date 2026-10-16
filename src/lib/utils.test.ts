@@ -93,6 +93,61 @@ describe('debounce', () => {
     vi.advanceTimersByTime(50); // 100ms since second call
     expect(func).toBeCalledTimes(1);
   });
+
+  test('should execute multiple debounced functions independently', () => {
+    const func1 = vi.fn();
+    const func2 = vi.fn();
+    const debouncedFunc1 = debounce(func1, 100);
+    const debouncedFunc2 = debounce(func2, 100);
+
+    debouncedFunc1();
+    debouncedFunc2();
+
+    vi.advanceTimersByTime(50);
+
+    debouncedFunc1();
+
+    vi.advanceTimersByTime(50);
+
+    expect(func1).not.toBeCalled();
+    expect(func2).toBeCalledTimes(1);
+
+    vi.advanceTimersByTime(50);
+
+    expect(func1).toBeCalledTimes(1);
+  });
+
+  test('should preserve this context', () => {
+    const context = {
+      value: 42,
+      func: function() {
+        return this.value;
+      }
+    };
+
+    const spy = vi.spyOn(context, 'func');
+    const debouncedFunc = debounce(context.func.bind(context), 100);
+
+    debouncedFunc();
+    vi.advanceTimersByTime(100);
+
+    expect(spy).toHaveReturnedWith(42);
+  });
+
+  test('should handle zero wait time', () => {
+    const func = vi.fn();
+    const debouncedFunc = debounce(func, 0);
+
+    debouncedFunc();
+    debouncedFunc();
+    debouncedFunc();
+
+    expect(func).not.toBeCalled();
+
+    vi.advanceTimersByTime(0);
+
+    expect(func).toBeCalledTimes(1);
+  });
 });
 
 describe('formatDate', () => {
