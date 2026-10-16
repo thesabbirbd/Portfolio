@@ -23,8 +23,8 @@ content = content.replace(
 const mouseEvents = `
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
+    const x = e.clientX - (rect.left + rect.width / 2);
+    const y = e.clientY - (rect.top + rect.height / 2);
     // Fix direction: usually moving mouse right should tilt it to the right (rotateY positive)
     mouseX.set(x);
     mouseY.set(y);
@@ -36,7 +36,7 @@ const mouseEvents = `
   };
 
   return (
-    <div 
+    <div
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[500px] aspect-square mx-auto flex items-center justify-center select-none perspective-1000"
