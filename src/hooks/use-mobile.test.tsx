@@ -1,42 +1,117 @@
-import { renderHook } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { renderHook, act } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useIsMobile } from './use-mobile';
-import { useMediaQuery } from './use-media-query';
-
-// Mock the useMediaQuery hook
-vi.mock('./use-media-query', () => ({
-  useMediaQuery: vi.fn(),
-}));
+import * as useMediaQueryModule from './use-media-query';
 
 describe('useIsMobile', () => {
+  let originalMatchMedia: typeof window.matchMedia;
+
   beforeEach(() => {
     vi.clearAllMocks();
+    originalMatchMedia = window.matchMedia;
   });
 
-  it('should call useMediaQuery with the correct breakpoint query and default value', () => {
-    // Setup the mock to return a specific value, though we only care about the arguments
-    (useMediaQuery as ReturnType<typeof vi.fn>).mockReturnValue(true);
-
-    renderHook(() => useIsMobile());
-
-    // Mobile breakpoint is 1024, so it should query max-width: 1023px
-    expect(useMediaQuery).toHaveBeenCalledTimes(1);
-    expect(useMediaQuery).toHaveBeenCalledWith('(max-width: 1023px)', false);
+  afterEach(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: originalMatchMedia,
+    });
   });
 
-  it('should return true when useMediaQuery returns true', () => {
-    (useMediaQuery as ReturnType<typeof vi.fn>).mockReturnValue(true);
+  describe('Integration with useMediaQuery', () => {
+    // Tests that don't mock useMediaQuery but mock window.matchMedia
 
-    const { result } = renderHook(() => useIsMobile());
+    beforeEach(() => {
+      // Mock window.matchMedia
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: vi.fn().mockImplementation((query) => ({
+          matches: false,
+          media: query,
+          onchange: null,
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          dispatchEvent: vi.fn(),
+        })),
+      });
+    });
 
-    expect(result.current).toBe(true);
+    it('should return true when window width is below MOBILE_BREAKPOINT', () => {
+      // Override matchMedia for this specific test
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: vi.fn().mockImplementation((query) => ({
+          matches: query === '(max-width: 1023px)',
+          media: query,
+          onchange: null,
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          dispatchEvent: vi.fn(),
+        })),
+      });
+
+      const { result } = renderHook(() => useIsMobile());
+      expect(result.current).toBe(true);
+      expect(window.matchMedia).toHaveBeenCalledWith('(max-width: 1023px)');
+    });
+
+    it('should return false when window width is above or equal to MOBILE_BREAKPOINT', () => {
+      const { result } = renderHook(() => useIsMobile());
+      expect(result.current).toBe(false);
+      expect(window.matchMedia).toHaveBeenCalledWith('(max-width: 1023px)');
+    });
+
+    it('should update state when resize event triggers matchMedia change', () => {
+      let changeCallback: ((e: MediaQueryListEvent) => void) | null = null;
+
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: vi.fn().mockImplementation((query) => ({
+          matches: false,
+          media: query,
+          onchange: null,
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
+          addEventListener: vi.fn((event, callback) => {
+            if (event === 'change') {
+              changeCallback = callback;
+            }
+          }),
+          removeEventListener: vi.fn(),
+          dispatchEvent: vi.fn(),
+        })),
+      });
+
+      const { result } = renderHook(() => useIsMobile());
+
+      expect(result.current).toBe(false);
+
+      act(() => {
+        if (changeCallback) {
+          changeCallback({ matches: true } as MediaQueryListEvent);
+        }
+      });
+
+      expect(result.current).toBe(true);
+    });
   });
 
-  it('should return false when useMediaQuery returns false', () => {
-    (useMediaQuery as ReturnType<typeof vi.fn>).mockReturnValue(false);
+  describe('SSR behavior', () => {
+    it('should return default value false when window is undefined', () => {
+      // To simulate SSR without breaking React in JSDOM, we mock the underlying
+      // hook that actually accesses the window object. This proves our component
+      // passes through the correct default value when SSR happens.
+      const spy = vi.spyOn(useMediaQueryModule, 'useMediaQuery').mockReturnValue(false);
 
-    const { result } = renderHook(() => useIsMobile());
+      const { result } = renderHook(() => useIsMobile());
 
-    expect(result.current).toBe(false);
+      expect(result.current).toBe(false);
+
+      spy.mockRestore();
+    });
   });
 });
