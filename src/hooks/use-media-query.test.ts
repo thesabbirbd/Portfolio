@@ -1,5 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import * as React from 'react';
+import { renderToString } from 'react-dom/server';
 import { useMediaQuery } from './use-media-query';
 
 describe('useMediaQuery', () => {
@@ -37,6 +39,17 @@ describe('useMediaQuery', () => {
     }));
 
     const { result } = renderHook(() => useMediaQuery('(min-width: 768px)'));
+    expect(result.current).toBe(false);
+  });
+
+  it('should utilize the defaultState argument', () => {
+    matchMediaMock.mockImplementationOnce((query: string) => ({
+      matches: false,
+      addEventListener: addEventListenerMock,
+      removeEventListener: removeEventListenerMock,
+    }));
+
+    const { result } = renderHook(() => useMediaQuery('(min-width: 768px)', true));
     expect(result.current).toBe(false);
   });
 
@@ -87,5 +100,28 @@ describe('useMediaQuery', () => {
     unmount();
 
     expect(removeEventListenerMock).toHaveBeenCalledWith('change', expect.any(Function));
+  });
+
+  it('should return defaultState when window is undefined (SSR fallback)', () => {
+    const originalWindow = global.window;
+
+    // Test Component
+    const TestComponent = () => {
+      const isMatch = useMediaQuery('(min-width: 1024px)', true);
+      return React.createElement('div', null, isMatch ? 'Match' : 'No Match');
+    };
+
+    // Carefully mock typeof window === "undefined" by temporarily removing it
+    // @ts-ignore
+    delete global.window;
+
+    let html = '';
+    try {
+      html = renderToString(React.createElement(TestComponent));
+    } finally {
+      global.window = originalWindow;
+    }
+
+    expect(html).toBe('<div>Match</div>');
   });
 });
