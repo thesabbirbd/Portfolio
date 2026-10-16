@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { sound } from "@/lib/sound";
 
-export interface GlassButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface GlassButtonProps extends HTMLMotionProps<"button"> {
   variant?: "primary" | "secondary" | "danger" | "ghost";
   size?: "sm" | "md" | "lg" | "icon";
   icon?: React.ReactNode;
@@ -75,9 +75,7 @@ export function GlassButton({
   };
 
   return (
-    <>
-      {/* @ts-expect-error React 19 typings */}
-      <motion.button
+    <motion.button
       ref={ref}
       style={{ x: springX, y: springY }}
       onMouseMove={handleMouseMove}
@@ -122,6 +120,5 @@ export function GlassButton({
         </motion.span>
       )}
     </motion.button>
-    </>
   );
 }
