@@ -1,6 +1,12 @@
 import { describe, it, vi as mock, beforeEach, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
+
+function throwENOENT(): never {
+  const err = new Error();
+  (err as any).code = 'ENOENT';
+  throw err;
+}
 import { getContentBySlug, getSlugs, getAllContent, getLatestContent, _clearContentCache } from './content.ts';
 
 describe('getSlugs', () => {
@@ -11,9 +17,7 @@ describe('getSlugs', () => {
 
   it('should return an empty array if the directory does not exist', () => {
     mock.spyOn(fs, 'readdirSync').mockImplementation(() => {
-      const err = new Error();
-      (err as any).code = 'ENOENT';
-      throw err;
+      throwENOENT();
     });
 
     const result = getSlugs('notes');
@@ -43,9 +47,7 @@ describe('getContentBySlug', () => {
 
   it('should return null if neither mdx nor md file exists', () => {
     mock.spyOn(fs, 'readFileSync').mockImplementation(() => {
-      const err = new Error();
-      (err as any).code = 'ENOENT';
-      throw err;
+      throwENOENT();
     });
 
     const result = getContentBySlug('notes', 'non-existent');
@@ -58,9 +60,7 @@ describe('getContentBySlug', () => {
       if (filePath.endsWith('.mdx')) {
         return '---\ntitle: Test Note\ndescription: A test description\n---\n# Content here';
       }
-      const err = new Error();
-      (err as any).code = 'ENOENT';
-      throw err;
+      throwENOENT();
     });
 
     const result = getContentBySlug('notes', 'test-note');
@@ -77,9 +77,7 @@ describe('getContentBySlug', () => {
       if (filePath.endsWith('.md')) {
         return '---\ntitle: MD Test Note\n---\n# MD Content';
       }
-      const err = new Error();
-      (err as any).code = 'ENOENT';
-      throw err;
+      throwENOENT();
     });
 
     const result = getContentBySlug('notes', 'md-test-note');
@@ -146,9 +144,7 @@ describe('getAllContent', () => {
         if (match[1] instanceof Error) throw match[1];
         return match[1];
       }
-      const err = new Error();
-      (err as any).code = 'ENOENT';
-      throw err;
+      throwENOENT();
     });
   };
 
@@ -236,9 +232,7 @@ describe('getLatestContent', () => {
         if (filePath.includes('journal1.mdx')) return '---\ntitle: Journal 1\ndate: 2023-01-02T00:00:00Z\nstatus: published\n---\nJournal content';
         if (filePath.includes('lab1.mdx')) return '---\ntitle: Lab 1\ndate: 2023-01-03T00:00:00Z\nstatus: published\n---\nLab content';
       }
-      const err = new Error();
-      (err as any).code = 'ENOENT';
-      throw err;
+      throwENOENT();
     });
 
     const result = getLatestContent(2);
@@ -269,9 +263,7 @@ describe('getLatestContent', () => {
         if (filePath.includes('journal1.mdx')) return '---\ntitle: Journal 1\ndate: 2023-01-02T00:00:00Z\nstatus: published\n---\nJournal content';
         if (filePath.includes('lab1.mdx')) return '---\ntitle: Lab 1\ndate: 2023-01-03T00:00:00Z\nstatus: published\n---\nLab content';
       }
-      const err = new Error();
-      (err as any).code = 'ENOENT';
-      throw err;
+      throwENOENT();
     });
 
     const result = getLatestContent();
@@ -297,9 +289,7 @@ describe('getLatestContent', () => {
       if (typeof filePath === 'string') {
         if (filePath.includes('note1.mdx')) return '---\ntitle: Note 1\ndate: 2023-01-01T00:00:00Z\nstatus: published\n---\nNote content';
       }
-      const err = new Error();
-      (err as any).code = 'ENOENT';
-      throw err;
+      throwENOENT();
     });
 
     const result = getLatestContent(5);
