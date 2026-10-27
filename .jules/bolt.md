@@ -24,3 +24,7 @@
 ## O(n) rendering filters
 - **What**: Replaced implicit `.some()` loop filters array creations with single `for` loops in `src/components/content/ConnectedKnowledge.tsx`, as well as removed `.filter` spread instantiations on backlinks.
 - **Why**: Reduced CPU overhead massively for knowledge base components by stopping multiple temporary array `Set`/spread allocations on every global list iteration.
+
+## 2026-10-27 - [Optimize Static File Reads with EAFP]
+**Learning:** In Node.js when verifying file existence before reading it (like checking if a Next.js static markdown file exists before parsing), using the Look Before You Leap (LBYL) pattern (`fs.existsSync` followed by `fs.readFileSync`) doubles the synchronous I/O operations compared to the Easier to Ask for Forgiveness than Permission (EAFP) pattern (`try/catch` with `err.code === 'ENOENT'` checks).
+**Action:** Use `try/catch` for static file parsing to reduce Node.js filesystem I/O bottleneck when aggregating local content.
