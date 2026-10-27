@@ -79,11 +79,12 @@ export function SearchInterface({ initialData }: { initialData: SearchItem[] }) 
         )}
       </div>
 
-      <div className="flex flex-wrap items-center gap-4 mb-8">
-        <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+      <div role="group" aria-label="Filter results by type" className="flex flex-wrap items-center gap-4 mb-8">
+        <div aria-hidden="true" className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
           <Filter className="w-4 h-4" /> Filter by Type:
         </div>
         <button
+          aria-pressed={activeType === null}
           onClick={() => setActiveType(null)}
           className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${!activeType ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}
         >
@@ -92,6 +93,7 @@ export function SearchInterface({ initialData }: { initialData: SearchItem[] }) 
         {types.map(type => (
           <button
             key={type}
+            aria-pressed={activeType === type}
             onClick={() => setActiveType(type)}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors capitalize ${activeType === type ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}
           >
