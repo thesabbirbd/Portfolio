@@ -1,6 +1,8 @@
 import { SearchInterface } from '@/components/search/SearchInterface';
 import { Suspense } from 'react';
 import { getAllContent } from '@/lib/content';
+import { PageHeader } from "@/components/system/PageHeader";
+import { Accent } from "@/components/system/SectionHeader";
 
 export const metadata = {
   title: "Search | THE SABBiR",
@@ -20,7 +22,7 @@ export default function SearchPage() {
     title: item.meta.title,
     description: item.meta.description,
     slug: item.meta.slug,
-    type: item.meta.type,
+    type: item.meta.type ?? '',
     category: item.meta.category,
     tags: item.meta.tags || [],
     date: item.meta.date,
@@ -31,13 +33,16 @@ export default function SearchPage() {
   allContent.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
-    <div className="flex flex-col w-full pt-20">
-      <div className="container mx-auto px-4 max-w-4xl mb-24">
-        <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">Search Knowledge Base</h1>
-        <p className="text-xl text-muted-foreground mb-12 max-w-2xl leading-relaxed">
-          Find notes, projects, experiments, and process logs across the platform.
-        </p>
-
+    <div className="flex flex-col w-full pt-6 md:pt-8">
+      <PageHeader
+        crumbs={[{ label: "Search" }]}
+        eyebrow="Search"
+        title={<>Search the <Accent>knowledge base</Accent></>}
+        lede="Find notes, projects, lab experiments and journal entries across the site."
+        className="max-w-4xl"
+      />
+      <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 mb-24">
+        <h2 className="sr-only">Search results</h2>
         <Suspense fallback={<div>Loading search...</div>}>
           <SearchInterface initialData={allContent} />
         </Suspense>

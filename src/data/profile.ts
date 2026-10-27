@@ -17,42 +17,45 @@ export const PROFILE_DATA = {
     "Creative Technology",
   ],
   heroStatement: "Management student building toward Backend & DevOps Engineering, while exploring AI, systems, networking and creative technology.",
+  // One-paragraph summary for the Home overview (the full narrative lives on /about).
+  bioShort:
+    "Management student at Rajshahi College, building backend and DevOps skills through hands-on projects, local AI experiments and documented learning.",
   bioNarrative:
-    "I represent a distinctive convergence of business management economics and production-grade software engineering. Currently pursuing a BBA in Management at Rajshahi College, my heart beats in the terminal. I am focused on architecting resilient backend systems, deploying local-first AI pipelines, and mastering the modern DevOps lifecycle.",
+    "I represent a distinctive convergence of business management economics and hands-on software engineering. Currently pursuing a BBA in Management at Rajshahi College, my heart beats in the terminal. I am focused on building reliable backend systems, experimenting with local-first AI, and learning the modern DevOps lifecycle.",
 
   academic: {
     degree: "BBA in Management",
     institution: "Department of Management, Rajshahi College",
     affiliation: "National University, Bangladesh",
-    foundation: "Hat Gangopara BM Technical College (Technical Fundamentals)",
+    foundation: "Hat Gangopara B.M College (HSC GPA 5.00 · Computer Operations)",
     location: "Rajshahi, Bangladesh",
     origin: "Bagmara, Rājshāhi, Bangladesh",
   },
 
   mission: {
     title: "100-Day Backend & DevOps Engineering Sprint",
-    status: "ACTIVE INITIATIVE",
-    currentFocus: "Microservice Containerization, High-Throughput APIs & Cloud Automation",
+    status: "In progress",
+    currentFocus: "Building and documenting backend services with FastAPI, PostgreSQL and Docker, one focused step at a time.",
     pillars: [
       {
-        title: "High-Performance APIs",
-        desc: "Asynchronous RESTful backends in FastAPI with connection pooling and relational schema integrity in PostgreSQL.",
+        title: "APIs with FastAPI",
+        desc: "Async REST endpoints, Pydantic validation and PostgreSQL schemas, practised in Omnidesk BD.",
       },
       {
-        title: "Containerization & Workflows",
-        desc: "Isolated microservices with Docker, multi-container orchestration, and automated test benches.",
+        title: "Containers & Compose",
+        desc: "Packaging services with Docker and Compose so every setup is reproducible.",
       },
       {
-        title: "Infrastructure Automation",
-        desc: "Modular GNU Bash scripting, Linux kernel optimization, and reproducible environment bootstrapping.",
+        title: "Linux & Bash automation",
+        desc: "Shell scripts for setup, backups and repeatable environment bootstrapping.",
       },
       {
-        title: "Cloud & Network Resilience",
-        desc: "NOC-level monitoring, MikroTik routing, DNS management, and Muktopaath V1 cloud engineering standards.",
+        title: "Networking foundations",
+        desc: "MikroTik routing, DNS and monitoring practice from NOC work, plus Muktopaath cloud fundamentals.",
       },
       {
-        title: "Local AI Acceleration",
-        desc: "Serving offline LLMs locally via Ollama with dedicated GPU memory tuning and low-latency inference.",
+        title: "Local AI",
+        desc: "Running offline LLMs with Ollama and tuning GPU memory on personal hardware.",
       },
     ],
   },

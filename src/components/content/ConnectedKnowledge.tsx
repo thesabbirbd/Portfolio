@@ -110,7 +110,7 @@ export function ConnectedKnowledge({ meta }: { meta: ContentItem['meta'], }) {
     <div className="mt-20 pt-12 border-t border-border/50 relative">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-4 text-muted-foreground flex items-center gap-2">
         <Network className="w-4 h-4" />
-        <span className="text-xs font-semibold uppercase tracking-wider">Knowledge Graph</span>
+        <h2 className="text-xs font-semibold uppercase tracking-wider">Knowledge Graph</h2>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -118,9 +118,9 @@ export function ConnectedKnowledge({ meta }: { meta: ContentItem['meta'], }) {
         {/* Explicit Connections */}
         {(explicitContent.length > 0 || backlinks.length > 0) && (
           <div className="lg:col-span-2 space-y-6">
-            <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
               <Activity className="w-4 h-4 text-primary" /> Direct References
-            </h4>
+            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[...explicitContent, ...backlinks].map((item, idx) => {
                 // Deduplicate if an item is both explicit and a backlink
@@ -152,9 +152,9 @@ export function ConnectedKnowledge({ meta }: { meta: ContentItem['meta'], }) {
         {/* Chronological Navigation */}
         {(prevItem || nextItem) && (
           <div className="space-y-6">
-            <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
               <Activity className="w-4 h-4 text-muted-foreground" /> Timeline
-            </h4>
+            </h3>
             <div className="flex flex-col gap-3">
               {prevItem && (
                 <Link 
@@ -186,9 +186,9 @@ export function ConnectedKnowledge({ meta }: { meta: ContentItem['meta'], }) {
         {/* Implicit Connections */}
         {implicitConnections.length > 0 && (
           <div className="space-y-6">
-            <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
               <Tag className="w-4 h-4 text-muted-foreground" /> Conceptually Related
-            </h4>
+            </h3>
             <div className="flex flex-col gap-3">
               {implicitConnections.map(({ item, shared }) => (
                 <Link 

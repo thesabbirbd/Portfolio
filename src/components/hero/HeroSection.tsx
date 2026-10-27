@@ -1,19 +1,26 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Terminal, Sparkles, Send, ShieldCheck } from "lucide-react";
+import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import Link from "next/link";
+import { ArrowRight, ArrowDown, Terminal, Send } from "lucide-react";
+import { useSettings } from "@/contexts/SettingsContext";
 import { PROFILE_DATA } from "@/data/profile";
 import { GlowButton } from "@/components/ui/GlowButton";
-import dynamic from "next/dynamic";
-
-const SpatialCore = dynamic(() => import('@/components/hero/SpatialCore').then(mod => mod.SpatialCore), { ssr: false });
+import { MotionLoopVideo } from "@/components/ui/MotionLoopVideo";
+import { BauhausField } from "@/components/system/BauhausField";
+// Server-rendered so the portrait (the LCP image) paints with the HTML and reserves its box (no layout shift).
+import { SpatialCore } from "@/components/hero/SpatialCore";
 
 export function HeroSection() {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 800], [0, 150]);
   const opacity = useTransform(scrollY, [0, 500], [1, 0]);
   const [roleIndex, setRoleIndex] = useState(0);
+  const { spatial3D, reducedMotion } = useSettings();
+  const prefersReduced = useReducedMotion();
+  // Scroll-linked parallax is skipped entirely for reduced motion (MotionConfig does not cover style-bound values).
+  const parallax = prefersReduced || reducedMotion ? undefined : { y, opacity };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -25,57 +32,72 @@ export function HeroSection() {
   return (
     <section
       id="hero"
-      className="relative min-h-[70svh] md:min-h-[90vh] landscape:min-h-0 flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 py-10 md:py-20 landscape:py-12 overflow-hidden"
+      className="relative min-h-[70svh] md:min-h-[90vh] landscape:min-h-0 flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 pt-4 short-portrait:pt-1 pb-10 md:py-20 landscape:py-12 overflow-hidden"
     >
-      <motion.div style={{ y, opacity }} className="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
+      {/* Ambient motion loop: opt-in with "3D / Spatial effects" (D20 — the masked full-hero video layer was the
+          largest remaining desktop frame cost). Tablet/desktop only; light mode uses the pre-rendered light variant. */}
+      {spatial3D && (
+        <div
+          aria-hidden="true"
+          className="hidden md:block absolute inset-0 -z-10 pointer-events-none opacity-35 dark:opacity-60 [mask-image:radial-gradient(ellipse_75%_65%_at_50%_45%,black_30%,transparent_80%)]"
+        >
+          <MotionLoopVideo
+            src="/assets/videos/ambient-cyber-loop"
+            lightSrc="/assets/videos/ambient-cyber-loop-light"
+            className="w-full h-full"
+          />
+        </div>
+      )}
+
+      <motion.div style={parallax} className="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 short-landscape:grid-cols-12 gap-5 short-portrait:gap-3 sm:gap-8 items-center">
         {/* Left Column: Typography & Dynamic Identity */}
-        <div className="lg:col-span-7 flex flex-col order-2 lg:order-1 items-center lg:items-start text-center lg:text-left space-y-4 md:space-y-6">
+        <div className="lg:col-span-7 short-landscape:col-span-7 flex flex-col order-2 lg:order-1 short-landscape:order-1 items-center lg:items-start short-landscape:items-start text-center lg:text-left short-landscape:text-left space-y-3.5 short-portrait:space-y-2.5 md:space-y-6 short-landscape:space-y-3">
           {/* Status Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-panel border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 text-[var(--color-accent)] dark:text-[var(--color-accent)] text-xs font-mono tracking-wider shadow-sm"
+          {/* Entrances use the CSS `rise` keyframe: visible from first paint, no hydration wait. */}
+          <Link
+            href="/aiyaar"
+            className="motion-safe:animate-rise group inline-flex items-center gap-2 px-3 xs:px-3.5 py-1.5 rounded-full surface-card border-primary/30 hover:border-primary/60 text-[11px] xs:text-xs font-mono tracking-normal xs:tracking-wider whitespace-nowrap transition-colors"
           >
-            <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] animate-pulse" />
-            <span>{PROFILE_DATA.badgeStatus}</span>
-          </motion.div>
+            <span className="w-2 h-2 rounded-full bg-ok md:motion-safe:animate-pulse" />
+            <span className="text-ink-2">CPM @</span>
+            <span className="font-bold text-primary">Aiyaar Ltd</span>
+            <ArrowRight aria-hidden="true" className="w-3 h-3 text-primary group-hover:translate-x-0.5 transition-transform" />
+          </Link>
 
           {/* Names */}
           <div className="space-y-1">
-            <motion.h2
-              initial={{ opacity: 1, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-lg sm:text-xl md:text-2xl font-medium tracking-tight text-slate-600 dark:text-slate-300"
-            >
+            {/* Plain element: a Framer initial offset here was frozen into the HTML without JS and overlapped the wordmark */}
+            <p className="motion-safe:animate-rise text-lg sm:text-xl md:text-2xl short-landscape:text-lg font-medium tracking-tight text-ink-2">
               {PROFILE_DATA.fullName}
-            </motion.h2>
+            </p>
 
-            <motion.h1
-              initial={{ opacity: 1, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-[clamp(2.5rem,8vw,5.5rem)] font-black tracking-tighter leading-none"
-            >
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 dark:from-cyan-400 dark:via-blue-400 dark:to-purple-400">
-                {PROFILE_DATA.shortName}
+            <h1 className="text-display short-landscape:text-[3.25rem] font-black text-ink">
+              {/* Editorial wordmark: "THE" in ink, the name in the brand display gradient.
+                  Kinetic entrance: each word rises from a mask once (transform only, motion-safe). */}
+              <span className="inline-block overflow-hidden align-bottom pb-[0.08em] -mb-[0.08em]">
+                <span className="inline-block motion-safe:animate-reveal">{PROFILE_DATA.shortName.split(" ")[0]}</span>
+              </span>{" "}
+              <span className="inline-block overflow-hidden align-bottom pb-[0.08em] -mb-[0.08em]">
+                <span style={{ animationDelay: "90ms" }} className="inline-block text-display-gradient motion-safe:animate-reveal">
+                  {PROFILE_DATA.shortName.split(" ").slice(1).join(" ")}
+                </span>
               </span>
-            </motion.h1>
+            </h1>
           </div>
 
           {/* Dynamic Rotating Role Headline */}
-          <div className="h-10 sm:h-12 flex items-center justify-center lg:justify-start overflow-hidden max-w-full">
-            <AnimatePresence mode="wait">
+          <div className="h-10 short-portrait:h-8 sm:h-12 flex items-center justify-center lg:justify-start overflow-hidden max-w-full">
+            {/* initial={false}: the first role renders visible in the server HTML (no-JS / slow hydration) */}
+            <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={roleIndex}
                 initial={{ y: 24, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: -24, opacity: 0 }}
                 transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 rounded-xl bg-blue-500/10 dark:bg-[var(--color-secondary)]/10 border border-blue-500/20 dark:border-[var(--color-secondary)]/20 text-blue-700 dark:text-cyan-300 font-mono text-xs sm:text-base md:text-xl font-bold tracking-tight max-w-full truncate"
+                className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 rounded-xl surface-card text-ink font-mono text-xs sm:text-sm md:text-base font-semibold tracking-tight max-w-full truncate"
               >
-                <Terminal className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[var(--color-secondary)] shrink-0" />
+                <Terminal className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
                 <span className="truncate">{PROFILE_DATA.rotatingRoles[roleIndex]}</span>
               </motion.div>
             </AnimatePresence>
@@ -86,55 +108,57 @@ export function HeroSection() {
             initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-sm sm:text-lg text-slate-700 dark:text-slate-300 max-w-xl font-normal leading-relaxed"
+            className="text-sm sm:text-lg text-ink-2 max-w-xl font-normal leading-relaxed text-pretty"
           >
             {PROFILE_DATA.heroStatement}
           </motion.p>
 
           {/* Micro-Telemetry Pills */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="flex flex-wrap gap-1.5 sm:gap-2 justify-center lg:justify-start text-[11px] sm:text-xs font-mono text-slate-600 dark:text-slate-700 dark:text-slate-300 pt-1"
+          <div
+            style={{ animationDelay: "120ms" }}
+            className="motion-safe:animate-rise flex short-portrait:hidden flex-wrap gap-1.5 sm:gap-2 justify-center lg:justify-start text-[11px] sm:text-xs font-mono text-ink-2 pt-1"
           >
-            <span className="px-2.5 py-1 rounded-md bg-slate-200/60 dark:bg-slate-800/60 border border-slate-300/40 dark:border-slate-700/40">
+            <span className="px-2.5 py-1 rounded-md surface-card shadow-none">
               ⚡ Local AI &amp; Ollama
             </span>
-            <span className="px-2.5 py-1 rounded-md bg-slate-200/60 dark:bg-slate-800/60 border border-slate-300/40 dark:border-slate-700/40">
+            <span className="px-2.5 py-1 rounded-md surface-card shadow-none">
               🐳 Docker &amp; Containers
             </span>
-            <span className="px-2.5 py-1 rounded-md bg-slate-200/60 dark:bg-slate-800/60 border border-slate-300/40 dark:border-slate-700/40">
+            <span className="px-2.5 py-1 rounded-md surface-card shadow-none">
               🎓 BBA Management
             </span>
-          </motion.div>
+          </div>
 
           {/* Call to Actions */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="flex flex-wrap items-center gap-3 sm:gap-4 justify-center lg:justify-start pt-2"
+          <div
+            style={{ animationDelay: "200ms" }}
+            className="motion-safe:animate-rise flex flex-wrap items-center gap-3 short-portrait:gap-2 sm:gap-4 justify-center lg:justify-start pt-2 short-portrait:pt-0"
           >
-            <GlowButton href="/#work" variant="primary" size="lg" icon={<ArrowRight className="w-4 h-4" />}>
+            <GlowButton href="/#projects" variant="primary" size="lg" icon={<ArrowRight className="w-4 h-4" />}>
               Explore My Work
             </GlowButton>
             <GlowButton href="/#contact" variant="glass" size="lg" icon={<Send className="w-4 h-4" />}>
               Connect With Me
             </GlowButton>
-          </motion.div>
+          </div>
         </div>
 
         {/* Right Column: 3D Spatial Core Visualization */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="lg:col-span-5 flex justify-center order-1 lg:order-2"
-        >
+        <div className="relative lg:col-span-5 short-landscape:col-span-5 flex justify-center order-1 lg:order-2 short-landscape:order-2 motion-safe:animate-rise">
+          {/* Tactile Editorial: static Bauhaus geometry anchoring the portrait core (sized to the core, never over text) */}
+          <BauhausField className="absolute -z-10 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[270px] xs:w-[300px] sm:w-[112%] sm:max-w-[560px] short-landscape:w-[270px] short-portrait:w-[210px] aspect-square opacity-55 sm:opacity-70 dark:opacity-50 sm:dark:opacity-60" />
           <SpatialCore />
-        </motion.div>
+        </div>
       </motion.div>
+
+      {/* Next-chapter cue: a real link to the first Home chapter (static, no looping animation) */}
+      <Link
+        href="#about"
+        className="hidden md:inline-flex short-landscape:hidden absolute bottom-6 left-1/2 -translate-x-1/2 min-h-8 items-center gap-2 font-mono text-eyebrow uppercase text-ink-3 hover:text-primary transition-colors"
+      >
+        <span>01 / Identity</span>
+        <ArrowDown aria-hidden="true" className="w-3.5 h-3.5" />
+      </Link>
     </section>
   );
 }

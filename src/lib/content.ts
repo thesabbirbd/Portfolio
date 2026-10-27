@@ -8,6 +8,7 @@ export type ContentType = 'notes' | 'journal' | 'projects' | 'lab';
 
 export interface ContentMeta {
   slug: string;
+  type?: string;
   title: string;
   description: string;
   date: string;
@@ -92,6 +93,8 @@ export function getContentBySlug(type: ContentType, slug: string): ContentItem |
     const parsedContent = {
       meta: {
         slug,
+        // The folder is the source of truth for routing (frontmatter spellings vary: "note" vs "notes").
+        type,
         title: data.title || 'Untitled',
         description: data.description || '',
         date: data.date || new Date().toISOString(),

@@ -1,102 +1,74 @@
-"use client";
-
-import React, { useState } from "react";
-import { SectionReveal } from "@/components/ui/SectionReveal";
-import { motion, AnimatePresence } from "framer-motion";
-import { Server, Cpu, Network, Terminal, Video, HardDrive, Map } from "lucide-react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import React from "react";
+import { Server, Container, Network, Brain, Cloud, Video, Cpu, Wrench } from "lucide-react";
+import { SKILL_CATEGORIES, type SkillItem } from "@/data/skills";
+import { SectionHeader, Accent } from "@/components/system/SectionHeader";
+import { Card, RoleIcon } from "@/components/system/Card";
 import { cn } from "@/lib/utils";
 
-const SKILL_CATEGORIES = [
-  { id: "backend", title: "BACKEND", icon: Server, color: "text-blue-500", size: "lg", skills: ["FastAPI", "Python", "Node.js", "PostgreSQL", "Redis", "REST APIs", "WebSockets"] },
-  { id: "ai", title: "AI", icon: Cpu, color: "text-purple-500", size: "lg", skills: ["Local LLMs", "Ollama", "RAG Systems", "LangChain", "Agentic Workflows"] },
-  { id: "noc", title: "NOC", icon: Network, color: "text-cyan-500", size: "md", skills: ["MikroTik", "Cisco", "BGP / OSPF", "DNS & DHCP", "Network Monitoring", "Zabbix", "Grafana"] },
-  { id: "ops", title: "OPS", icon: Terminal, color: "text-emerald-500", size: "md", skills: ["Docker", "Linux (Ubuntu/Debian)", "Bash Scripting", "CI/CD", "Nginx", "Systemd"] },
-  { id: "media", title: "MEDIA", icon: Video, color: "text-pink-500", size: "sm", skills: ["Premiere Pro", "After Effects", "DaVinci Resolve", "OBS Studio", "Live Broadcasting"] },
-  { id: "hardware", title: "HARDWARE", icon: HardDrive, color: "text-orange-500", size: "sm", skills: ["PC Building", "Server Racks", "Cable Management", "Hardware Diagnostics"] },
-  { id: "maps", title: "MAPS", icon: Map, color: "text-yellow-500", size: "sm", skills: ["Google Maps Contributor", "Local Guides", "OSM", "Spatial Data"] },
+const ICONS: Record<string, React.ComponentType<{ className?: string }>> = { Server, Container, Network, Brain, Cloud, Video, Cpu, Wrench };
+const ROLES = { blue: "brand", cyan: "signal", emerald: "ok", purple: "accent" } as const;
+
+const LEVELS: { level: NonNullable<SkillItem["level"]>; dot: string; hint: string }[] = [
+  { level: "Active Focus", dot: "bg-primary", hint: "what I build with now" },
+  { level: "Hands-on", dot: "bg-ok", hint: "used in real projects" },
+  { level: "Foundational", dot: "bg-ink-3", hint: "studied, early practice" },
 ];
+const DOT = Object.fromEntries(LEVELS.map((l) => [l.level, l.dot]));
 
+/**
+ * Capabilities matrix built from the canonical skills data (src/data/skills.ts). Every skill is
+ * visible with its honest level — no hover-to-reveal, so touch devices get the same content.
+ */
 export function SkillsBento() {
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
-
   return (
-    <section id="skills" className="relative w-full max-w-7xl mx-auto py-12 md:py-24 px-4 sm:px-6 lg:px-8">
-      <SectionReveal className="w-full">
-      <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-gray-900 dark:text-gray-100 mb-4">
-          CAPABILITIES <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">MATRIX</span>
-        </h2>
-        <p className="text-gray-600 dark:text-gray-300 max-w-xl mx-auto">An interactive breakdown of technical domains and proficiencies.</p>
-      </div>
+    <section id="skills" className="relative w-full max-w-7xl mx-auto py-12 md:py-20 px-4 sm:px-6 lg:px-8 scroll-mt-20">
+      <SectionHeader
+        eyebrow="Capabilities"
+        title={<>Skills by <Accent>area</Accent></>}
+        lede="Grouped by discipline, each marked with how deeply I use it today."
+        className="mb-6 sm:mb-8"
+      />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[160px]">
+      <ul className="reveal flex flex-wrap gap-x-5 gap-y-2 mb-6 sm:mb-8 text-xs text-ink-2" aria-label="Skill levels">
+        {LEVELS.map(({ level, dot, hint }) => (
+          <li key={level} className="inline-flex items-center gap-2">
+            <span aria-hidden="true" className={cn("h-2 w-2 rounded-full", dot)} />
+            <span><span className="font-semibold text-ink">{level}</span> — {hint}</span>
+          </li>
+        ))}
+      </ul>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         {SKILL_CATEGORIES.map((cat) => {
-          const isHovered = hoveredId === cat.id;
-          const isOtherHovered = hoveredId !== null && hoveredId !== cat.id;
-          
+          const Icon = ICONS[cat.icon] ?? Server;
           return (
-            <motion.div
-              layout
-              key={cat.id}
-              onMouseEnter={() => setHoveredId(cat.id)}
-              onMouseLeave={() => setHoveredId(null)}
-              className={cn(
-                "relative cursor-pointer transition-all duration-500",
-                cat.size === "lg" ? "md:col-span-2 md:row-span-2" :
-                cat.size === "md" ? "md:col-span-2 md:row-span-1" :
-                "md:col-span-1 md:row-span-1",
-                isHovered ? "z-10 scale-[1.02]" : "z-0 scale-100",
-                isOtherHovered ? "opacity-40 scale-[0.98] filter grayscale-[50%]" : "opacity-100 filter grayscale-0"
-              )}
-            >
-              <GlassCard heavy className="w-full h-full p-6 flex flex-col transition-colors border-black/5 dark:border-white/5 hover:border-black/20 dark:hover:border-white/20">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className={cn("p-3 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10", cat.color)}>
-                    <cat.icon className="w-4 h-4 sm:w-6 sm:h-6" />
-                  </div>
-                  <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100">{cat.title}</h3>
+            <Card key={cat.id} className="p-4 sm:p-5 flex flex-col gap-3">
+              <div className="flex items-start gap-3">
+                <RoleIcon role={ROLES[cat.color]} className="w-9 h-9 shrink-0">
+                  <Icon className="w-[18px] h-[18px]" />
+                </RoleIcon>
+                <div className="min-w-0">
+                  <h3 className="text-base font-bold text-ink leading-tight">{cat.title}</h3>
+                  <p className="text-xs text-ink-3 mt-0.5 leading-snug">{cat.tagline}</p>
                 </div>
-
-                <div className="flex-1 overflow-hidden relative">
-                  <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2 sm:mt-0">
-                    {/* Always show a few skills */}
-                    {cat.skills.slice(0, 3).map((skill) => (
-                      <span key={skill} className="px-2.5 py-1 text-xs font-mono font-medium rounded-md bg-black/5 dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-black/10 dark:border-white/10">
-                        {skill}
-                      </span>
-                    ))}
-                    
-                    {/* Expand rest on hover */}
-                    <AnimatePresence>
-                      {isHovered && cat.skills.slice(3).map((skill, idx) => (
-                        <motion.span
-                          key={skill}
-                          initial={{ opacity: 0, scale: 0.8, y: 10 }}
-                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.8, y: 10 }}
-                          transition={{ delay: idx * 0.05 }}
-                          className="px-2.5 py-1 text-xs font-mono font-medium rounded-md bg-black/10 dark:bg-white/10 text-gray-900 dark:text-gray-100 border border-black/20 dark:border-white/20"
-                        >
-                          {skill}
-                        </motion.span>
-                      ))}
-                    </AnimatePresence>
-                  </div>
-
-                  {/* Gradient mask to hint more content if not hovered and has more items */}
-                  {!isHovered && cat.skills.length > 3 && (
-                    <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[rgba(255,255,255,0.9)] dark:from-[rgba(20,20,30,0.8)] to-transparent pointer-events-none flex items-end justify-center pb-1">
-                      <span className="text-[10px] font-mono text-slate-700 dark:text-slate-300 tracking-widest uppercase">+{cat.skills.length - 3} More</span>
-                    </div>
-                  )}
-                </div>
-              </GlassCard>
-            </motion.div>
+              </div>
+              <ul className="flex flex-wrap gap-1.5">
+                {cat.skills.map((skill) => (
+                  <li
+                    key={skill.name}
+                    title={skill.context}
+                    className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-muted text-xs font-mono text-ink-2"
+                  >
+                    <span aria-hidden="true" className={cn("h-1.5 w-1.5 rounded-full shrink-0", DOT[skill.level ?? "Foundational"])} />
+                    {skill.name}
+                    <span className="sr-only"> ({skill.level ?? "Foundational"})</span>
+                  </li>
+                ))}
+              </ul>
+            </Card>
           );
         })}
       </div>
-    </SectionReveal>
     </section>
   );
 }

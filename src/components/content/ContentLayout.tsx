@@ -7,7 +7,7 @@ export function ContentLayout({ item, baseUrl, breadcrumbLabel }: { item: Conten
   const { meta, content } = item;
   
   return (
-    <div className="flex flex-col w-full pt-20">
+    <div className="flex flex-col w-full pt-6 md:pt-8">
       <div className="container mx-auto px-4 max-w-3xl mb-24">
         <nav className="flex text-sm text-muted-foreground mb-8" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-3">
@@ -42,9 +42,9 @@ export function ContentLayout({ item, baseUrl, breadcrumbLabel }: { item: Conten
           <p className="text-xl text-muted-foreground leading-relaxed">{meta.description}</p>
         </header>
 
-        <main className="min-h-[50vh]">
+        <div className="min-h-[50vh]">
           <MDXContent source={content} />
-        </main>
+        </div>
         
         <ConnectedKnowledge meta={meta} />
 

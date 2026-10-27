@@ -10,7 +10,7 @@ interface ImageTrailProps {
 
 export function ImageTrail({ children, images }: ImageTrailProps) {
   const [activeImage, setActiveImage] = useState(-1);
-  const [trail, setTrail] = useState<{ id: number; x: number; y: number; img: string }[]>([]);
+  const [trail, setTrail] = useState<{ id: number; x: number; y: number; img: string; rotate: number }[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   let renderCount = useRef(0);
 
@@ -33,6 +33,7 @@ export function ImageTrail({ children, images }: ImageTrailProps) {
       x,
       y,
       img: images[nextImage],
+      rotate: Math.random() * 20 - 10,
     };
 
     setTrail((prev) => [...prev, newTrailItem].slice(-5)); // Keep only last 5
@@ -49,7 +50,7 @@ export function ImageTrail({ children, images }: ImageTrailProps) {
           <motion.img
             key={item.id}
             src={item.img}
-            initial={{ opacity: 0.8, scale: 0.5, x: item.x - 50, y: item.y - 50, rotate: Math.random() * 20 - 10 }}
+            initial={{ opacity: 0.8, scale: 0.5, x: item.x - 50, y: item.y - 50, rotate: item.rotate }}
             animate={{ opacity: 0, scale: 1, y: item.y - 100 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}

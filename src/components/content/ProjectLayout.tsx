@@ -1,18 +1,19 @@
+import { SignalDiagram } from '@/components/system/Signal';
 import Link from 'next/link';
 import { ContentItem, getContentBySlug } from '@/lib/content';
 import { MDXContent } from './MDXContent';
 import { ConnectedKnowledge } from './ConnectedKnowledge';
-import { ExternalLink, ArrowLeft, ArrowRight, GitBranch, Code } from 'lucide-react';
+import { ExternalLink, ArrowLeft, ArrowRight, Code } from 'lucide-react';
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
-    idea: 'bg-slate-500/10 text-slate-500 border-slate-500/20',
-    prototype: 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20',
-    active: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
-    experimental: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20',
-    paused: 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20',
-    archived: 'bg-zinc-500/10 text-zinc-500 border-zinc-500/20',
-    completed: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
+    idea: 'bg-ink/5 text-ink-3 border-line',
+    prototype: 'bg-accent/10 text-accent border-accent/25',
+    active: 'bg-ok/10 text-ok border-ok/25',
+    experimental: 'bg-signal/10 text-signal border-signal/25',
+    paused: 'bg-ink/5 text-ink-3 border-line',
+    archived: 'bg-ink/5 text-ink-3 border-line',
+    completed: 'bg-primary/10 text-primary border-primary/25',
   };
   
   const defaultColor = 'bg-primary/10 text-primary border-primary/20';
@@ -26,40 +27,15 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 function ArchitectureGraph({ nodes, edges }: { nodes: string[], edges: string[] }) {
-  // A very lightweight CSS-based representation instead of a heavy graph library
-  return (
-    <div className="p-6 bg-zinc-950 rounded-2xl border border-border/50 my-10 overflow-x-auto">
-      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-6 flex items-center gap-2">
-        <GitBranch className="w-4 h-4" /> System Architecture
-      </h3>
-      <div className="flex flex-wrap gap-4 mb-8">
-        {nodes.map(node => (
-          <div key={node} className="px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-sm text-zinc-300 font-mono">
-            {node}
-          </div>
-        ))}
-      </div>
-      <div className="space-y-2">
-        {edges.map((edge, i) => {
-          const [source, target] = edge.split('->').map(s => s.trim());
-          return (
-            <div key={i} className="flex items-center gap-3 text-sm font-mono text-zinc-500">
-              <span className="text-zinc-400">{source}</span>
-              <span>→</span>
-              <span className="text-zinc-300">{target}</span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
+  // Cyber AI expression: dark signal-grid figure with numbered nodes and arrowed flows.
+  return <SignalDiagram nodes={nodes} edges={edges} />;
 }
 
 export function ProjectLayout({ item }: { item: ContentItem }) {
   const { meta, content } = item;
   
   return (
-    <div className="flex flex-col w-full pt-20">
+    <div className="flex flex-col w-full pt-6 md:pt-8">
       <div className="container mx-auto px-4 max-w-4xl mb-24">
         
         {/* BREADCRUMBS */}
@@ -120,7 +96,7 @@ export function ProjectLayout({ item }: { item: ContentItem }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-8 border-y border-border/50 mb-16 bg-muted/10 rounded-2xl p-8">
           {meta.technologies && meta.technologies.length > 0 && (
             <div>
-              <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">Technology Stack</h3>
+              <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">Technology Stack</h2>
               <div className="flex flex-wrap gap-2">
                 {meta.technologies.map(tech => (
                   <span key={tech} className="text-xs font-mono bg-background border border-border/50 px-2.5 py-1 rounded-md text-muted-foreground">
@@ -132,7 +108,7 @@ export function ProjectLayout({ item }: { item: ContentItem }) {
           )}
           {meta.projectRole && (
             <div>
-              <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">My Role</h3>
+              <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">My Role</h2>
               <p className="text-muted-foreground">{meta.projectRole}</p>
             </div>
           )}
@@ -144,14 +120,14 @@ export function ProjectLayout({ item }: { item: ContentItem }) {
         )}
 
         {/* MDX CONTENT */}
-        <main className="min-h-[30vh]">
+        <div className="min-h-[30vh]">
           <MDXContent source={content} />
-        </main>
+        </div>
         
         {/* CHANGELOG (if defined) */}
         {meta.changelog && meta.changelog.length > 0 && (
           <div className="mt-16 mb-8 border-t border-border/50 pt-12">
-            <h3 className="text-2xl font-bold mb-8 text-foreground">Project Changelog</h3>
+            <h2 className="text-2xl font-bold mb-8 text-foreground">Project Changelog</h2>
             <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border before:to-transparent">
               {meta.changelog.map((entry, idx) => (
                 <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
@@ -160,7 +136,7 @@ export function ProjectLayout({ item }: { item: ContentItem }) {
                   </div>
                   <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-border/50 bg-muted/20">
                     <div className="flex items-center justify-between mb-1">
-                      <h4 className="font-bold text-foreground">{entry.title}</h4>
+                      <h3 className="font-bold text-foreground">{entry.title}</h3>
                       <time className="text-xs font-mono text-muted-foreground">{entry.date}</time>
                     </div>
                     <p className="text-sm text-muted-foreground leading-relaxed">{entry.summary}</p>

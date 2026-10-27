@@ -61,11 +61,12 @@ export function GlassButton({
   };
 
   const variants = {
-    primary: "bg-blue-600/80 hover:bg-blue-500/90 border-blue-400/30 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]",
-    secondary: "spatial-glass hover:bg-white/10 dark:hover:bg-white/5 text-gray-900 dark:text-gray-100",
-    danger: "bg-red-500/80 hover:bg-red-400/90 border-red-400/30 text-white shadow-[0_0_20px_rgba(239,68,68,0.3)]",
-    ghost: "hover:bg-slate-200/20 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 border-transparent",
+    primary: "bg-primary hover:bg-primary/90 border-white/15 text-on-primary shadow-[0_8px_24px_-10px_rgb(var(--primary)/0.6)]",
+    secondary: "surface-glass hover:border-primary/40 text-ink",
+    danger: "bg-red-600/90 hover:bg-red-600 border-red-400/30 text-white",
+    ghost: "hover:bg-ink/5 text-ink-2 border-transparent",
   };
+
 
   const sizes = {
     sm: "px-3 py-1.5 text-xs rounded-xl gap-1.5",
@@ -87,7 +88,7 @@ export function GlassButton({
       }}
       whileTap={{ scale: 0.97 }}
       className={cn(
-        "relative flex items-center justify-center font-medium transition-colors border backdrop-blur-xl overflow-hidden group outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50",
+        "relative flex items-center justify-center font-medium transition-colors border overflow-hidden group outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
         variants[variant],
         sizes[size],
         className
@@ -109,7 +110,7 @@ export function GlassButton({
         </motion.span>
       )}
 
-      <span className="relative z-10">{children}</span>
+      <span className="relative z-10">{children as React.ReactNode}</span>
 
       {icon && iconPosition === "right" && (
         <motion.span

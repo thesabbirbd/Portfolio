@@ -12,7 +12,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
   {
     id: "linkedin",
     name: "LinkedIn",
-    url: "https://linkedin.com/in/thesabbirbd",
+    url: "https://www.linkedin.com/in/thesabbirbd/",
     handle: "in/thesabbirbd",
     icon: "linkedin",
     category: "primary",

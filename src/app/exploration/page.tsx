@@ -1,5 +1,6 @@
 import { MapsExplorerSection } from "@/components/maps/MapsExplorerSection";
-import Link from "next/link";
+import { PageHeader } from "@/components/system/PageHeader";
+import { Accent } from "@/components/system/SectionHeader";
 
 export const metadata = {
   title: "Google Maps & 360° Exploration | THE SABBiR",
@@ -11,29 +12,14 @@ export const metadata = {
 
 export default function ExplorationPage() {
   return (
-    <div className="flex flex-col w-full pt-20">
-      <div className="container mx-auto px-4 max-w-5xl mb-12">
-        <nav className="flex text-sm text-muted-foreground mb-6" aria-label="Breadcrumb">
-          <ol className="inline-flex items-center space-x-1 md:space-x-3">
-            <li className="inline-flex items-center">
-              <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <span className="mx-2">/</span>
-                <span className="text-foreground">Exploration</span>
-              </div>
-            </li>
-          </ol>
-        </nav>
-        <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">Geospatial & 360° Exploration</h1>
-        <p className="text-xl text-muted-foreground mb-6 max-w-3xl leading-relaxed">
-          Beyond traditional software engineering, I explore the physical world through geospatial mapping and immersive media.
-        </p>
-        <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
-          As a Google Maps Local Guide based in Rajshahi, Bangladesh, I have mapped numerous local businesses, historical landmarks, and public spaces. My work heavily involves 360° spherical photography and Google Street View contributions, leveraging creative technology to digitalize real-world environments.
-        </p>
-      </div>
+    <div className="flex flex-col w-full pt-6 md:pt-8">
+      <PageHeader
+        crumbs={[{ label: "Exploration" }]}
+        eyebrow="Maps · 360° photography"
+        title={<>Geospatial &amp; 360° <Accent>exploration</Accent></>}
+        lede="As a Google Maps Local Guide in Rajshahi, I map local businesses, landmarks and public spaces, and publish 360° spherical photography to Google Street View."
+        className="mb-2 md:mb-4"
+      />
       <MapsExplorerSection />
     </div>
   );

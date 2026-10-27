@@ -8,6 +8,7 @@ import { COMMUNITY_DATA } from "@/data/community";
 import { sound } from "@/lib/sound";
 import { ImageTrail } from "@/components/ui/ImageTrail";
 import { useSettings } from "@/contexts/SettingsContext";
+import { SafeWebGL } from "@/components/system/SafeWebGL";
 
 const LazyGlobe = dynamic(() => import("@/components/maps/Globe"), {
   ssr: false,
@@ -43,7 +44,7 @@ export function MapsExplorerSection() {
       ]}>
         <div className="rounded-2xl sm:rounded-3xl glass-emerald p-4 sm:p-10 border border-[var(--color-accent)]/25 shadow-xl relative overflow-hidden">
           {/* Subtle Ambient Glow */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--color-accent)]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(circle,rgb(var(--accent)/0.14),transparent_70%)] pointer-events-none -mr-20 -mt-20" />
 
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8 items-center">
             {/* Left Column: Story & Recognition */}
@@ -67,7 +68,7 @@ export function MapsExplorerSection() {
 
               {/* Feature Bullets */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 pt-1 sm:pt-2">
-                <div className="flex items-start gap-2 sm:gap-2.5 text-[10px] sm:text-sm text-[var(--text-secondary)] leading-tight sm:leading-normal">
+                <div className="flex items-start gap-2 sm:gap-2.5 text-xs sm:text-sm text-[var(--text-secondary)] leading-tight sm:leading-normal">
                   <Camera className="w-4 h-4 text-[var(--color-accent)] shrink-0 mt-0.5" />
                   <span>Spherical 360&deg; photography published on Google Street View</span>
                 </div>
@@ -89,10 +90,10 @@ export function MapsExplorerSection() {
               <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-2 sm:pt-4">
                 <a
                   href={maps.profileUrl}
-                  target="_blank" rel="noopener noreferrer"
+                  target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => sound.click()}
-                  className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl font-medium text-[10px] sm:text-sm bg-[var(--color-accent)] hover:bg-[var(--color-accent)] text-white transition-colors shadow-md shadow-emerald-600/20"
+                  className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl font-medium text-xs sm:text-sm bg-accent hover:bg-accent/90 text-on-primary transition-colors shadow-e1"
                 >
                   <Globe className="w-4 h-4" /> View Local Guide Profile
                   <ExternalLink className="w-3.5 h-3.5 opacity-80" />
@@ -100,7 +101,7 @@ export function MapsExplorerSection() {
 
                 <a
                   href={maps.featuredLocationUrl}
-                  target="_blank" rel="noopener noreferrer"
+                  target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => sound.click()}
                   className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm glass-subtle border border-[var(--color-accent)]/30 text-[var(--color-accent)] dark:text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 transition-colors"
@@ -113,10 +114,17 @@ export function MapsExplorerSection() {
 
             {/* Right Column: 3D Interactive Globe (Lazy Loaded) */}
             <div className="lg:col-span-5 flex flex-col justify-center items-center relative h-64 lg:h-96 w-full">
-               <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-cyan-500/10 to-transparent blur-3xl rounded-full" />
+               <div className="absolute inset-0 bg-[radial-gradient(circle,rgb(6_182_212/0.12),transparent_70%)] rounded-full" />
                <div className="relative z-10 w-full h-full flex items-center justify-center">
                   <React.Suspense fallback={<div className="w-12 h-12 rounded-full border-2 border-cyan-500 border-t-transparent animate-spin" />}>
-                    {spatial3D ? <LazyGlobe /> : <div className="w-full h-full flex flex-col items-center justify-center text-[var(--text-muted)] p-8 text-center bg-black/5 dark:bg-white/5 rounded-3xl border border-black/10 dark:border-white/10"><Globe className="w-8 h-8 mb-4 opacity-50" /><p className="text-sm">3D Spatial Core Disabled</p><p className="text-xs opacity-70 mt-1">Enable 3D in System Settings</p></div>}
+                    {(() => {
+                      const off = (title: string, hint: string) => (
+                        <div className="w-full h-full flex flex-col items-center justify-center text-[var(--text-muted)] p-8 text-center bg-black/5 dark:bg-white/5 rounded-3xl border border-black/10 dark:border-white/10"><Globe className="w-8 h-8 mb-4 opacity-50" /><p className="text-sm">{title}</p><p className="text-xs opacity-70 mt-1">{hint}</p></div>
+                      );
+                      return spatial3D
+                        ? <SafeWebGL fallback={off("3D globe unavailable", "This browser could not start WebGL")}><LazyGlobe /></SafeWebGL>
+                        : off("3D Spatial Core Disabled", "Enable 3D in System Settings");
+                    })()}
                   </React.Suspense>
                </div>
             </div>

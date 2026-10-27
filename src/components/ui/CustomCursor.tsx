@@ -1,19 +1,30 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import { motion, useSpring, useMotionValue, AnimatePresence } from "framer-motion";
+import { motion, useSpring, useMotionValue } from "framer-motion";
 import { ArrowRight, ArrowUpRight, Plus, MoveHorizontal } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-const SMOKE_COLORS = [
-  "bg-blue-500",
-  "bg-emerald-500",
-  "bg-amber-500",
-  "bg-purple-500",
-  "bg-pink-500",
-  "bg-cyan-500",
-  "bg-[var(--color-primary)]"
-];
+const SMOKE_COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#a855f7", "#ec4899", "#06b6d4", "rgb(var(--primary))"];
+
+// Smoke particles are a fixed pool of DOM nodes animated imperatively (transform/opacity only),
+// so moving the mouse never triggers React renders or filter repaints.
+const TRAIL_POOL = 14;
+const BURST_POOL = 4;
+
+function puff(el: HTMLDivElement | null | undefined, x: number, y: number, size: number, from: number, to: number, startOpacity: number) {
+  if (!el) return;
+  const color = SMOKE_COLORS[Math.floor(Math.random() * SMOKE_COLORS.length)];
+  el.style.background = `radial-gradient(circle, ${color} 0%, transparent 70%)`;
+  const at = `translate3d(${x - size / 2}px, ${y - size / 2}px, 0)`;
+  el.animate(
+    [
+      { transform: `${at} scale(${from})`, opacity: startOpacity },
+      { transform: `${at} scale(${to})`, opacity: 0 },
+    ],
+    { duration: 500, easing: "ease-out", fill: "forwards" }
+  );
+}
 
 export function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false);
@@ -22,8 +33,11 @@ export function CustomCursor() {
   // "default" | "button" | "internal" | "external" | "image" | "drag"
   const [cursorState, setCursorState] = useState("default");
   
-  const [clicks, setClicks] = useState<{ id: number; x: number; y: number; color: string }[]>([]);
-  const [trails, setTrails] = useState<{ id: number; x: number; y: number; color: string }[]>([]);
+  const trailRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const burstRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const trailIndex = useRef(0);
+  const burstIndex = useRef(0);
+  const visibleRef = useRef(false);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -83,36 +97,31 @@ export function CustomCursor() {
       if (lastTrailRef.current.x !== -1000) {
         const dist = Math.hypot(cx - lastTrailRef.current.x, cy - lastTrailRef.current.y);
         if (dist > 15) { // Drop a smoke particle every 15px
-          const id = Date.now() + Math.random();
-          const color = SMOKE_COLORS[Math.floor(Math.random() * SMOKE_COLORS.length)];
-          
-          setTrails((prev) => [...prev.slice(-25), { id, x: cx, y: cy, color }]); // Keep max 25 elements to prevent lag
+          puff(trailRefs.current[trailIndex.current++ % TRAIL_POOL], cx, cy, 20, 0.3, 1.6, 0.5);
           lastTrailRef.current = { x: cx, y: cy };
-          
-          setTimeout(() => {
-            setTrails((prev) => prev.filter((t) => t.id !== id));
-          }, 500); // Fades out perfectly in 0.5s
         }
       } else {
         lastTrailRef.current = { x: cx, y: cy };
       }
 
-      if (!isVisible) setIsVisible(true);
+      if (!visibleRef.current) {
+        visibleRef.current = true;
+        setIsVisible(true);
+      }
     };
 
     const handleMouseDown = (e: MouseEvent) => {
-      const id = Date.now();
-      const color = SMOKE_COLORS[Math.floor(Math.random() * SMOKE_COLORS.length)];
-      setClicks((prev) => [...prev, { id, x: e.clientX, y: e.clientY, color }]);
-      
-      // Clean up smoke burst after 0.5s (500ms)
-      setTimeout(() => {
-        setClicks((prev) => prev.filter((c) => c.id !== id));
-      }, 500);
+      puff(burstRefs.current[burstIndex.current++ % BURST_POOL], e.clientX, e.clientY, 50, 0.2, 4, 0.8);
     };
 
-    const handleMouseLeave = () => setIsVisible(false);
-    const handleMouseEnter = () => setIsVisible(true);
+    const handleMouseLeave = () => {
+      visibleRef.current = false;
+      setIsVisible(false);
+    };
+    const handleMouseEnter = () => {
+      visibleRef.current = true;
+      setIsVisible(true);
+    };
 
     const handleElementHover = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -153,7 +162,7 @@ export function CustomCursor() {
       document.removeEventListener("mouseleave", handleMouseLeave);
       document.removeEventListener("mouseenter", handleMouseEnter);
     };
-  }, [isVisible, mouseX, mouseY, pathname, rotation]);
+  }, [mouseX, mouseY, pathname, rotation]);
 
   if (!isVisible) return null;
 
@@ -187,43 +196,17 @@ export function CustomCursor() {
   return (
     <div className="pointer-events-none hidden md:block fixed inset-0 z-[9999] overflow-hidden">
       
-      {/* Smoke Tail (Trails) */}
-      {trails.map((trail) => (
-        <motion.div
-          key={trail.id}
-          initial={{ opacity: 0.5, scale: 0.2, filter: "blur(3px)" }}
-          animate={{ opacity: 0, scale: 1.5, filter: "blur(12px)" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className={`absolute rounded-full pointer-events-none ${trail.color}`}
-          style={{
-            left: trail.x - 10,
-            top: trail.y - 10,
-            width: 20,
-            height: 20,
-          }}
-        />
+      {/* Smoke Tail + Click Bursts (imperative pools) */}
+      {Array.from({ length: TRAIL_POOL }, (_, i) => (
+        <div key={`t${i}`} ref={(el) => { trailRefs.current[i] = el; }} className="absolute top-0 left-0 w-5 h-5 rounded-full opacity-0 will-change-transform" />
       ))}
-
-      {/* Smoke Burst (Clicks) */}
-      {clicks.map((click) => (
-        <motion.div
-          key={click.id}
-          initial={{ opacity: 0.8, scale: 0.2, filter: "blur(2px)" }}
-          animate={{ opacity: 0, scale: 4, filter: "blur(16px)" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className={`absolute rounded-full pointer-events-none ${click.color}`}
-          style={{
-            left: click.x - 25,
-            top: click.y - 25,
-            width: 50,
-            height: 50,
-          }}
-        />
+      {Array.from({ length: BURST_POOL }, (_, i) => (
+        <div key={`b${i}`} ref={(el) => { burstRefs.current[i] = el; }} className="absolute top-0 left-0 w-[50px] h-[50px] rounded-full opacity-0 will-change-transform" />
       ))}
 
       {/* Companion Ring */}
       <motion.div
-        className={`absolute top-0 left-0 flex items-center justify-center backdrop-blur-[2px] transition-colors duration-300 ${getBgColor()}`}
+        className={`absolute top-0 left-0 flex items-center justify-center transition-colors duration-300 ${getBgColor()}`}
         style={{ x: smoothX, y: smoothY, translateX: "-50%", translateY: "-50%" }}
         animate={{
           width: cursorState === "default" ? 14 : cursorState === "button" ? 36 : 30,

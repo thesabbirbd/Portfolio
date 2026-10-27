@@ -6,10 +6,10 @@ import { FlaskConical, AlertTriangle, CheckCircle, XCircle, Activity } from 'luc
 
 function ResultBadge({ result }: { result: string }) {
   const mapping: Record<string, { icon: React.ReactNode, class: string }> = {
-    success: { icon: <CheckCircle className="w-4 h-4" />, class: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' },
-    partial: { icon: <Activity className="w-4 h-4" />, class: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' },
-    failed: { icon: <XCircle className="w-4 h-4" />, class: 'bg-red-500/10 text-red-500 border-red-500/20' },
-    inconclusive: { icon: <AlertTriangle className="w-4 h-4" />, class: 'bg-slate-500/10 text-slate-500 border-slate-500/20' },
+    success: { icon: <CheckCircle className="w-4 h-4" />, class: 'bg-ok/10 text-ok border-ok/25' },
+    partial: { icon: <Activity className="w-4 h-4" />, class: 'bg-accent/10 text-accent border-accent/25' },
+    failed: { icon: <XCircle className="w-4 h-4" />, class: 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/25' },
+    inconclusive: { icon: <AlertTriangle className="w-4 h-4" />, class: 'bg-ink/5 text-ink-3 border-line' },
   };
   
   const config = mapping[result.toLowerCase()] || mapping.inconclusive;
@@ -25,7 +25,7 @@ export function LabLayout({ item }: { item: ContentItem }) {
   const { meta, content } = item;
   
   return (
-    <div className="flex flex-col w-full pt-20">
+    <div className="flex flex-col w-full pt-6 md:pt-8">
       <div className="container mx-auto px-4 max-w-4xl mb-24">
         
         {/* BREADCRUMBS */}
@@ -52,7 +52,7 @@ export function LabLayout({ item }: { item: ContentItem }) {
         {/* HERO */}
         <header className="mb-16">
           <div className="flex flex-wrap items-center gap-4 mb-6">
-            <span className="inline-flex items-center gap-1.5 text-sm text-purple-400 bg-purple-500/10 border border-purple-500/20 px-3 py-1 rounded-full uppercase tracking-wider font-semibold">
+            <span className="inline-flex items-center gap-1.5 text-sm font-mono text-signal bg-signal/10 border border-signal/25 px-3 py-1 rounded-full uppercase tracking-wider">
               <FlaskConical className="w-4 h-4" /> Experiment
             </span>
             {meta.experimentResult && <ResultBadge result={meta.experimentResult} />}
@@ -75,7 +75,7 @@ export function LabLayout({ item }: { item: ContentItem }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-8 border-y border-border/50 mb-16 bg-muted/10 rounded-2xl p-8">
             {meta.hardware && meta.hardware.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">Hardware Environment</h3>
+                <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">Hardware Environment</h2>
                 <ul className="space-y-2">
                   {meta.hardware.map(hw => (
                     <li key={hw} className="text-sm text-muted-foreground flex items-center gap-2">
@@ -87,7 +87,7 @@ export function LabLayout({ item }: { item: ContentItem }) {
             )}
             {meta.software && meta.software.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">Software Environment</h3>
+                <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">Software Environment</h2>
                 <ul className="space-y-2">
                   {meta.software.map(sw => (
                     <li key={sw} className="text-sm text-muted-foreground flex items-center gap-2">
@@ -103,7 +103,7 @@ export function LabLayout({ item }: { item: ContentItem }) {
         {/* MEASUREMENTS TABLE */}
         {meta.measurements && meta.measurements.length > 0 && (
           <div className="mb-16 overflow-x-auto">
-            <h3 className="text-2xl font-bold mb-6 text-foreground">Benchmark & Measurements</h3>
+            <h2 className="text-2xl font-bold mb-6 text-foreground">Benchmark & Measurements</h2>
             <table className="w-full text-sm text-left border border-border/50 rounded-xl overflow-hidden">
               <thead className="bg-muted/50 text-foreground text-xs uppercase tracking-wider">
                 <tr>
@@ -126,9 +126,9 @@ export function LabLayout({ item }: { item: ContentItem }) {
         )}
 
         {/* MDX CONTENT */}
-        <main className="min-h-[30vh]">
+        <div className="min-h-[30vh]">
           <MDXContent source={content} />
-        </main>
+        </div>
 
         <ConnectedKnowledge meta={meta} />
 

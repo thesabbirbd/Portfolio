@@ -35,10 +35,8 @@ export function SpatialCore() {
   }, [mouseX, mouseY]);
 
   const shouldReduceMotion = useReducedMotion();
-
-  if (!mounted) {
-    return <div className="w-56 h-56 sm:w-72 sm:h-72 rounded-full bg-[var(--color-secondary)]/10 animate-pulse mx-auto" />;
-  }
+  // Pointer tilt only after hydration and on pointer-capable layouts (keeps SSR markup stable).
+  const tiltEnabled = mounted && !shouldReduceMotion && !isMobile;
 
   const orbitRadius = isMobile ? 115 : 175;
 
@@ -61,47 +59,47 @@ export function SpatialCore() {
     <div 
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[500px] aspect-square mx-auto flex items-center justify-center select-none perspective-1000"
+      className="relative w-full max-w-[220px] xs:max-w-[260px] sm:max-w-[500px] short-landscape:max-w-[240px] short-portrait:max-w-[170px] aspect-square mx-auto flex items-center justify-center select-none perspective-1000"
     >
 
       {/* 3 Vibrant Ambient Glow Backdrops */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/25 via-cyan-400/20 to-purple-600/25 rounded-full blur-2xl sm:blur-3xl -z-10 animate-pulse-soft pointer-events-none" />
+      <div className="absolute -inset-[8%] bg-[radial-gradient(circle,rgb(var(--brand)/0.22),rgb(var(--brand-2)/0.10)_45%,transparent_70%)] rounded-full -z-10 pointer-events-none" />
 
       <motion.div
-        style={shouldReduceMotion || isMobile ? undefined : { rotateX, rotateY, transformStyle: "preserve-3d" }}
+        style={tiltEnabled ? { rotateX, rotateY, transformStyle: "preserve-3d" } : undefined}
         className="relative w-full h-full flex items-center justify-center"
       >
         {/* ================= 3D GYROSCOPIC GIMBAL RINGS ================= */}
+        {/* Rings rotate only on tablet/desktop with motion allowed; on phones they stay static (benchmarked cost). */}
         {/* Ring 1: Electric Cyan (XY Plane) */}
-        <div className="absolute w-[min(240px,70vw)] xs:w-[min(280px,75vw)] sm:w-[440px] h-[min(240px,70vw)] xs:h-[min(280px,75vw)] sm:h-[440px] rounded-full border border-dashed border-[var(--color-secondary)]/30 animate-[spin_36s_linear_infinite]" />
+        <div className="absolute w-[min(215px,60vw)] xs:w-[min(250px,68vw)] sm:w-[440px] short-landscape:w-[230px] short-portrait:w-[165px] h-[min(215px,60vw)] xs:h-[min(250px,68vw)] sm:h-[440px] short-landscape:h-[230px] short-portrait:h-[165px] rounded-full border border-dashed border-brand/35 md:motion-safe:animate-[spin_36s_linear_infinite]" />
 
         {/* Ring 2: Neon Purple (Tilted Gimbal 3D) */}
         <div
           style={{ transform: "rotateX(68deg)" }}
-          className="absolute w-[min(220px,65vw)] xs:w-[min(250px,70vw)] sm:w-[400px] h-[min(220px,65vw)] xs:h-[min(250px,70vw)] sm:h-[400px] rounded-full border border-purple-500/30 animate-[spin_24s_linear_infinite_reverse]"
+          className="absolute w-[min(195px,55vw)] xs:w-[min(225px,62vw)] sm:w-[400px] short-landscape:w-[210px] short-portrait:w-[150px] h-[min(195px,55vw)] xs:h-[min(225px,62vw)] sm:h-[400px] short-landscape:h-[210px] short-portrait:h-[150px] rounded-full border border-ink-3/25 md:motion-safe:animate-[spin_24s_linear_infinite_reverse]"
         />
 
         {/* Ring 3: Radiant Emerald (Opposite Tilted Gimbal 3D) */}
         <div
           style={{ transform: "rotateY(68deg)" }}
-          className="absolute w-[min(170px,50vw)] xs:w-[min(190px,55vw)] sm:w-[310px] h-[min(170px,50vw)] xs:h-[min(190px,55vw)] sm:h-[310px] rounded-full border border-[var(--color-accent)]/30 animate-[spin_30s_linear_infinite]"
+          className="absolute w-[min(150px,42vw)] xs:w-[min(170px,48vw)] sm:w-[310px] short-landscape:w-[160px] short-portrait:w-[115px] h-[min(150px,42vw)] xs:h-[min(170px,48vw)] sm:h-[310px] short-landscape:h-[160px] short-portrait:h-[115px] rounded-full border border-brand-2/40 md:motion-safe:animate-[spin_30s_linear_infinite]"
         />
 
         {/* ================= CENTRAL SPATIAL GLASS SPHERE ================= */}
-        <motion.div
-          animate={{ y: [0, -8, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: [0.16, 1, 0.3, 1] }}
-          className="relative z-10 w-[min(160px,45vw)] xs:w-[min(190px,50vw)] sm:w-80 h-[min(160px,45vw)] xs:h-[min(190px,50vw)] sm:h-80 rounded-full p-2 glass-spatial border border-white/50 dark:border-[var(--color-secondary)]/35 shadow-[0_20px_50px_rgba(0,114,255,0.25)] dark:shadow-[0_20px_60px_rgba(0,240,255,0.25)] flex items-center justify-center overflow-hidden group glass-specular-top"
+        {/* Bob is a CSS keyframe (compositor-only), tablet/desktop only — phones keep one continuous motion in view. */}
+        <div
+          className="relative z-10 w-[min(145px,40vw)] xs:w-[min(170px,46vw)] sm:w-80 short-landscape:w-[150px] short-portrait:w-[115px] h-[min(145px,40vw)] xs:h-[min(170px,46vw)] sm:h-80 short-landscape:h-[150px] short-portrait:h-[115px] rounded-full p-2 bg-gradient-to-br from-white/70 to-white/30 dark:from-white/10 dark:to-white/[0.03] border border-white/50 dark:border-brand/30 shadow-[0_24px_60px_-18px_rgb(var(--brand)/0.45)] flex items-center justify-center overflow-hidden group md:motion-safe:animate-bob"
         >
           {/* Specular Edge Highlight Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-white/30 via-transparent to-cyan-400/25 pointer-events-none rounded-full" />
-          <div className="absolute -top-8 -left-8 w-20 sm:w-28 h-20 sm:h-28 bg-white/40 dark:bg-[var(--color-secondary)]/10 blur-xl rounded-full pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/30 via-transparent to-brand-2/20 pointer-events-none rounded-full" />
+          <div className="absolute -top-8 -left-8 w-20 sm:w-28 h-20 sm:h-28 bg-[radial-gradient(circle,rgb(255_255_255/0.5),transparent_70%)] dark:bg-[radial-gradient(circle,rgb(var(--brand-2)/0.12),transparent_70%)] rounded-full pointer-events-none" />
 
           {/* Authentic Portrait Image of THE SABBiR */}
           <div className="relative w-full h-full rounded-full overflow-hidden border border-slate-200/50 dark:border-white/10 bg-slate-950">
             <Image
               src="/assets/sabbir-stylish-portrait.jpg"
-              alt="Md Sabbirul Islam Khan (THE SABBiR)"
+              alt="Portrait of Md Sabbirul Islam Khan"
               fill
               priority
               draggable={false}
@@ -112,11 +110,11 @@ export function SpatialCore() {
           </div>
 
           {/* Floating Status Pill on Center Core */}
-          <div className="absolute bottom-2 inset-x-0 mx-auto w-fit px-2.5 sm:px-3 py-0.5 rounded-full glass-spatial border border-white/40 dark:border-[var(--color-secondary)]/40 text-[9px] sm:text-[10px] font-mono font-bold tracking-wider text-slate-800 dark:text-cyan-300 shadow-md flex items-center gap-1.5 backdrop-blur-md">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-secondary)] animate-ping" />
-            <span>THE SABBiR // CORE</span>
+          <div className="absolute bottom-2 inset-x-0 mx-auto w-fit px-2.5 sm:px-3 py-0.5 rounded-full bg-surface border border-line text-[11px] font-mono font-bold tracking-wider text-ink shadow-md flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-ok md:motion-safe:animate-ping" />
+            <span>THE SABBiR</span>
           </div>
-        </motion.div>
+        </div>
 
         {/* ================= 3D ORBITING TECH NODES ================= */}
         {ORBITING_NODES.map((node, i) => {
@@ -140,14 +138,14 @@ export function SpatialCore() {
                 y: "-50%",
               }}
               whileHover={{ scale: 1.15 }}
-              className="absolute z-20 hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full glass-spatial border border-slate-200/70 dark:border-white/20 shadow-md hover:border-[var(--color-secondary)]/70 transition-all cursor-default group"
+              className="absolute z-20 hidden sm:flex short-landscape:hidden items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface border border-line shadow-e1 hover:border-primary/50 transition-colors cursor-default group"
             >
               <span
                 className="w-2 h-2 rounded-full"
                 style={{ backgroundColor: node.color }}
               />
-              <Icon className="w-3.5 h-3.5 text-slate-700 dark:text-slate-200 group-hover:text-[var(--color-secondary)] transition-colors" />
-              <span className="text-[11px] font-mono font-medium text-slate-800 dark:text-slate-200 group-hover:text-[var(--color-secondary)] transition-colors">
+              <Icon className="w-3.5 h-3.5 text-ink-2 group-hover:text-primary transition-colors" />
+              <span className="text-[11px] font-mono font-medium text-ink group-hover:text-primary transition-colors">
                 {node.label}
               </span>
             </motion.div>

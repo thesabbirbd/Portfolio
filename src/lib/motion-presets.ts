@@ -1,6 +1,6 @@
 import { Variants } from "framer-motion";
 
-// V3.6.10 - Unified Motion Tokens
+// Unified motion tokens — keep in sync with --dur-* / --ease-* in globals.css
 export const duration = {
   instant: 0,
   fast: 0.2,
@@ -14,13 +14,13 @@ export const ease = {
   spatial: [0.16, 1, 0.3, 1], // Apple-like smooth spatial ease
   mobileStandard: [0.4, 0, 0.2, 1], // optimized for mobile
   mobileSpatial: [0.2, 0.8, 0.2, 1], // smoother for mobile
-};
+} satisfies Record<string, [number, number, number, number]>;
 
 export const springs = {
   soft: { type: "spring", stiffness: 100, damping: 20, mass: 1 },
   balanced: { type: "spring", stiffness: 200, damping: 20, mass: 1 },
   heavy: { type: "spring", stiffness: 300, damping: 30, mass: 1.5 },
-};
+} as const;
 
 // Layout Transitions
 export const layoutTransition = {

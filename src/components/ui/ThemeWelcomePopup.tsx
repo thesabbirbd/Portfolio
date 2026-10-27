@@ -7,7 +7,7 @@ import { GlassButton } from "./glass/GlassButton";
 import { sound } from "@/lib/sound";
 
 export function ThemeWelcomePopup() {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, theme } = useTheme();
   const [isVisible, setIsVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -16,11 +16,16 @@ export function ThemeWelcomePopup() {
     const hasSeenPopup = sessionStorage.getItem("hasSeenThemePopup");
     
     if (!hasSeenPopup) {
-      const timer = setTimeout(() => {
-        setIsVisible(true);
-        // Play subtle sound if allowed/desired
-      }, 1500);
-      return () => clearTimeout(timer);
+      const show = setTimeout(() => setIsVisible(true), 1800);
+      // Informational only: dismiss itself so it never lingers over content.
+      const hide = setTimeout(() => {
+        setIsVisible(false);
+        sessionStorage.setItem("hasSeenThemePopup", "true");
+      }, 11000);
+      return () => {
+        clearTimeout(show);
+        clearTimeout(hide);
+      };
     }
   }, []);
 
@@ -36,36 +41,31 @@ export function ThemeWelcomePopup() {
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          role="status"
+          aria-live="polite"
+          initial={{ opacity: 0, y: -12, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+          exit={{ opacity: 0, y: -8, scale: 0.97 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] inset-x-4 sm:inset-x-auto sm:bottom-10 sm:right-10 z-[100] w-auto sm:w-96 mx-auto sm:mx-0 p-6 rounded-3xl bg-background/70 backdrop-blur-2xl border border-[var(--primary)]/30 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] spatial-glass"
+          className="fixed top-[calc(0.75rem+env(safe-area-inset-top))] inset-x-3 md:inset-x-auto md:top-auto md:bottom-24 md:right-6 z-[100] md:w-80 p-3.5 md:p-4 rounded-2xl bg-background/80 backdrop-blur-2xl border border-[var(--color-primary)]/25 shadow-[0_16px_40px_-12px_rgba(0,0,0,0.35)] print:hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-tr from-[var(--primary)]/5 to-[var(--accent)]/5 rounded-3xl pointer-events-none" />
-          
-          <div className="relative z-10 flex flex-col gap-3">
-            <h3 className="text-lg font-bold text-foreground tracking-tight">
-              Welcome to THE SABBiR OS
-            </h3>
-            <p className="text-sm text-foreground/80 leading-relaxed font-medium">
-              We noticed your system prefers{" "}
-              <strong className="text-[var(--primary)] font-semibold uppercase tracking-wide">
-                {resolvedTheme}
-              </strong>{" "}
-              mode, so we've synced the environment for you. You can change this anytime using the theme toggle in the navigation.
-            </p>
-            
-            <div className="mt-2 flex justify-end">
-              <GlassButton 
-                onClick={handleClose} 
-                variant="primary"
-                size="sm"
-                className="font-bold uppercase tracking-widest text-[10px]"
-              >
-                Got it
-              </GlassButton>
+          <div className="flex items-start gap-3">
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-foreground">Welcome to THE SABBiR</p>
+              <p className="text-xs text-foreground/75 leading-relaxed mt-0.5">
+                {theme === "system" ? "Theme matched to your system" : "Theme set to"}{" "}
+                <strong className="text-[var(--color-primary)] font-semibold capitalize">{resolvedTheme}</strong>. Change it anytime from the nav or Settings.
+              </p>
             </div>
+            <GlassButton
+              onClick={handleClose}
+              variant="primary"
+              size="sm"
+              magnetic={false}
+              className="shrink-0 font-semibold text-[11px]"
+            >
+              Got it
+            </GlassButton>
           </div>
         </motion.div>
       )}

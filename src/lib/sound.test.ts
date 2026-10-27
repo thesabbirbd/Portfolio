@@ -1,5 +1,5 @@
 import { test, describe, vi as mock, beforeEach, afterEach, expect } from 'vitest';
-import { sound } from './sound.ts';
+import { sound, SoundSystem } from './sound.ts';
 
 describe('SoundSystem Policy Block Feature', () => {
   let originalWindow: typeof globalThis.window | undefined;
@@ -95,7 +95,7 @@ describe('SoundSystem Policy Block Feature', () => {
     // This should NOT throw an error if the try-catch block inside playBeep works
     expect(() => {
       sound.click();
-      sound.hover();
+      sound.milestone('linux');
       sound.toggleSwitch();
       sound.modalOpen();
       sound.success();
@@ -136,5 +136,61 @@ describe('SoundSystem Policy Block Feature', () => {
     expect(() => {
       sound.click();
     }).not.toThrow();
+  });
+
+  test('scroll-driven milestone cues never create an AudioContext without a user gesture', () => {
+    const ctor = mock.fn();
+    // @ts-ignore
+    globalThis.window = {
+      AudioContext: class { constructor() { ctor(); } },
+    } as any;
+    Object.defineProperty(globalThis, 'localStorage', {
+      value: { getItem: (k: string) => (k === 'sabbir_portfolio_sound' ? 'true' : null), setItem: mock.fn() },
+      writable: true,
+      configurable: true
+    });
+
+    const s = new SoundSystem(); // enabled from storage, but no gesture has happened yet
+    expect(s.isEnabled()).toBe(true);
+    s.milestone('linux');
+    s.milestone('python');
+    expect(ctor).not.toHaveBeenCalled();
+  });
+
+  test('throttles rapid repeats and stays silent when disabled', () => {
+    const createOscillator = mock.fn(() => ({
+      type: 'sine',
+      frequency: { setValueAtTime: () => {} },
+      connect: () => {},
+      start: () => {},
+      stop: () => {}
+    }));
+    // @ts-ignore
+    globalThis.window = {
+      AudioContext: class {
+        state = 'running';
+        createOscillator = createOscillator;
+        createGain() {
+          return { gain: { value: 1, setValueAtTime: () => {}, exponentialRampToValueAtTime: () => {} }, connect: () => {} };
+        }
+        get currentTime() { return 0; }
+        get destination() { return {}; }
+      }
+    } as any;
+    Object.defineProperty(globalThis, 'localStorage', {
+      value: { getItem: () => null, setItem: mock.fn() },
+      writable: true,
+      configurable: true
+    });
+
+    const s = new SoundSystem();
+    s.click();
+    expect(createOscillator).not.toHaveBeenCalled(); // off by default
+
+    s.setEnabled(true); // user gesture: plays the 2-note preview
+    const afterPreview = createOscillator.mock.calls.length;
+    s.click();
+    s.click(); // within the minimum gap: ignored
+    expect(createOscillator.mock.calls.length).toBe(afterPreview + 1);
   });
 });

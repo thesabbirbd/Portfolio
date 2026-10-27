@@ -23,12 +23,13 @@ export function GlassCard({
   onMouseLeave,
   ...props
 }: GlassCardProps) {
+  // Legacy glow names now map onto semantic roles: blue/cyan → signal, purple/primary → brand.
   const glowStyles = {
     none: "",
-    blue: "hover:shadow-[0_12px_40px_-10px_rgba(0,114,255,0.22)] hover:border-blue-500/30",
-    cyan: "hover:shadow-[0_12px_40px_-10px_rgba(0,240,255,0.22)] hover:border-cyan-500/30",
-    purple: "hover:shadow-[0_12px_40px_-10px_rgba(121,40,202,0.22)] hover:border-purple-500/30",
-    primary: "hover:shadow-[0_12px_40px_-10px_rgba(var(--color-primary),0.22)] hover:border-primary/30",
+    blue: "hover:shadow-e2 hover:border-signal/30",
+    cyan: "hover:shadow-e2 hover:border-signal/30",
+    purple: "hover:shadow-e2 hover:border-primary/30",
+    primary: "hover:shadow-e2 hover:border-primary/30",
   };
 
   const cardRef = useRef<HTMLDivElement>(null);
@@ -60,8 +61,9 @@ export function GlassCard({
       onMouseLeave={handleMouseLeave}
       whileHover={hoverEffect ? { y: -4, transition: { duration: 0.2 } } : undefined}
       className={cn(
-        "relative rounded-3xl overflow-hidden group transition-all duration-300",
-        heavy ? "spatial-glass-heavy" : "spatial-glass",
+        // In-flow content: level-1 surfaces (no backdrop-filter). Framer owns transform; CSS animates paint only.
+        "relative rounded-3xl overflow-hidden group transition-[border-color,box-shadow,background-color] duration-300",
+        heavy ? "surface-elevated" : "surface-card",
         hoverEffect && "cursor-pointer",
         glow !== "none" && glowStyles[glow],
         className

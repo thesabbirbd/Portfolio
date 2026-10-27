@@ -3,7 +3,19 @@
 import { useState, useMemo } from 'react';
 import { ContentItem } from '@/lib/content';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
+const STATUS_STYLE: Record<string, string> = {
+  active: 'text-ok bg-ok/10 border-ok/25',
+  experimental: 'text-signal bg-signal/10 border-signal/25',
+  completed: 'text-primary bg-primary/10 border-primary/25',
+  prototype: 'text-accent bg-accent/10 border-accent/25',
+};
+
+/**
+ * /projects list: a single-row, horizontally scrollable filter on phones (wraps on larger
+ * screens) and level-1 cards whose title link covers the whole card for an easy touch target.
+ */
 export function ProjectBrowser({ projects }: { projects: ContentItem[] }) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
@@ -22,73 +34,85 @@ export function ProjectBrowser({ projects }: { projects: ContentItem[] }) {
     });
   }, [projects, selectedCategory]);
 
+  const filters: { value: string | null; label: string }[] = [{ value: null, label: 'All projects' }, ...categories.map(c => ({ value: c, label: c }))];
+
   return (
     <div className="w-full">
-      <div className="flex flex-wrap gap-2 mb-12">
-        <button 
-          onClick={() => setSelectedCategory(null)}
-          className={`px-4 py-2 text-sm rounded-xl transition-colors ${!selectedCategory ? 'bg-primary text-primary-foreground font-semibold' : 'bg-muted/50 text-muted-foreground hover:bg-muted'}`}
-        >
-          All Projects
-        </button>
-        {categories.map(cat => (
-          <button 
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`px-4 py-2 text-sm rounded-xl transition-colors ${selectedCategory === cat ? 'bg-primary text-primary-foreground font-semibold' : 'bg-muted/50 text-muted-foreground hover:bg-muted'}`}
-          >
-            {cat}
-          </button>
-        ))}
+      <div
+        role="group"
+        aria-label="Filter projects by category"
+        className="-mx-4 px-4 sm:mx-0 sm:px-0 flex sm:flex-wrap gap-2 mb-6 sm:mb-10 overflow-x-auto sm:overflow-visible snap-x hide-scrollbar"
+      >
+        {filters.map(({ value, label }) => {
+          const active = selectedCategory === value;
+          return (
+            <button
+              key={label}
+              type="button"
+              aria-pressed={active}
+              onClick={() => setSelectedCategory(value)}
+              className={cn(
+                'shrink-0 snap-start px-3.5 py-2 min-h-10 text-sm rounded-full border transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
+                active ? 'bg-primary border-primary text-on-primary font-semibold' : 'border-line text-ink-2 hover:text-ink hover:border-line-strong'
+              )}
+            >
+              {label}
+            </button>
+          );
+        })}
       </div>
-      
+
+      <p className="sr-only" aria-live="polite">{filteredProjects.length} projects shown</p>
+
       {filteredProjects.length === 0 ? (
-        <div className="py-12 text-center text-muted-foreground bg-muted/20 rounded-2xl border border-border/50">
+        <div className="py-12 text-center text-ink-3 rounded-card surface-card">
           No projects found in this category.
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-8">
-          {filteredProjects.map(project => (
-            <div key={project.meta.slug} className="group flex flex-col md:flex-row gap-6 p-6 rounded-3xl bg-muted/10 border border-border/50 hover:border-primary/30 transition-all">
-              <div className="flex-1 space-y-4">
-                <div className="flex flex-wrap items-center gap-3">
-                  <h3 className="text-2xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
-                    {project.meta.title}
-                  </h3>
-                  {project.meta.projectStatus && (
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
-                      {project.meta.projectStatus}
+        <div className="grid grid-cols-1 gap-3 sm:gap-5">
+          {filteredProjects.map(project => {
+            const status = project.meta.projectStatus;
+            return (
+              <article key={project.meta.slug} className="reveal group relative flex flex-col gap-3 p-4 sm:p-6 rounded-card surface-card surface-interactive">
+                <div className="flex flex-wrap items-center gap-2">
+                  {status && (
+                    <span className={cn('px-2 py-0.5 rounded-full border text-[11px] font-mono font-semibold uppercase tracking-wider', STATUS_STYLE[status] ?? 'text-ink-3 bg-muted border-line')}>
+                      {status}
                     </span>
                   )}
+                  {project.meta.category && <span className="text-xs font-mono text-ink-3">{project.meta.category}</span>}
                 </div>
-                
-                <p className="text-muted-foreground leading-relaxed line-clamp-2">
+                <h3 className="text-lg sm:text-2xl font-bold tracking-tight text-ink group-hover:text-primary transition-colors">
+                  <Link href={`/projects/${project.meta.slug}`} className="after:absolute after:inset-0 after:rounded-card focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-primary/50">
+                    {project.meta.title}
+                  </Link>
+                </h3>
+
+                <p className="text-sm sm:text-base text-ink-2 leading-relaxed line-clamp-3 sm:line-clamp-2">
                   {project.meta.description}
                 </p>
 
                 {project.meta.technologies && project.meta.technologies.length > 0 && (
-                  <div className="flex flex-wrap gap-2 pt-2">
+                  <ul className="flex flex-wrap gap-1.5" aria-label="Technologies">
                     {project.meta.technologies.slice(0, 5).map(tech => (
-                      <span key={tech} className="text-xs font-mono px-2 py-1 bg-background border border-border/50 rounded text-muted-foreground">
+                      <li key={tech} className="text-xs font-mono px-2 py-0.5 bg-muted rounded text-ink-2">
                         {tech}
-                      </span>
+                      </li>
                     ))}
                     {project.meta.technologies.length > 5 && (
-                      <span className="text-xs font-mono px-2 py-1 bg-background border border-border/50 rounded text-muted-foreground">
+                      <li className="text-xs font-mono px-2 py-0.5 bg-muted rounded text-ink-3">
                         +{project.meta.technologies.length - 5}
-                      </span>
+                      </li>
                     )}
-                  </div>
+                  </ul>
                 )}
-                
-                <div className="pt-4">
-                  <Link href={`/projects/${project.meta.slug}`} className="inline-flex items-center text-sm font-semibold text-foreground hover:text-primary transition-colors">
-                    View Case Study <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
+
+                <span aria-hidden="true" className="inline-flex items-center text-sm font-semibold text-primary">
+                  View case study <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
+                </span>
+              </article>
+            );
+          })}
         </div>
       )}
     </div>

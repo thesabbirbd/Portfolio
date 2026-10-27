@@ -51,13 +51,13 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
               className="pointer-events-auto flex items-center gap-3 p-3 rounded-2xl spatial-glass bg-background/80 shadow-2xl border border-white/10 dark:border-white/5"
             >
-              {t.type === "info" && <Info className="w-5 h-5 text-blue-500" />}
-              {t.type === "success" && <CheckCircle2 className="w-5 h-5 text-emerald-500" />}
+              {t.type === "info" && <Info className="w-5 h-5 text-signal" />}
+              {t.type === "success" && <CheckCircle2 className="w-5 h-5 text-ok" />}
               {t.type === "error" && <AlertCircle className="w-5 h-5 text-red-500" />}
               <p className="flex-1 text-sm font-medium text-foreground">{t.message}</p>
               <button
                 onClick={() => removeToast(t.id)}
-                className="p-1 rounded-full hover:bg-white/10 transition-colors text-muted"
+                className="p-1 rounded-full hover:bg-white/10 transition-colors text-ink-3"
                 aria-label="Close notification"
               >
                 <X className="w-4 h-4" />

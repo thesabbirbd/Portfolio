@@ -10,17 +10,16 @@ export const GlassInput = React.forwardRef<HTMLInputElement, GlassInputProps>(
     return (
       <div className="relative flex items-center w-full">
         {icon && (
-          <div className="absolute left-3 text-slate-700 dark:text-slate-300 dark:text-slate-700 dark:text-slate-300 pointer-events-none z-10">
+          <div className="absolute left-3 text-ink-3 pointer-events-none z-10">
             {icon}
           </div>
         )}
         <input
           ref={ref}
           className={cn(
-            "w-full spatial-glass px-4 py-2.5 text-sm rounded-xl outline-none placeholder:text-slate-700 dark:text-slate-300 dark:placeholder:text-slate-700 dark:text-slate-300",
-            "focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all",
-            "text-gray-900 dark:text-gray-100",
-            icon && "pl-10",
+            "w-full surface-card px-4 py-2.5 text-base sm:text-sm rounded-xl outline-none text-ink placeholder:text-ink-3",
+            "focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-[border-color,box-shadow]",
+                        icon && "pl-10",
             className
           )}
           {...props}

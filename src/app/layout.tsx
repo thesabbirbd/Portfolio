@@ -9,10 +9,10 @@ import { CommandMenu } from "@/components/ui/CommandMenu";
 import { MorphingNav } from "@/components/navigation/MorphingNav";
 import { Footer } from "@/components/layout/Footer";
 import { TerminalModal } from "@/components/ui/TerminalModal";
-import { LoadingScreen } from "@/components/ui/LoadingScreen";
+import { SettingsPanel } from "@/components/ui/SettingsPanel";
+import { MotionPreferences } from "@/components/theme/MotionPreferences";
 import { LiquidBackground } from "@/components/ui/LiquidBackground";
 import { FloatingGlassBackground } from "@/components/ui/FloatingGlassBackground";
-import { SmoothScroll } from "@/components/ui/SmoothScroll";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://sabbir.nav.bd"),
   title: "Md Sabbirul Islam Khan — THE SABBiR | Backend, DevOps, AI & Systems",
   description: "Md Sabbirul Islam Khan, known online as THE SABBiR, is a Management student from Rajshahi, Bangladesh exploring Backend Engineering, DevOps, AI, Linux, Networking, IT Systems and Creative Technology.",
-  keywords: ["Md Sabbirul Islam Khan", "THE SABBiR", "sabbir.nav.bd", "Backend Engineering", "DevOps", "Local AI", "IT Systems"],
+  keywords: ["Md Sabbirul Islam Khan", "THE SABBiR", "sabbir.nav.bd", "Backend Engineering", "DevOps", "Local AI", "IT Systems", "Aiyaar", "Aiyaar Ltd", "Chief Project Manager", "POS software Bangladesh", "digital khata"],
   authors: [{ name: "Md Sabbirul Islam Khan", url: "https://github.com/thesabbirbd" }],
   creator: "Md Sabbirul Islam Khan",
   publisher: "THE SABBiR",
@@ -97,6 +97,12 @@ const jsonLd = {
         "addressLocality": "Rajshahi",
         "addressCountry": "Bangladesh"
       },
+      "jobTitle": "Chief Project Manager",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Aiyaar Ltd",
+        "url": "https://aiyaar.ltd"
+      },
       "alumniOf": [
         {
           "@type": "CollegeOrUniversity",
@@ -116,7 +122,7 @@ const jsonLd = {
       ],
       "sameAs": [
         "https://github.com/thesabbirbd",
-        "https://linkedin.com/in/thesabbirbd",
+        "https://www.linkedin.com/in/thesabbirbd/",
         "https://facebook.com/iamthesabbir",
         "https://x.com/thesabbirbd",
         "https://instagram.com/iam_thesabbir",
@@ -140,15 +146,16 @@ const jsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} scroll-smooth antialiased`}>
+    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
       <head>
         {/* Google Analytics Tag */}
+        {/* Analytics load after the page is idle (lazyOnload) so they never compete with hydration. */}
         <Script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-47T386XBN6"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -158,9 +165,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </Script>
 
         <Script id="service-worker" strategy="afterInteractive">
-          {`if ("serviceWorker" in navigator) { window.addEventListener("load", function() { navigator.serviceWorker.register("/sw.js").then(function(registration) { console.log("SW registered"); }, function(err) { console.log("SW registration failed: ", err); }); }); }`}
+          {/* Production only: dev chunks are not content-hashed, so a caching SW would serve stale JS
+              (hydration mismatches). In dev, remove any worker and caches left from a production run.
+              afterInteractive usually runs after window "load" has fired, so register right away then. */}
+          {process.env.NODE_ENV === "production"
+            ? `if ("serviceWorker" in navigator) { var r = function() { navigator.serviceWorker.register("/sw.js").catch(function() {}); }; if (document.readyState === "complete") r(); else window.addEventListener("load", r); }`
+            : `if ("serviceWorker" in navigator) { navigator.serviceWorker.getRegistrations().then(function(rs) { rs.forEach(function(r) { r.unregister(); }); }); if (window.caches) caches.keys().then(function(ks) { ks.forEach(function(k) { caches.delete(k); }); }); }`}
         </Script>
-        <Script id="microsoft-clarity" strategy="afterInteractive">
+        <Script id="microsoft-clarity" strategy="lazyOnload">
           {`
             (function(c,l,a,r,i,t,y){
             c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -169,32 +181,44 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             })(window, document, "clarity", "script", "ypf1mf272k");
           `}
         </Script>
+        {/* Apply the saved colour palette and motion preference before first paint (no flash, no reveal for reduced motion). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var d=document.documentElement,c=localStorage.getItem("sabbir_color_theme");if(c==="orange"||c==="blue"||c==="green")d.setAttribute("data-theme-color",c);if(localStorage.getItem("sabbir_reduced_motion")==="true")d.dataset.motion="reduced"}catch(e){}`,
+          }}
+        />
         <script type="application/ld+json">
           {JSON.stringify(jsonLd).replaceAll('<', String.raw`\u003c`)}
         </script>
       </head>
       <body className="bg-background text-foreground transition-colors duration-500 min-h-screen flex flex-col selection:bg-[var(--color-secondary)]/10 selection:text-[var(--color-secondary)]">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:px-4 focus:py-2 focus:rounded-full focus:bg-primary focus:text-on-primary focus:font-semibold focus:shadow-e3"
+        >
+          Skip to content
+        </a>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <MotionPreferences>
           <ToastProvider>
           <ThemeWelcomePopup />
-          {/* <LoadingScreen /> */}
           <LiquidBackground />
           <FloatingGlassBackground />
           <div className="grain-overlay" />
           <MorphingNav />
-          <SmoothScroll>
-            <main className="flex-1 w-full max-w-full relative z-10 pt-16 md:pt-24 overflow-x-clip">{children}</main>
-            <Footer />
-            <TerminalModal />
-          </SmoothScroll>
+          <main id="main-content" tabIndex={-1} className="flex-1 w-full focus:outline-none max-w-full relative z-10 pt-[max(0.75rem,env(safe-area-inset-top))] md:pt-24 short-landscape:pt-16 overflow-x-clip">{children}</main>
+          <Footer />
+          <TerminalModal />
           <CommandMenu />
           <IdentityDock />
+          <SettingsPanel />
           <div className="hidden md:block">
             <CustomCursor />
           </div>
           <SpeedInsights />
           <Analytics />
         </ToastProvider>
+          </MotionPreferences>
         </ThemeProvider>
       </body>
     </html>

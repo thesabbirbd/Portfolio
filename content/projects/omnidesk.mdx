@@ -1,73 +1,83 @@
 ---
 title: "Omnidesk BD"
 slug: "omnidesk"
-description: "A commercial e-commerce platform for custom PC builds and ergonomic furniture, focusing on performance, modularity, and smooth user checkout flows."
-date: "2026-09-01"
+description: "A local-first learning and engineering workspace: ingest study material, turn it into a visual DAG roadmap, and prove progress through competency gates — with FastAPI, PostgreSQL and a Gemini → Ollama → offline AI cascade."
+date: "2026-09-07"
 type: "projects"
-category: "E-Commerce"
-tags: ["Next.js", "React", "Node.js", "Backend"]
+category: "Learning Platform"
+tags: ["FastAPI", "PostgreSQL", "Local AI", "Backend"]
 status: "published"
 featured: true
 author: "Md Sabbirul Islam Khan"
 brand: "THE SABBiR"
 projectStatus: "active"
-projectRole: "Lead Developer (Backend & Architecture)"
-technologies: ["Next.js", "Tailwind CSS", "Node.js", "PostgreSQL", "Prisma", "Redis", "Docker"]
-demoUrl: "https://omnidesk.com.bd"
-githubUrl: "https://github.com/thesabbirbd"
-dateStarted: "2024-01-15"
-relatedNotes: ["openwrt-nas"]
-relatedJournal: ["ubuntu-dev-environment"]
+projectRole: "Solo Developer (Backend, Frontend & Packaging)"
+technologies: ["FastAPI", "PostgreSQL 16", "SQLAlchemy 2", "Redis", "Ollama", "React 18", "Tailwind CSS v4", "Tauri", "Docker"]
+githubUrl: "https://github.com/thesabbirbd/Omnidesk-BD"
+dateStarted: "2026-09-07"
+relatedJournal: ["changing-local-ai-strategy"]
 architecture:
   nodes:
-    - Next.js (Frontend)
-    - Node.js API (Backend)
-    - PostgreSQL (Database)
-    - Redis (Cache)
-    - Admin Panel
+    - React Client (Vite)
+    - FastAPI Gateway
+    - Ingestion Engine
+    - AI Cascade
+    - Scheduler
+    - PostgreSQL
+    - Redis
   edges:
-    - Next.js (Frontend) -> Node.js API (Backend)
-    - Admin Panel -> Node.js API (Backend)
-    - Node.js API (Backend) -> Redis (Cache)
-    - Node.js API (Backend) -> PostgreSQL (Database)
+    - React Client (Vite) -> FastAPI Gateway
+    - FastAPI Gateway -> Ingestion Engine
+    - FastAPI Gateway -> AI Cascade
+    - FastAPI Gateway -> Scheduler
+    - FastAPI Gateway -> PostgreSQL
+    - FastAPI Gateway -> Redis
 changelog:
-  - date: "2024-01-15"
-    title: "Project Inception"
-    summary: "Started architectural planning and database schema design for the custom PC builder logic."
-  - date: "2024-03-10"
-    title: "V1 Core Release"
-    summary: "Launched the initial storefront with secure JWT authentication and order management."
-  - date: "2024-06-05"
-    title: "Redis Caching Integration"
-    summary: "Integrated Redis to cache heavy product-catalog queries, dropping API latency by 60%."
+  - date: "2026-09-07"
+    title: "v1.0.0 — Initial Prototype"
+    summary: "First public version of the repository: FastAPI backend, React client and the core learning-workspace idea."
+  - date: "2026-09-08"
+    title: "v1.3.x — Glass UI & Full-Stack Foundation"
+    summary: "Glass/clay design system, DAG mind-map, focus timer HUD and the backend foundation for ingestion and scheduling."
+  - date: "2026-09-30"
+    title: "v1.3.20 — Desktop Pre-release"
+    summary: "Tauri desktop builds published as a pre-release for Windows (.exe/.msi) and Linux (.AppImage/.deb/.rpm)."
 ---
 
 ## The Problem
 
-Building a generic e-commerce site is simple, but building one that supports complex, conditionally-dependent products (like a custom PC builder where choosing a specific CPU limits your choice of Motherboard) is a significant relational data challenge. Omnidesk BD needed a highly responsive interface combined with a strict backend rule engine to prevent users from placing invalid or physically incompatible orders.
+Most learning tools reward watching, not understanding: progress bars fill up when you click "complete", AI summaries arrive without sources, and the tools you actually practise with (a terminal, a debugger) live somewhere else. I wanted one workspace where study material, a roadmap, deliberate practice and focus time sit together — and where progress has to be earned.
+
+It also had to keep working without an internet connection or a paid API, because that is the reality of studying from Rajshahi on personal hardware.
 
 ## The Approach
 
-The platform is split into a decoupled frontend (Next.js) and backend (Node.js/Express). The backend acts as the source of truth for product availability, pricing calculations, and compatibility validation.
+Omnidesk BD is a **local-first** workspace with a FastAPI backend and a React client:
 
-### Architecture Evolution
+- **Ingestion engine** — Python adapters parse PDF (PyMuPDF with a pypdf fallback), Markdown, plain text and YouTube transcripts into chunks, each with a SHA-256 hash so generated topics can point back to their source.
+- **Analyze → Preview → Approve** — generated roadmaps are shown as a preview first; nothing is written to the database until the learner approves it.
+- **Visual DAG roadmap** — topics are stored as a dependency graph in PostgreSQL and rendered with React Flow, so prerequisites are explicit.
+- **Competency gates** — a topic is not "done" until it has been explained, implemented and debugged; completion timing is checked against realistic pacing.
+- **Practice in place** — an embedded terminal (Xterm.js over a WebSocket PTY bridge) and a focus-timer HUD that survives page changes.
 
-Initially, the database handled all compatibility checks on every page load. As the product catalog grew, this became a bottleneck. 
+## Architecture
 
-I introduced **Redis** as a caching layer between the Node API and PostgreSQL. Now, standard product queries hit the cache, while complex build-validations hit the relational database.
+The client talks to a FastAPI gateway (Pydantic v2) that applies per-user isolation before routing to the ingestion engine, the AI layer, the scheduler and the template registry. PostgreSQL 16 (SQLAlchemy 2 + Alembic migrations) holds the topic graph and provenance; Redis serves as cache and task broker, with an in-memory fallback queue when it is absent. The whole stack runs with Docker Compose, and a Tauri shell packages it as a desktop app.
 
 ## Engineering Decisions & Trade-offs
 
-**Decision:** Separating the Admin Panel from the Main Storefront  
-*Context:* Both systems needed to access the same database but had vastly different security and bundle-size requirements.  
-*Trade-off:* We accepted the overhead of maintaining two separate frontend codebases in exchange for a drastically lighter customer-facing bundle and tightly locked-down admin security rules.
+**Decision:** A three-tier AI cascade — Gemini free tier → local Ollama model → offline heuristic  
+*Context:* Cloud models are capable but need a connection; small local models run offline but are limited on modest hardware.  
+*Trade-off:* More code paths to test, in exchange for a workspace that always produces *something* useful and never depends on a paid key. This mirrors the reasoning in my journal entry on moving to a hybrid local/cloud AI strategy.
 
-## What Didn't Work (Failures & Iterations)
+**Decision:** Preview before persistence  
+*Context:* AI output can be wrong, and silently saving it would pollute the learner's roadmap.  
+*Trade-off:* One extra step for the user, in exchange for a database that only contains approved, source-linked content.
 
-During early testing, the custom PC builder form was entirely client-side. This seemed fast, but it allowed tech-savvy users to manipulate the DOM and bypass compatibility warnings before submitting the cart payload. 
-
-*The Fix:* We had to rewrite the validation logic so that the backend re-validates the entire build graph at checkout, completely ignoring client-side compatibility flags.
+**Decision:** Graceful degradation over hard requirements  
+*Context:* Redis, a GPU or an internet connection may not be available on every machine.  
+*Trade-off:* Fallbacks (in-memory queue, heuristic generation) are slower or simpler, but the core workflow still runs.
 
 ## Current State & Future Direction
 
-Omnidesk BD is currently active and processing live orders. The next engineering phase involves migrating the monolithic Node API into smaller, domain-specific microservices (e.g., separating the Order Service from the Product Catalog Service) using Docker to prepare for future horizontal scaling.
+Omnidesk BD is in active development as an open-source (MIT) project. The repository includes backend test suites for ingestion, the AI cascade, approval persistence and user isolation, and desktop builds are available as a pre-release. Next steps are hardening the desktop packaging, broadening the curriculum templates and measuring performance on low-end hardware before calling a stable release.

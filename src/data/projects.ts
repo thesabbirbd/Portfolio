@@ -1,5 +1,7 @@
 export interface ProjectItem {
   id: string;
+  /** MDX case-study slug under content/projects when it differs from `id`. */
+  slug?: string;
   title: string;
   category: "Featured" | "Backend" | "Systems" | "AI" | "Hardware" | "Community";
   shortDescription: string;
@@ -22,28 +24,29 @@ export interface ProjectItem {
 export const PROJECTS_DATA: ProjectItem[] = [
   {
     id: "omnidesk-bd",
+    slug: "omnidesk",
     title: "Omnidesk BD",
     category: "Featured",
     featured: true,
-    shortDescription: "A commercial e-commerce platform for custom PC builds and ergonomic furniture, focusing on performance, modularity, and smooth user checkout flows.",
+    shortDescription: "A local-first learning and engineering workspace that turns study material into a visual DAG roadmap, gates progress on real competency, and keeps working offline.",
     longDescription:
-      "Omnidesk BD is a commercial e-commerce platform designed to handle complex relational data for custom PC builds. It is built to prevent users from placing invalid or physically incompatible orders using a highly responsive interface paired with a strict backend rule engine.",
-    technologies: ["Next.js", "Tailwind CSS", "Node.js", "PostgreSQL", "Prisma", "Redis", "Docker"],
-    architecture: "Next.js Frontend / Node.js API / Redis Cache / PostgreSQL DB",
+      "Omnidesk BD ingests PDFs, Markdown, text and YouTube transcripts, turns them into a source-linked topic graph, and only marks a topic done once it has been explained, implemented and debugged. A FastAPI + PostgreSQL backend sits behind a React client, with an AI cascade (Gemini free tier → local Ollama → offline heuristic) so the workspace never depends on a paid key or a connection.",
+    technologies: ["FastAPI", "PostgreSQL", "SQLAlchemy", "Redis", "Ollama", "React", "Tauri", "Docker"],
+    architecture: "React Client / FastAPI Gateway / Ingestion + AI Cascade + Scheduler / PostgreSQL + Redis",
     highlights: [
-      "Complex Component Compatibility Engine for Custom PC Builders",
-      "Redis caching layer dropping standard API catalog query latency by 60%",
-      "Decoupled Architecture with separate isolated Admin Panel from customer storefront",
-      "Containerized deployment strategy using Docker and CI/CD pipelines",
+      "Multi-format ingestion (PDF, Markdown, text, YouTube transcripts) with SHA-256 source provenance",
+      "Analyze → Preview → Approve flow: AI-generated roadmaps are never saved without review",
+      "Visual DAG roadmap (React Flow) backed by a PostgreSQL topic graph",
+      "Three-tier AI cascade with an offline fallback; packaged for desktop with Tauri",
     ],
-    status: "Active Engineering",
-    year: "2025 - 2026",
+    status: "Active Development",
+    year: "2026",
     githubUrl: "https://github.com/thesabbirbd/Omnidesk-BD",
     gradient: "from-blue-600/25 via-cyan-500/20 to-purple-600/20",
     stats: [
       { label: "Execution Mode", value: "Local-First" },
-      { label: "AI Engine", value: "Offline Ollama" },
-      { label: "Backend", value: "FastAPI + asyncpg" },
+      { label: "AI Engine", value: "Gemini → Ollama → Offline" },
+      { label: "Backend", value: "FastAPI + SQLAlchemy" },
       { label: "Data Store", value: "PostgreSQL" },
     ],
   },
@@ -61,7 +64,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
       "Configured dummy EDID configurations for true 1080p60 headless video rendering",
       "Automated virtual display activation using modular systemd service hooks",
     ],
-    status: "Active R&D",
+    status: "Experimental",
     year: "2025",
     githubUrl: "https://github.com/thesabbirbd",
     gradient: "from-cyan-500/20 via-blue-500/20 to-transparent",
@@ -99,7 +102,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
       "Compared 8-bit vs 4-bit quantization impacts on token evaluation speeds",
       "Documented GPU memory bandwidth bottlenecks during extended context window evaluations",
     ],
-    status: "Benchmark Active",
+    status: "Active",
     year: "2026",
     githubUrl: "https://github.com/thesabbirbd",
     gradient: "from-purple-600/20 via-pink-500/20 to-transparent",
@@ -111,14 +114,14 @@ export const PROJECTS_DATA: ProjectItem[] = [
     featured: false,
     shortDescription: "High-availability router configuration, firewall filtering rules, VLAN segmenting, and 24/7 uptime surveillance benches.",
     longDescription:
-      "Built during hands-on NOC support and MTCNA training. Designed multi-subnet routing tables, bandwidth queues (simple and tree), failover gateway scripts, and firewall connection-tracking filters.",
+      "A home lab for practising MikroTik and NOC concepts. Designed multi-subnet routing tables, bandwidth queues (simple and tree), failover gateway scripts, and firewall connection-tracking filters.",
     technologies: ["RouterOS", "MikroTik", "TCP/IP", "Wireshark", "VLANs"],
     architecture: "Layer 3 Routing / Firewall Rules / Quality of Service (QoS)",
     highlights: [
       "Constructed failover scripts that automatically switch active WAN gateways upon ping timeout",
       "Filtered unwanted ICMP and broadcast storms to preserve internal network bandwidth",
     ],
-    status: "Production Bench",
+    status: "Active lab",
     year: "2025",
     gradient: "from-blue-600/20 via-emerald-500/20 to-transparent",
   },
@@ -136,8 +139,13 @@ export const PROJECTS_DATA: ProjectItem[] = [
       "Zero-downtime cutover circuit preventing desktop restarts during grid outages",
       "Off-grid DC solar charging loop with overcharge and deep-discharge protection",
     ],
-    status: "Field Operational",
+    status: "Completed",
     year: "2024 - 2025",
     gradient: "from-amber-500/20 via-emerald-500/20 to-transparent",
   },
 ];
+
+/** Route of the full case-study page for a project. */
+export function projectHref(project: Pick<ProjectItem, "id" | "slug">) {
+  return `/projects/${project.slug ?? project.id}`;
+}

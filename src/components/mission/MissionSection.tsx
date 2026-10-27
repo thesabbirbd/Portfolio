@@ -1,207 +1,84 @@
-"use client";
-
 import React from "react";
-import { motion } from "framer-motion";
-import { 
-  Flame, 
-  Terminal, 
-  CheckCircle2, 
-  Activity, 
-  GitBranch, 
-  GitCommit, 
-  ExternalLink,
-  ShieldCheck,
-  Building,
-  Award
-} from "lucide-react";
+import Link from "next/link";
+import { ArrowUpRight, Users } from "lucide-react";
 import { PROFILE_DATA } from "@/data/profile";
 import { COMMUNITY_DATA } from "@/data/community";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { GlowButton } from "@/components/ui/GlowButton";
+import { SectionHeader, Accent } from "@/components/system/SectionHeader";
+import { Card } from "@/components/system/Card";
 import { GithubIcon } from "@/components/ui/BrandIcons";
-import { sound } from "@/lib/sound";
 
+const { mission } = PROFILE_DATA;
+
+/**
+ * /experience — the current learning mission: what the sprint covers, where the code lives,
+ * and a compact roll-call that hands off to the Community section further down the page.
+ * Static content only (no simulated "live" telemetry).
+ */
 export function MissionSection() {
   return (
-    <section
-      id="mission"
-      className="relative py-12 md:py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full space-y-16 overflow-hidden"
-    >
-      {/* Background Ambience */}
-      <div className="absolute top-1/2 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-blue-500/10 dark:bg-[var(--color-secondary)]/10 blur-3xl pointer-events-none -z-10" />
+    <section id="mission" className="relative py-10 md:py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full scroll-mt-20">
+      <SectionHeader
+        eyebrow="Current mission"
+        title={<>100-day backend &amp; <Accent>DevOps sprint</Accent></>}
+        lede={mission.currentFocus}
+        className="mb-6 sm:mb-8"
+      />
 
-      {/* Header */}
-      <div className="space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-semibold tracking-wider text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20">
-          <Flame className="w-3.5 h-3.5" />
-          <span>05 // MISSION CONTROL &amp; TELEMETRY</span>
-        </div>
-        <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-          Active Engineering Mission &amp;{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-orange-500 to-cyan-400">
-            Field Operations
+      <Card variant="elevated" className="p-4 sm:p-6">
+        <div className="flex flex-wrap items-center gap-2 mb-4">
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-ok/25 bg-ok/10 text-ok text-[11px] font-mono font-semibold uppercase tracking-wider">
+            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-ok" />
+            {mission.status}
           </span>
-          .
-        </h2>
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-2xl">
-          Live command center tracking the 100-day backend &amp; DevOps sprint alongside verified organizational leadership and NOC operations.
-        </p>
-      </div>
-
-      {/* Command Center Status Panel */}
-      <GlassCard glow="cyan" className="p-6 sm:p-8 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/60 dark:border-white/10 pb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-3.5 h-3.5 rounded-full bg-[var(--color-accent)] animate-ping" />
-            <div>
-              <span className="text-[11px] font-mono text-[var(--color-accent)] dark:text-[var(--color-accent)] uppercase tracking-wider font-bold">
-                {PROFILE_DATA.mission.status}
-              </span>
-              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
-                {PROFILE_DATA.mission.title}
-              </h3>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 font-mono text-xs text-slate-600 dark:text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-200/80 dark:border-slate-700">
-            <Terminal className="w-3.5 h-3.5 text-[var(--color-secondary)]" />
-            <span>SPRINT_TARGET: PRODUCTION_GRADE</span>
-          </div>
+          <h3 className="text-sm font-semibold text-ink-2">Five focus areas</h3>
         </div>
-
-        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-mono">
-          &gt; {PROFILE_DATA.mission.currentFocus}
-        </p>
-
-        {/* 5 Mission Pillars Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
-          {PROFILE_DATA.mission.pillars.map((pillar, i) => (
-            <div
-              key={pillar.title}
-              className="p-4 rounded-xl bg-white/40 dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 space-y-2"
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono font-bold text-[var(--color-secondary)] dark:text-[var(--color-secondary)]">
-                  #0{i + 1}
-                </span>
-                <h4 className="text-xs font-bold text-slate-900 dark:text-white">
-                  {pillar.title}
-                </h4>
+        <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
+          {mission.pillars.map((pillar, i) => (
+            <li key={pillar.title} className="flex gap-3 rounded-xl bg-muted/60 p-3 sm:p-4">
+              <span aria-hidden="true" className="font-mono text-xs font-bold text-primary pt-0.5">0{i + 1}</span>
+              <div>
+                <h4 className="text-sm font-bold text-ink">{pillar.title}</h4>
+                <p className="text-xs sm:text-sm text-ink-2 leading-relaxed mt-0.5">{pillar.desc}</p>
               </div>
-              <p className="text-[11px] text-slate-600 dark:text-slate-700 dark:text-slate-300 leading-relaxed">
-                {pillar.desc}
-              </p>
-            </div>
+            </li>
           ))}
-        </div>
-      </GlassCard>
+        </ol>
+      </Card>
 
-      {/* GitHub Telemetry & Verified Activities Two-Column Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* GitHub Live Telemetry Card (5 cols) */}
-        <div className="lg:col-span-5 space-y-4">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <GithubIcon className="w-4 h-4 text-blue-500" />
-            <span>GitHub Telemetry</span>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mt-3 sm:mt-4">
+        <Card className="p-4 sm:p-5 flex flex-col gap-3">
+          <h3 className="flex items-center gap-2 text-base font-bold text-ink">
+            <GithubIcon aria-hidden="true" className="w-4 h-4" /> Code on GitHub
           </h3>
+          <p className="text-sm text-ink-2 leading-relaxed">
+            The sprint&apos;s main build is <Link href="/projects/omnidesk" className="font-semibold text-primary hover:underline underline-offset-4">Omnidesk BD</Link>, a FastAPI + PostgreSQL + Docker learning workspace with its source on GitHub.
+          </p>
+          <a
+            href="https://github.com/thesabbirbd"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-auto inline-flex min-h-10 items-center gap-1.5 self-start rounded-full px-4 surface-card surface-interactive text-sm font-semibold text-ink"
+          >
+            github.com/thesabbirbd <ArrowUpRight aria-hidden="true" className="w-3.5 h-3.5" />
+          </a>
+        </Card>
 
-          <GlassCard glow="blue" className="p-6 space-y-5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-mono font-bold">
-                  S
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-slate-900 dark:text-white">
-                    thesabbirbd
-                  </p>
-                  <p className="text-xs text-slate-700 dark:text-slate-300 font-mono">
-                    github.com/thesabbirbd
-                  </p>
-                </div>
-              </div>
-              <a
-                href="https://github.com/thesabbirbd"
-                target="_blank" rel="noopener noreferrer"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-blue-500 transition-colors"
-                aria-label="Visit GitHub"
-              >
-                <ExternalLink className="w-4 h-4" />
-              </a>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 font-mono text-center">
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800">
-                <p className="text-xl font-bold text-blue-600 dark:text-[var(--color-secondary)]">
-                  Omnidesk BD
-                </p>
-                <p className="text-[10px] text-slate-700 dark:text-slate-300 uppercase mt-0.5">
-                  Flagship System
-                </p>
-              </div>
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800">
-                <p className="text-xl font-bold text-[var(--color-accent)] dark:text-[var(--color-accent)]">
-                  Active
-                </p>
-                <p className="text-[10px] text-slate-700 dark:text-slate-300 uppercase mt-0.5">
-                  Deployment Pulse
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-2 text-xs font-mono text-slate-600 dark:text-slate-700 dark:text-slate-300">
-              <div className="flex items-center justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                <span>Architecture</span>
-                <span className="text-slate-900 dark:text-white font-semibold">FastAPI + Docker</span>
-              </div>
-              <div className="flex items-center justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                <span>Database</span>
-                <span className="text-slate-900 dark:text-white font-semibold">PostgreSQL</span>
-              </div>
-              <div className="flex items-center justify-between py-1">
-                <span>Commit Flow</span>
-                <span className="text-[var(--color-accent)] font-semibold">100-Day Sprint</span>
-              </div>
-            </div>
-
-            <GlowButton
-              href="https://github.com/thesabbirbd"
-              external
-              variant="outline"
-              size="sm"
-              className="w-full text-center"
-              icon={<GithubIcon className="w-3.5 h-3.5" />}
-            >
-              Explore All Repositories
-            </GlowButton>
-          </GlassCard>
-        </div>
-
-        {/* Verified Activities & Operations (7 cols) */}
-        <div className="lg:col-span-7 space-y-4">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Building className="w-4 h-4 text-[var(--color-accent)]" />
-            <span>Verified Engagements &amp; Operations</span>
-          </h3>
-
-          <div className="space-y-3">
-            {COMMUNITY_DATA.activities.slice(0, 4).map((act) => (
-              <GlassCard key={act.id} glow="none" className="p-4 space-y-1.5">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
-                    {act.organization}
-                  </h4>
-                  <span className="text-xs font-mono font-medium text-blue-600 dark:text-[var(--color-secondary)]">
-                    {act.role}
-                  </span>
-                </div>
-                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                  {act.description}
-                </p>
-              </GlassCard>
+        {/* Compact roll-call instead of repeating the Community section that follows on this page */}
+        <a href="#community" className="reveal group flex flex-col gap-3 rounded-card surface-card surface-interactive p-4 sm:p-5">
+          <span className="flex items-center gap-2 text-base font-bold text-ink">
+            <Users aria-hidden="true" className="w-4 h-4 text-accent" /> Community &amp; leadership
+          </span>
+          <ul className="flex flex-wrap gap-1.5">
+            {COMMUNITY_DATA.activities.map((act) => (
+              <li key={act.id} className="px-2.5 py-1 rounded-md bg-muted text-xs text-ink-2">
+                <span className="font-semibold text-ink">{act.role}</span> · {act.organization.replace(/\s*\(.*\)$/, "")}
+              </li>
             ))}
-          </div>
-        </div>
+          </ul>
+          <span className="mt-auto text-sm font-semibold text-primary group-hover:underline underline-offset-4">
+            {COMMUNITY_DATA.activities.length} engagements — details below ↓
+          </span>
+        </a>
       </div>
     </section>
   );

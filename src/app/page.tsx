@@ -1,50 +1,51 @@
 import { HeroSection } from "@/components/hero/HeroSection";
 import { AboutSection } from "@/components/about/AboutSection";
 import { ProjectsSection } from "@/components/projects/ProjectsSection";
+import { OmnideskSection } from "@/components/omnidesk/OmnideskSection";
 import { EngineeringLabSection } from "@/components/lab/EngineeringLabSection";
-import { SkillsBento } from "@/components/skills/SkillsBento";
-import { MapsExplorerSection } from "@/components/maps/MapsExplorerSection";
-import { CommunitySection } from "@/components/community/CommunitySection";
-import { MissionSection } from "@/components/mission/MissionSection";
-import { ContactSection } from "@/components/contact/ContactSection";
-import { SettingsPanel } from "@/components/ui/SettingsPanel";
 import { LatestThinking } from "@/components/content/LatestThinking";
+import { JourneyPreview } from "@/components/home/JourneyPreview";
+import { BeyondChapters } from "@/components/home/BeyondChapters";
+import { ContactCTA } from "@/components/home/ContactCTA";
+import { ChapterRail } from "@/components/home/ChapterRail";
+import { AiyaarFeature } from "@/components/home/AiyaarFeature";
 
+/**
+ * Home is the curated overview. Each chapter is short and hands off to the route that holds
+ * the full content:
+ *   ★  Aiyaar (CPM)    → /aiyaar (featured current role and the Aiyaar SaaS)
+ *   01 Identity        → /about (portrait, "My World", full timeline)
+ *   02 Selected Work   → /projects (every case study); Omnidesk flagship spotlight inline
+ *   03 Journey         → /about#timeline (each step deep-links to its phase)
+ *   04 Lab             → /engineering-lab (terminal, filters, every experiment)
+ *   05 Writing         → /notes, /journal
+ *   06 Beyond the code → /experience (skills, mission, community), /exploration (maps)
+ *   07 Contact         → /contact (full form)
+ */
 export default function Home() {
   return (
     <div className="flex flex-col w-full">
-      {/* 01 // HERO */}
+      <ChapterRail />
       <HeroSection />
 
-      {/* 02 // ABOUT, IDENTITY & JOURNEY TIMELINE */}
-      <AboutSection />
+      {/* Featured current role, first thing after the hero */}
+      <AiyaarFeature />
 
-      {/* 03 // SELECTED BUILDS (FEATURING OMNIDESK BD & ARCHITECTURE MODAL) */}
-      <ProjectsSection />
+      <AboutSection variant="overview" />
 
-      {/* 04 // ENGINEERING LAB (5 DISCIPLINE PROTOTYPES) */}
-      <EngineeringLabSection />
+      <ProjectsSection>
+        <OmnideskSection embedded />
+      </ProjectsSection>
 
-      {/* LATEST THINKING (KNOWLEDGE ENGINE) */}
+      <JourneyPreview />
+
+      <EngineeringLabSection variant="teaser" index="04" />
+
       <LatestThinking />
 
-      {/* 05 // SKILLS & CAPABILITY ECOSYSTEM (GLASS BENTO) */}
-      <SkillsBento />
+      <BeyondChapters />
 
-      {/* 06 // MAPS EXPLORER (GOOGLE LOCAL GUIDE & 360° VR) */}
-      <MapsExplorerSection />
-
-      {/* 07 // COMMUNITY, LEADERSHIP & VOLUNTEERING */}
-      <CommunitySection />
-
-      {/* 08 // ACTIVE MISSION & FIELD OPERATIONS */}
-      <MissionSection />
-
-      {/* 09 // CONTACT & TRANSMISSION */}
-      <ContactSection />
-
-      {/* FLOATING SYSTEM EXPERIENCE SETTINGS (THEME, SOUND, MOTION, 3D) */}
-      <SettingsPanel />
+      <ContactCTA />
     </div>
   );
 }

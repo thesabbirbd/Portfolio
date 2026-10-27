@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { useDebounce } from '@/hooks/use-debounce';
 import { ContentItem } from '@/lib/content';
 import { ContentCard } from './ContentCard';
-import { Search } from 'lucide-react';
+import { Search, Sparkles, Terminal, Cpu, Network, FolderGit2 } from 'lucide-react';
 
 
 const getCategoryStyle = (cat: string) => {
@@ -60,7 +60,7 @@ export function NotesBrowser({ notes }: { notes: ContentItem[] }) {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input 
             type="text" 
-            placeholder="Search notes..." 
+            placeholder="Search notes..." aria-label="Search notes" 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2 bg-muted/50 border border-border/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm"

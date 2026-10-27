@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { sound } from "@/lib/sound";
+import { sound, type SoundLevel } from "@/lib/sound";
 
 type ColorTheme = "orange" | "blue" | "green";
 export type VisitorLens = "general" | "engineer" | "professional" | "explorer";
@@ -16,6 +16,8 @@ type SettingsContextType = {
   toggleMotion: () => void;
   soundEnabled: boolean;
   toggleSound: () => void;
+  soundLevel: SoundLevel;
+  setSoundLevel: (level: SoundLevel) => void;
   lens: VisitorLens;
   setLens: (lens: VisitorLens) => void;
   isHydrated: boolean;
@@ -29,6 +31,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [spatial3D, setSpatial3D] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(false);
+  const [soundLevel, setLocalSoundLevel] = useState<SoundLevel>("normal");
   const [lens, setLocalLens] = useState<VisitorLens>("general");
 
   useEffect(() => {
@@ -38,6 +41,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
     const savedMotion = localStorage.getItem("sabbir_reduced_motion");
     if (savedMotion !== null) setReducedMotion(savedMotion === "true");
+    document.documentElement.dataset.motion = savedMotion === "true" ? "reduced" : "full";
 
     const savedLens = localStorage.getItem("sabbir_visitor_lens") as VisitorLens;
     if (savedLens) setLocalLens(savedLens);
@@ -51,7 +55,16 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     }
 
     setSoundEnabled(sound.isEnabled());
+    setLocalSoundLevel(sound.getLevel());
     setIsHydrated(true);
+  }, []);
+
+  // Career-timeline milestones (dispatched by JourneyTimeline) get a tiny tonal accent when
+  // sound is on. The sound module throttles it and never unlocks audio from scroll alone.
+  useEffect(() => {
+    const onMilestone = (e: Event) => sound.milestone(String((e as CustomEvent).detail ?? ""));
+    window.addEventListener("sabbir:milestone", onMilestone);
+    return () => window.removeEventListener("sabbir:milestone", onMilestone);
   }, []);
 
   const setColorTheme = (color: ColorTheme) => {
@@ -59,17 +72,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("sabbir_color_theme", color);
     document.documentElement.setAttribute("data-theme-color", color);
     
-    // Globally update CSS variables for the color system
-    if (color === "orange") {
-      document.documentElement.style.setProperty('--primary', '255 106 0');
-      document.documentElement.style.setProperty('--accent', '255 184 0');
-    } else if (color === "blue") {
-      document.documentElement.style.setProperty('--primary', '59 130 246');
-      document.documentElement.style.setProperty('--accent', '139 92 246');
-    } else if (color === "green") {
-      document.documentElement.style.setProperty('--primary', '16 185 129');
-      document.documentElement.style.setProperty('--accent', '52 211 153');
-    }
+    // Palette tokens are defined in globals.css per [data-theme-color]; clear any legacy inline overrides.
+    document.documentElement.style.removeProperty('--primary');
+    document.documentElement.style.removeProperty('--accent');
   };
 
   const toggle3D = () => {
@@ -84,6 +89,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     setReducedMotion((prev) => {
       const next = !prev;
       localStorage.setItem("sabbir_reduced_motion", String(next));
+      // CSS scroll-driven reveals read this (they cannot see React state).
+      document.documentElement.dataset.motion = next ? "reduced" : "full";
       return next;
     });
   };
@@ -91,6 +98,11 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const toggleSound = () => {
     const next = sound.toggle();
     setSoundEnabled(next);
+  };
+
+  const setSoundLevel = (level: SoundLevel) => {
+    sound.setLevel(level);
+    setLocalSoundLevel(level);
   };
 
   const setLens = (newLens: VisitorLens) => {
@@ -105,6 +117,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         spatial3D, toggle3D, 
         reducedMotion, toggleMotion, 
         soundEnabled, toggleSound,
+        soundLevel, setSoundLevel,
         lens, setLens,
         isHydrated,
         themeMode: "system" 

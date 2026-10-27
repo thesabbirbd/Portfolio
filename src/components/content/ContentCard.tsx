@@ -1,69 +1,41 @@
 import Link from 'next/link';
 import { ContentItem } from '@/lib/content';
 
-
-const getCardTheme = (cat: string) => {
-  const normalized = (cat || '').toLowerCase();
-  if (normalized.includes('ai') || normalized.includes('model') || normalized.includes('llm')) {
-    return "hover:border-purple-500/30 hover:bg-purple-500/5 hover:shadow-purple-500/10";
-  }
-  if (normalized.includes('system') || normalized.includes('linux') || normalized.includes('devops') || normalized.includes('server')) {
-    return "hover:border-emerald-500/30 hover:bg-emerald-500/5 hover:shadow-emerald-500/10";
-  }
-  if (normalized.includes('hardware') || normalized.includes('rig')) {
-    return "hover:border-orange-500/30 hover:bg-orange-500/5 hover:shadow-orange-500/10";
-  }
-  if (normalized.includes('infra') || normalized.includes('network')) {
-    return "hover:border-blue-500/30 hover:bg-blue-500/5 hover:shadow-blue-500/10";
-  }
-  return "hover:border-slate-500/30 hover:bg-slate-500/5 hover:shadow-slate-500/10";
-};
-
-const getBadgeTheme = (cat: string) => {
-  const normalized = (cat || '').toLowerCase();
-  if (normalized.includes('ai') || normalized.includes('model') || normalized.includes('llm')) {
-    return "bg-purple-500/10 text-purple-600 dark:text-purple-400";
-  }
-  if (normalized.includes('system') || normalized.includes('linux') || normalized.includes('devops') || normalized.includes('server')) {
-    return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400";
-  }
-  if (normalized.includes('hardware') || normalized.includes('rig')) {
-    return "bg-orange-500/10 text-orange-600 dark:text-orange-400";
-  }
-  if (normalized.includes('infra') || normalized.includes('network')) {
-    return "bg-blue-500/10 text-blue-600 dark:text-blue-400";
-  }
-  return "bg-slate-500/10 text-slate-600 dark:text-slate-400";
-};
-
+/**
+ * Card for notes, journal entries and lab write-ups. Uses the level-1 surface, one category
+ * chip style (no per-category colour themes) and readable type at every size (no sub-11px text).
+ */
 export function ContentCard({ item, baseUrl }: { item: ContentItem; baseUrl: string }) {
   const { meta } = item;
-  
+
   return (
-    <Link href={`${baseUrl}/${meta.slug}`} className="block group">
-      <div className={`flex flex-col h-full p-4 sm:p-6 rounded-2xl border border-border/50 bg-background/50 transition-all duration-500 hover:shadow-xl ${getCardTheme(meta.category || "")}`}>
-        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-4">
-          <span className={`text-[9px] sm:text-xs font-medium px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full ${getBadgeTheme(meta.category || "")}`}>
+    <Link
+      href={`${baseUrl}/${meta.slug}`}
+      className="reveal group block rounded-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+    >
+      <article className="flex flex-col h-full p-4 sm:p-6 rounded-card surface-card surface-interactive group-hover:-translate-y-0.5">
+        <div className="flex items-center gap-2 sm:gap-3 mb-2.5 sm:mb-4 font-mono text-[11px] sm:text-xs">
+          <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary font-medium">
             {meta.category || 'Note'}
           </span>
-          <span className="text-[9px] sm:text-xs text-muted-foreground">
+          <time dateTime={meta.date} className="text-ink-3">
             {new Date(meta.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-          </span>
+          </time>
         </div>
-        <h3 className="text-sm sm:text-xl font-semibold mb-1 sm:mb-2 group-hover:text-primary transition-colors line-clamp-2">
+        <h3 className="text-base sm:text-xl font-bold text-ink mb-1.5 sm:mb-2 group-hover:text-primary transition-colors line-clamp-2">
           {meta.title}
         </h3>
-        <p className="text-muted-foreground line-clamp-2 sm:line-clamp-3 text-[11px] sm:text-sm leading-snug sm:leading-relaxed mb-2 sm:mb-4 flex-grow">
+        <p className="text-sm text-ink-2 line-clamp-3 leading-relaxed mb-3 sm:mb-4 flex-grow">
           {meta.description}
         </p>
-        <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2 sm:mt-auto">
+        <div className="flex flex-wrap gap-1.5 mt-auto">
           {meta.tags?.slice(0, 3).map(tag => (
-            <span key={tag} className="text-[8px] sm:text-[10px] uppercase tracking-wider font-semibold text-muted-foreground/80 bg-muted px-2 py-1 rounded">
+            <span key={tag} className="text-[11px] font-mono text-ink-3 bg-muted px-2 py-0.5 rounded">
               {tag}
             </span>
           ))}
         </div>
-      </div>
+      </article>
     </Link>
   );
 }

@@ -64,6 +64,7 @@ export function SearchInterface({ initialData }: { initialData: SearchItem[] }) 
           type="text"
           className="w-full bg-muted/50 border border-border/50 text-foreground text-lg rounded-2xl pl-12 pr-12 py-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-shadow"
           placeholder="Search by title, description, or tag..."
+          aria-label="Search the knowledge base"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />

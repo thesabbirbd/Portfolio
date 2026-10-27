@@ -1,5 +1,5 @@
-const CACHE_NAME = 'sabbir-os-v3.7.17';
-const STATIC_CACHE = 'sabbir-static-v3';
+const CACHE_NAME = 'sabbir-os-v3.8.0';
+const STATIC_CACHE = 'sabbir-static-v4';
 const OFFLINE_URL = '/';
 
 const STATIC_ASSETS = [
@@ -37,6 +37,11 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
+  // Only same-origin GETs. Media (video/audio) and Range requests go straight to the network:
+  // the Cache API cannot store partial (206) responses and serving them from cache breaks seeking.
+  if (event.request.method !== 'GET' || url.origin !== self.location.origin) return;
+  if (event.request.headers.has('range') || event.request.destination === 'video' || event.request.destination === 'audio') return;
+
   // HTML Navigation: Network first, fallback to offline shell
   if (event.request.mode === 'navigate') {
     event.respondWith(
@@ -73,7 +78,7 @@ self.addEventListener('fetch', (event) => {
           return networkResponse;
         }).catch(() => null);
 
-        return cachedResponse || networkPromise;
+        return cachedResponse || (await networkPromise) || Response.error();
       })()
     );
   }

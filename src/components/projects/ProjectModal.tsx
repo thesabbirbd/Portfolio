@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ExternalLink, Cpu, Layers, CheckCircle, Sparkles } from "lucide-react";
 import { GithubIcon } from "@/components/ui/BrandIcons";
-import { ProjectItem } from "@/data/projects";
+import { ProjectItem, projectHref } from "@/data/projects";
 import { sound } from "@/lib/sound";
 
 interface ProjectModalProps {
@@ -13,20 +13,33 @@ interface ProjectModalProps {
 }
 
 export function ProjectModal({ project, onClose }: ProjectModalProps) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  // The opening click already plays the modal cue; this effect manages Escape, a Tab focus trap,
+  // scroll lock, and focus in/out (focus moves to Close, then back to the trigger on close).
   useEffect(() => {
+    if (!project) return;
+    const trigger = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onClose();
+      } else if (e.key === "Tab" && dialogRef.current) {
+        const items = dialogRef.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+        if (!items.length) return;
+        const first = items[0], last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
       }
     };
-    if (project) {
-      window.addEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "hidden";
-      sound.modalOpen();
-    }
+    window.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+    requestAnimationFrame(() => closeRef.current?.focus());
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = previousOverflow;
+      trigger?.focus?.();
     };
   }, [project, onClose]);
 
@@ -34,8 +47,15 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-md">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="project-modal-title"
+        onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+        className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm"
+      >
         <motion.div
+          ref={dialogRef}
           initial={{ opacity: 0, scale: 0.94, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.94, y: 20 }}
@@ -44,12 +64,13 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
         >
           {/* Close button */}
           <button
+            ref={closeRef}
             onClick={() => {
               onClose();
               sound.click();
             }}
-            className="absolute top-5 right-5 p-2 rounded-full glass-interactive text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors focus:outline-none"
-            aria-label="Close Project Modal" title="Close"
+            className="absolute top-5 right-5 p-2 rounded-full glass-interactive text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+            aria-label="Close project details" title="Close"
           >
             <X className="w-5 h-5" />
           </button>
@@ -66,7 +87,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
           </div>
 
           {/* Title */}
-          <h2 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] mb-3 flex items-center gap-2">
+          <h2 id="project-modal-title" className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] mb-3 flex items-center gap-2">
             {project.title}
             {project.featured && <Sparkles className="w-6 h-6 text-[var(--color-primary)]" />}
           </h2>
@@ -141,7 +162,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
           <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-[var(--border-glass)]">
             {/* Detailed Case Study Link */}
             <a 
-              href={`/projects/${project.id}`}
+              href={projectHref(project)}
               onClick={() => sound.click()}
               className="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 transition-all font-medium text-sm"
             >
@@ -151,7 +172,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
             {project.githubUrl && (
               <a
                 href={project.githubUrl}
-                target="_blank" rel="noopener noreferrer"
+                target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => sound.click()}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm bg-[var(--text-primary)] text-[var(--bg-primary)] hover:opacity-90 transition-opacity"
@@ -162,7 +183,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
             {project.liveUrl && (
               <a
                 href={project.liveUrl}
-                target="_blank" rel="noopener noreferrer"
+                target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => sound.click()}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm border border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10 transition-colors"

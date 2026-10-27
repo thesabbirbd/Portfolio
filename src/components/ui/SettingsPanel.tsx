@@ -1,34 +1,49 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence, useMotionValueEvent } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Settings, X, Volume2, VolumeX, Sun, Moon, Monitor, Eye, Sparkles } from "lucide-react";
 import { useTheme } from "next-themes";
 import { sound } from "@/lib/sound";
 import { useSettings } from "@/contexts/SettingsContext";
-import { useSpatialScroll } from "@/hooks/useSpatialScroll";
+import { useNavVisibility } from "@/hooks/useNavVisibility";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { CONTROL_SPRING, MOBILE_CORNER_RAISE } from "@/lib/fixed-controls";
+import { Segmented, Switch } from "@/components/system/Controls";
 
 export function SettingsPanel() {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
-  const { colorTheme, setColorTheme, spatial3D, toggle3D, reducedMotion, toggleMotion, soundEnabled, toggleSound, isHydrated } = useSettings();
+  const { colorTheme, setColorTheme, spatial3D, toggle3D, reducedMotion, toggleMotion, soundEnabled, toggleSound, soundLevel, setSoundLevel, isHydrated } = useSettings();
 
-  
-  const { scrollY } = useSpatialScroll();
-  const [isNavHidden, setIsNavHidden] = useState(false);
-
+  const { isNavHidden } = useNavVisibility();
   const isDesktop = useMediaQuery('(min-width: 768px)', true);
 
-  
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    const prev = scrollY.getPrevious() ?? 0;
-    if (latest > prev && latest > 150) {
-      setIsNavHidden(true); // scrolling down
-    } else {
-      setIsNavHidden(false); // scrolling up/idle
-    }
-  });
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  // Dialog focus management: move focus in on open, keep Tab inside, return it to the gear on close.
+  useEffect(() => {
+    if (!isOpen) return;
+    const trigger = triggerRef.current;
+    const t = setTimeout(() => closeRef.current?.focus(), 30);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsOpen(false);
+      if (e.key === "Tab" && dialogRef.current) {
+        const f = dialogRef.current.querySelectorAll<HTMLElement>("button, [href], input, [tabindex]:not([tabindex='-1'])");
+        const first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("keydown", onKey);
+      trigger?.focus();
+    };
+  }, [isOpen]);
 
   if (!isHydrated) return null;
 
@@ -37,203 +52,132 @@ export function SettingsPanel() {
     <>
       {/* Floating Trigger Button */}
       <motion.button
-        animate={{ y: (!isDesktop && !isNavHidden) ? -76 : 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        ref={triggerRef}
+        initial={false}
+        animate={{ y: (!isDesktop && !isNavHidden) ? -MOBILE_CORNER_RAISE : 0 }}
+        transition={CONTROL_SPRING}
         onClick={() => {
           setIsOpen(!isOpen);
           sound.click();
         }}
         aria-label="Open System Settings"
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 mb-[env(safe-area-inset-bottom)] sm:mb-0 p-3 rounded-full glass-panel shadow-lg text-[var(--text-secondary)] hover:text-[var(--color-primary)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+        aria-expanded={isOpen}
+        className="group fixed bottom-4 right-4 md:bottom-6 md:right-6 short-landscape:bottom-3 short-landscape:right-3 z-40 mb-[env(safe-area-inset-bottom)] mr-[env(safe-area-inset-right)] p-3 print:hidden will-change-transform rounded-full surface-glass text-ink-2 hover:text-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
       >
-        <Settings className="w-5 h-5 animate-spin-slow" />
+        <Settings className="w-5 h-5 transition-transform duration-500 group-hover:rotate-90" />
       </motion.button>
 
-      {/* Settings Modal */}
+      {/* Settings dialog — level-3 glass overlay; segmented theme/palette, accessible switches */}
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div
+            className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-3 sm:p-4 bg-black/40"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="settings-title"
+            onClick={(e) => e.target === e.currentTarget && setIsOpen(false)}
+          >
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="relative w-full max-w-md p-6 rounded-2xl glass-spatial border border-[var(--border-glass)] shadow-2xl"
+              ref={dialogRef}
+              initial={{ opacity: 0, y: 16, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 12, scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 380, damping: 32 }}
+              className="relative w-full max-w-md max-h-[calc(100svh-1.5rem)] overflow-y-auto p-5 sm:p-6 rounded-panel surface-overlay deco-corners"
             >
-              {/* Header */}
-              <div className="flex items-center justify-between pb-4 border-b border-[var(--border-glass)]">
+              <div className="flex items-center justify-between pb-4 border-b border-line">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-[var(--color-primary)]" />
-                  <h3 className="text-lg font-semibold text-[var(--text-primary)]">System Experience Settings</h3>
+                  <Sparkles className="w-5 h-5 text-primary" aria-hidden="true" />
+                  <h2 id="settings-title" className="text-lg font-bold text-ink">Experience settings</h2>
                 </div>
                 <button
-                  onClick={() => {
-                    setIsOpen(false);
-                    sound.click();
-                  }}
-                  className="p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] hover:text-[var(--text-primary)]"
-                  aria-label="Close Settings"
+                  ref={closeRef}
+                  onClick={() => { setIsOpen(false); sound.click(); }}
+                  className="p-1.5 rounded-lg text-ink-3 hover:text-ink hover:bg-ink/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                  aria-label="Close settings"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              {/* Options */}
-              <div className="py-4 space-y-4 text-sm">
-                {/* Theme Selector */}
-                <div>
-                  <label className="block mb-2 font-medium text-[var(--text-secondary)]">Interface Theme</label>
-                  <div className="grid grid-cols-3 gap-2">
-                    <button
-                      onClick={() => {
-                        setTheme("light");
-                        sound.click();
-                      }}
-                      className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border transition-all ${
-                        theme === "light"
-                          ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-medium"
-                          : "border-[var(--border-glass)] hover:border-[var(--border-glass-hover)] text-[var(--text-secondary)]"
-                      }`}
-                    >
-                      <Sun className="w-4 h-4" /> Light
-                    </button>
-                    <button
-                      onClick={() => {
-                        setTheme("dark");
-                        sound.click();
-                      }}
-                      className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border transition-all ${
-                        theme === "dark"
-                          ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-medium"
-                          : "border-[var(--border-glass)] hover:border-[var(--border-glass-hover)] text-[var(--text-secondary)]"
-                      }`}
-                    >
-                      <Moon className="w-4 h-4" /> Dark
-                    </button>
-                    <button
-                      onClick={() => {
-                        setTheme("system");
-                        sound.click();
-                      }}
-                      className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border transition-all ${
-                        theme === "system"
-                          ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-medium"
-                          : "border-[var(--border-glass)] hover:border-[var(--border-glass-hover)] text-[var(--text-secondary)]"
-                      }`}
-                    >
-                      <Monitor className="w-4 h-4" /> System
-                    </button>
-                  </div>
-                </div>
+              <div className="py-5 space-y-5 text-sm">
+                <section className="space-y-2">
+                  <h3 className="font-mono text-eyebrow uppercase text-ink-3">Theme</h3>
+                  <Segmented
+                    label="Theme"
+                    value={(theme as "light" | "dark" | "system") ?? "system"}
+                    onChange={(v) => { setTheme(v); sound.click(); }}
+                    options={[
+                      { value: "light", label: "Light", icon: <Sun className="w-4 h-4" aria-hidden="true" /> },
+                      { value: "dark", label: "Dark", icon: <Moon className="w-4 h-4" aria-hidden="true" /> },
+                      { value: "system", label: "System", icon: <Monitor className="w-4 h-4" aria-hidden="true" /> },
+                    ]}
+                  />
+                </section>
 
-                
-                {/* Color Theme Selector */}
-                <div>
-                  <label className="block mb-2 font-medium text-[var(--text-secondary)]">Vibrant Color Palette</label>
-                  <div className="grid grid-cols-3 gap-2">
-                    <button
-                      onClick={() => {
-                        setColorTheme("orange");
-                        sound.click();
-                      }}
-                      className={`flex items-center justify-center gap-2 p-2 rounded-xl border transition-all ${
-                        colorTheme === "orange" ? "border-[#ff6a00] bg-[#ff6a00]/10 text-[#ff6a00] font-bold" : "border-[var(--border-glass)] hover:border-[#ff6a00]/50 text-[var(--text-secondary)]"
-                      }`}
-                    >
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#ff6a00", boxShadow: "0 0 8px rgba(255,106,0,0.8)" }} /> Orange
-                    </button>
-                    <button
-                      onClick={() => {
-                        setColorTheme("blue");
-                        sound.click();
-                      }}
-                      className={`flex items-center justify-center gap-2 p-2 rounded-xl border transition-all ${
-                        colorTheme === "blue" ? "border-[#00f0ff] bg-[#00f0ff]/10 text-[#00f0ff] font-bold" : "border-[var(--border-glass)] hover:border-[#00f0ff]/50 text-[var(--text-secondary)]"
-                      }`}
-                    >
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#00f0ff", boxShadow: "0 0 8px rgba(0,240,255,0.8)" }} /> Blue
-                    </button>
-                    <button
-                      onClick={() => {
-                        setColorTheme("green");
-                        sound.click();
-                      }}
-                      className={`flex items-center justify-center gap-2 p-2 rounded-xl border transition-all ${
-                        colorTheme === "green" ? "border-[#10b981] bg-[#10b981]/10 text-[#10b981] font-bold" : "border-[var(--border-glass)] hover:border-[#10b981]/50 text-[var(--text-secondary)]"
-                      }`}
-                    >
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "#10b981", boxShadow: "0 0 8px rgba(16,185,129,0.8)" }} /> Green
-                    </button>
-                  </div>
-                </div>
+                <section className="space-y-2">
+                  <h3 className="font-mono text-eyebrow uppercase text-ink-3">Palette</h3>
+                  <Segmented
+                    label="Colour palette"
+                    value={colorTheme}
+                    onChange={(v) => { setColorTheme(v); sound.click(); }}
+                    options={[
+                      { value: "orange", label: "Orange", icon: <span aria-hidden="true" className="w-3 h-3 rounded-full bg-[#ff6a00]" /> },
+                      { value: "blue", label: "Blue", icon: <span aria-hidden="true" className="w-3 h-3 rounded-full bg-[#3b82f6]" /> },
+                      { value: "green", label: "Green", icon: <span aria-hidden="true" className="w-3 h-3 rounded-full bg-[#10b981]" /> },
+                    ]}
+                  />
+                </section>
 
-                {/* Sound Effects */}
-                <div className="flex items-center justify-between p-3 rounded-xl border border-[var(--border-glass)] bg-white/5 dark:bg-black/10">
-                  <div className="flex items-center gap-3">
-                    {soundEnabled ? (
-                      <Volume2 className="w-5 h-5 text-[var(--color-primary)]" />
-                    ) : (
-                      <VolumeX className="w-5 h-5 text-[var(--text-muted)]" />
-                    )}
-                    <div>
-                      <div className="font-medium text-[var(--text-primary)]">UI Sound Effects</div>
-                      <div className="text-xs text-[var(--text-muted)]">Subtle synthesizer audio feedback</div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={toggleSound}
-                    className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all ${
-                      soundEnabled
-                        ? "bg-[var(--color-accent)]/10 border-[var(--color-accent)] text-[var(--color-accent)] dark:text-[var(--color-accent)]"
-                        : "border-[var(--border-glass)] text-[var(--text-muted)]"
-                    }`}
-                  >
-                    {soundEnabled ? "ENABLED" : "MUTED"}
-                  </button>
-                </div>
-
-                {/* 3D Spatial Effects */}
-                <div className="flex items-center justify-between p-3 rounded-xl border border-[var(--border-glass)] bg-white/5 dark:bg-black/10">
-                  <div className="flex items-center gap-3">
-                    <Eye className="w-5 h-5 text-[var(--color-secondary)]" />
-                    <div>
-                      <div className="font-medium text-[var(--text-primary)]">3D Spatial Core</div>
-                      <div className="text-xs text-[var(--text-muted)]">Interactive 3D particle nodes & parallax</div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={toggle3D}
-                    className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all ${
-                      spatial3D
-                        ? "bg-[var(--color-primary)]/10 border-[var(--color-primary)] text-[var(--color-primary)]"
-                        : "border-[var(--border-glass)] text-[var(--text-muted)]"
-                    }`}
-                  >
-                    {spatial3D ? "ACTIVE" : "REDUCED"}
-                  </button>
-                </div>
-
-                {/* Reduced Motion */}
-                <div className="flex items-center justify-between p-3 rounded-xl border border-[var(--border-glass)] bg-white/5 dark:bg-black/10">
-                  <div>
-                    <div className="font-medium text-[var(--text-primary)]">Smooth Animations</div>
-                    <div className="text-xs text-[var(--text-muted)]">Respect system motion sensitivity</div>
-                  </div>
-                  <button
-                    onClick={toggleMotion}
-                    className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all ${
-                      !reducedMotion
-                        ? "bg-[var(--color-secondary)]/10 border-[var(--color-secondary)] text-[var(--color-secondary)]"
-                        : "border-[var(--border-glass)] text-[var(--text-muted)]"
-                    }`}
-                  >
-                    {!reducedMotion ? "STANDARD" : "REDUCED"}
-                  </button>
-                </div>
+                <section className="space-y-2">
+                  <h3 className="font-mono text-eyebrow uppercase text-ink-3">Experience</h3>
+                  <ul className="rounded-card surface-card divide-y divide-border">
+                    {[
+                      { icon: soundEnabled ? Volume2 : VolumeX, title: "Sound effects", desc: "Subtle original tones for clicks, panels and timeline milestones — off by default, never autoplays", checked: soundEnabled, onChange: toggleSound },
+                      { icon: Eye, title: "3D & spatial effects", desc: "3D scene, globe & ambient hero video (uses more GPU)", checked: spatial3D, onChange: toggle3D },
+                      { icon: Sparkles, title: "Animations", desc: "Turn off for reduced motion (your OS setting is always respected)", checked: !reducedMotion, onChange: toggleMotion },
+                    ].map(({ icon: Icon, title, desc, checked, onChange }) => (
+                      <li key={title} className="p-3.5">
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex items-start gap-3 min-w-0">
+                            <Icon className={`w-5 h-5 mt-0.5 shrink-0 ${checked ? "text-primary" : "text-ink-3"}`} aria-hidden="true" />
+                            <div className="min-w-0">
+                              <div className="font-medium text-ink">{title}</div>
+                              <div className="text-xs text-ink-3">{desc}</div>
+                            </div>
+                          </div>
+                          <Switch checked={checked} onChange={onChange} label={title} />
+                        </div>
+                        {title === "Sound effects" && soundEnabled && (
+                          <div className="flex items-center gap-2 mt-3 pl-8">
+                            <div className="flex-1 min-w-0">
+                              <Segmented
+                                label="Sound volume"
+                                value={soundLevel}
+                                onChange={setSoundLevel}
+                                options={[
+                                  { value: "quiet", label: "Quiet" },
+                                  { value: "normal", label: "Normal" },
+                                ]}
+                              />
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => sound.preview()}
+                              className="shrink-0 min-h-10 px-3 rounded-lg border border-line text-sm font-medium text-ink-2 hover:text-ink hover:border-line-strong transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                            >
+                              Test sound
+                            </button>
+                          </div>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
               </div>
 
-              {/* Footer status */}
-              <div className="pt-3 border-t border-[var(--border-glass)] text-center text-xs text-[var(--text-muted)]">
-                Preferences persisted locally &bull; THE SABBiR Digital Space v2.0
+              <div className="pt-3 border-t border-line text-center text-xs text-ink-3">
+                Preferences are saved on this device · THE SABBiR
               </div>
             </motion.div>
           </div>
