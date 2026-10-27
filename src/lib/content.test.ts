@@ -1,6 +1,12 @@
 import { describe, it, vi as mock, beforeEach, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
+
+function throwENOENT(): never {
+  const err = new Error();
+  (err as any).code = 'ENOENT';
+  throw err;
+}
 import { getContentBySlug, getSlugs, getAllContent, getLatestContent, _clearContentCache } from './content.ts';
 
 describe('getSlugs', () => {
@@ -10,14 +16,16 @@ describe('getSlugs', () => {
   });
 
   it('should return an empty array if the directory does not exist', () => {
-    mock.spyOn(fs, 'existsSync').mockReturnValue(false);
+    mock.spyOn(fs, 'readdirSync').mockImplementation(() => {
+      throwENOENT();
+    });
 
     const result = getSlugs('notes');
     expect(result).toEqual([]);
   });
 
   it('should return an array of slugs for md and mdx files and ignore others', () => {
-    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+
     mock.spyOn(fs, 'readdirSync').mockReturnValue([
       'test-note.md' as unknown as fs.Dirent,
       'image.png' as unknown as fs.Dirent,
@@ -38,15 +46,22 @@ describe('getContentBySlug', () => {
   });
 
   it('should return null if neither mdx nor md file exists', () => {
-    mock.spyOn(fs, 'existsSync').mockReturnValue(false);
+    mock.spyOn(fs, 'readFileSync').mockImplementation(() => {
+      throwENOENT();
+    });
 
     const result = getContentBySlug('notes', 'non-existent');
     expect(result).toBeNull();
   });
 
   it('should read and parse an mdx file if it exists', () => {
-    mock.spyOn(fs, 'existsSync').mockImplementation((filePath: any) => filePath.endsWith('.mdx'));
-    mock.spyOn(fs, 'readFileSync').mockReturnValue('---\ntitle: Test Note\ndescription: A test description\n---\n# Content here');
+
+    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
+      if (filePath.endsWith('.mdx')) {
+        return '---\ntitle: Test Note\ndescription: A test description\n---\n# Content here';
+      }
+      throwENOENT();
+    });
 
     const result = getContentBySlug('notes', 'test-note');
 
@@ -57,8 +72,13 @@ describe('getContentBySlug', () => {
   });
 
   it('should read and parse an md file if mdx does not exist but md does', () => {
-    mock.spyOn(fs, 'existsSync').mockImplementation((filePath: any) => filePath.endsWith('.md'));
-    mock.spyOn(fs, 'readFileSync').mockReturnValue('---\ntitle: MD Test Note\n---\n# MD Content');
+
+    mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
+      if (filePath.endsWith('.md')) {
+        return '---\ntitle: MD Test Note\n---\n# MD Content';
+      }
+      throwENOENT();
+    });
 
     const result = getContentBySlug('notes', 'md-test-note');
 
@@ -68,7 +88,7 @@ describe('getContentBySlug', () => {
   });
 
   it('should catch errors and return null', () => {
-    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+
     mock.spyOn(fs, 'readFileSync').mockImplementation(() => {
       throw new Error('Read error');
     });
@@ -84,7 +104,7 @@ describe('getContentBySlug', () => {
   });
 
   it('should fallback to missing metadata when matter returns incomplete data', () => {
-    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+
     mock.spyOn(fs, 'readFileSync').mockReturnValue('# Content only with no frontmatter');
 
     const result = getContentBySlug('notes', 'missing-meta');
@@ -99,7 +119,7 @@ describe('getContentBySlug', () => {
   });
 
   it('should return null on generic catch block exception handling', () => {
-    mock.spyOn(fs, 'existsSync').mockImplementation(() => {
+    mock.spyOn(fs, 'readFileSync').mockImplementation(() => {
       throw new Error('Unexpected IO exception during existsSync');
     });
 
@@ -116,7 +136,7 @@ describe('getContentBySlug', () => {
 
 describe('getAllContent', () => {
   const setupMocks = (files: Record<string, string | Error>) => {
-    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+
     mock.spyOn(fs, 'readdirSync').mockReturnValue(Object.keys(files) as any);
     mock.spyOn(fs, 'readFileSync').mockImplementation((filePath: any) => {
       const match = Object.entries(files).find(([name]) => filePath.includes(name));
@@ -124,7 +144,7 @@ describe('getAllContent', () => {
         if (match[1] instanceof Error) throw match[1];
         return match[1];
       }
-      return '';
+      throwENOENT();
     });
   };
 
@@ -196,7 +216,7 @@ describe('getLatestContent', () => {
   });
 
   it('should combine, sort by date descending, and slice content across multiple types', () => {
-    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+
     const readdirSyncSpy = mock.spyOn(fs, 'readdirSync').mockImplementation((dirPath) => {
       if (typeof dirPath === 'string') {
         if (dirPath.includes('notes')) return ['note1.mdx'] as any;
@@ -212,7 +232,7 @@ describe('getLatestContent', () => {
         if (filePath.includes('journal1.mdx')) return '---\ntitle: Journal 1\ndate: 2023-01-02T00:00:00Z\nstatus: published\n---\nJournal content';
         if (filePath.includes('lab1.mdx')) return '---\ntitle: Lab 1\ndate: 2023-01-03T00:00:00Z\nstatus: published\n---\nLab content';
       }
-      return '';
+      throwENOENT();
     });
 
     const result = getLatestContent(2);
@@ -226,7 +246,7 @@ describe('getLatestContent', () => {
   });
 
   it('should return default count of 3 items if no count is provided', () => {
-    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+
     mock.spyOn(fs, 'readdirSync').mockImplementation((dirPath) => {
       if (typeof dirPath === 'string') {
         if (dirPath.includes('notes')) return ['note1.mdx', 'note2.mdx'] as any;
@@ -243,7 +263,7 @@ describe('getLatestContent', () => {
         if (filePath.includes('journal1.mdx')) return '---\ntitle: Journal 1\ndate: 2023-01-02T00:00:00Z\nstatus: published\n---\nJournal content';
         if (filePath.includes('lab1.mdx')) return '---\ntitle: Lab 1\ndate: 2023-01-03T00:00:00Z\nstatus: published\n---\nLab content';
       }
-      return '';
+      throwENOENT();
     });
 
     const result = getLatestContent();
@@ -255,7 +275,7 @@ describe('getLatestContent', () => {
   });
 
   it('should handle cases where there is less content than requested', () => {
-    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+
     mock.spyOn(fs, 'readdirSync').mockImplementation((dirPath) => {
       if (typeof dirPath === 'string') {
         if (dirPath.includes('notes')) return ['note1.mdx'] as any;
@@ -269,7 +289,7 @@ describe('getLatestContent', () => {
       if (typeof filePath === 'string') {
         if (filePath.includes('note1.mdx')) return '---\ntitle: Note 1\ndate: 2023-01-01T00:00:00Z\nstatus: published\n---\nNote content';
       }
-      return '';
+      throwENOENT();
     });
 
     const result = getLatestContent(5);

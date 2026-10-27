@@ -63,8 +63,13 @@ export function getSlugs(type: ContentType): string[] {
     return slugsCache.get(type)!;
   }
   const dirPath = path.join(contentDirectory, type);
-  if (!fs.existsSync(dirPath)) return [];
-  const files = fs.readdirSync(dirPath);
+  let files: string[];
+  try {
+    files = fs.readdirSync(dirPath);
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === 'ENOENT') return [];
+    throw err;
+  }
   const slugs = files.filter(file => file.endsWith('.mdx') || file.endsWith('.md')).map(file => file.replace(/\.mdx?$/, ''));
   slugsCache.set(type, slugs);
   return slugs;
@@ -81,13 +86,23 @@ export function getContentBySlug(type: ContentType, slug: string): ContentItem |
     const mdxPath = path.join(dirPath, `${slug}.mdx`);
     const mdPath = path.join(dirPath, `${slug}.md`);
     
-    let filePath = mdxPath;
-    if (!fs.existsSync(filePath)) {
-      if (fs.existsSync(mdPath)) filePath = mdPath;
-      else return null;
+    let fileContents: string;
+    try {
+      fileContents = fs.readFileSync(mdxPath, 'utf8');
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
+        try {
+          fileContents = fs.readFileSync(mdPath, 'utf8');
+        } catch (err2) {
+          if ((err2 as NodeJS.ErrnoException).code === 'ENOENT') {
+            return null;
+          }
+          throw err2;
+        }
+      } else {
+        throw err;
+      }
     }
-
-    const fileContents = fs.readFileSync(filePath, 'utf8');
     const { data, content } = matter(fileContents);
 
     const parsedContent = {
