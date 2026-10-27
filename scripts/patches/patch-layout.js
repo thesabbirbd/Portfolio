@@ -43,14 +43,12 @@ if (!content.includes('personSchema')) {
   content = content.replace('export default function RootLayout({', jsonLd + '\nexport default function RootLayout({');
   
   const scriptTag = `
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
-        />
+        <script type="application/ld+json">
+          {JSON.stringify(personSchema).replaceAll('<', String.raw\`\\u003c\`)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(websiteSchema).replaceAll('<', String.raw\`\\u003c\`)}
+        </script>
         <ThemeProvider`;
         
   content = content.replace('<ThemeProvider', scriptTag);
