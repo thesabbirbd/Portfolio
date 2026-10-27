@@ -54,7 +54,9 @@ const jsonLd = {
 export default function AiyaarPage() {
   return (
     <div className="flex flex-col w-full pt-6 md:pt-8">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }} />
+      <script type="application/ld+json">
+        {JSON.stringify(jsonLd).replaceAll('<', String.raw`\u003c`)}
+      </script>
 
       <PageHeader
         crumbs={[{ label: "Aiyaar Ltd" }]}
