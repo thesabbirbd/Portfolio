@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion, HTMLMotionProps } from "framer-motion";
 import { MessageSquare, Lightbulb, Send, Mail, FileDown, Code, User, Check } from "lucide-react";
 import { sound } from "@/lib/sound";
 import { GlassButton } from "@/components/ui/glass/GlassButton";
@@ -106,137 +106,31 @@ export function ContactSection() {
           <h2 className="font-mono text-eyebrow uppercase text-ink-3 mb-3"><span className="text-primary">02</span> · Write your message</h2>
           <AnimatePresence mode="wait" initial={false}>
             {!current ? (
-              <motion.div
-                key="empty"
-                {...fade}
-                className="flex flex-col items-center justify-center text-center p-6 md:p-8 md:min-h-[380px] rounded-card border border-dashed border-line-strong bg-muted/30"
-              >
-                <MessageSquare aria-hidden="true" className="w-9 h-9 text-ink-3 mb-3" />
-                <p className="text-sm text-ink-2 max-w-xs">
-                  Pick a reason to open the form. It prepares an email draft — nothing is sent until you press Send in your email app.
-                </p>
-              </motion.div>
+              <ContactEmptyState key="empty" {...fade} />
             ) : isSuccess ? (
-              <motion.div
+              <ContactSuccessState
                 key="success"
                 {...fade}
-                role="status"
-                className="flex flex-col items-center justify-center text-center p-6 md:p-8 md:min-h-[380px] rounded-card border border-primary/25 bg-primary/5"
-              >
-                <Mail aria-hidden="true" className="w-12 h-12 text-primary mb-4" />
-                <h3 className="text-xl sm:text-2xl font-bold text-ink mb-2">Draft opened in your email app</h3>
-                <p className="text-sm sm:text-base text-ink-2 max-w-sm mb-6">
-                  Nothing has been sent yet — press <strong>Send</strong> in your email app to deliver it.
-                  If no email app opened, copy the draft and send it to <span className="font-mono text-ink break-all">{CONTACT_EMAIL}</span>.
-                </p>
-                <div className="flex flex-wrap items-center justify-center gap-3">
-                  <GlassButton onClick={copyDraft} variant="primary" magnetic={false}>
-                    {copied ? <><Check aria-hidden="true" className="w-4 h-4" /> Copied</> : "Copy draft"}
-                  </GlassButton>
-                  <GlassButton onClick={() => setIsSuccess(false)} variant="secondary" magnetic={false}>
-                    Edit message
-                  </GlassButton>
-                  <a href={mailtoHref} className="inline-flex min-h-10 items-center text-sm font-medium text-primary hover:underline underline-offset-4">Open email app again</a>
-                </div>
-              </motion.div>
+                copied={copied}
+                copyDraft={copyDraft}
+                setIsSuccess={setIsSuccess}
+                mailtoHref={mailtoHref}
+              />
             ) : (
-              <motion.div key="form" {...fade} className="rounded-card surface-elevated p-4 sm:p-6 md:p-8">
-                <h3 className="text-xl sm:text-2xl font-bold text-ink">{current.title}</h3>
-                <p className="mt-2 mb-5 p-3 rounded-lg bg-muted text-sm text-ink-2 flex items-start gap-2">
-                  <Lightbulb aria-hidden="true" className="w-4 h-4 shrink-0 mt-0.5 text-primary" />
-                  <span>{current.hint}</span>
-                </p>
-
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  {/* Honeypot */}
-                  <input
-                    type="text"
-                    name="_honey"
-                    aria-hidden="true"
-                    style={{ display: 'none' }}
-                    tabIndex={-1}
-                    autoComplete="off"
-                    value={formData._honey}
-                    onChange={(e) => setFormData({...formData, _honey: e.target.value})}
-                  />
-
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="contact-name" className={LABEL}>Name</label>
-                      <GlassInput
-                        id="contact-name"
-                        name="name"
-                        autoComplete="name"
-                        required
-                        placeholder="Your name"
-                        value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="contact-email" className={LABEL}>Email</label>
-                      <GlassInput
-                        id="contact-email"
-                        name="email"
-                        autoComplete="email"
-                        required
-                        type="email"
-                        inputMode="email"
-                        placeholder="you@example.com"
-                        value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="contact-message" className={LABEL}>Message</label>
-                    <textarea
-                      id="contact-message"
-                      name="message"
-                      required
-                      rows={5}
-                      placeholder="What would you like to talk about?"
-                      className="w-full surface-card px-4 py-3 text-base sm:text-sm rounded-xl outline-none text-ink placeholder:text-ink-3 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-[border-color,box-shadow] resize-y"
-                      value={formData.message}
-                      onChange={(e) => setFormData({...formData, message: e.target.value})}
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full min-h-12 py-3 px-4 bg-primary text-on-primary font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
-                  >
-                    <Send aria-hidden="true" className="w-4 h-4" /> Compose in email app
-                  </button>
-                  <p className="text-xs text-ink-3 text-center">
-                    Opens a pre-filled draft in your email app — or write directly to{" "}
-                    <a href={`mailto:${CONTACT_EMAIL}`} className="font-mono text-ink hover:text-primary break-all">{CONTACT_EMAIL}</a>
-                  </p>
-                </form>
-              </motion.div>
+              <ContactFormState
+                key="form"
+                {...fade}
+                current={current}
+                handleSubmit={handleSubmit}
+                formData={formData}
+                setFormData={setFormData}
+              />
             )}
           </AnimatePresence>
         </div>
 
         {/* 3 · Quick links */}
-        <div className="md:col-span-5 pt-6 border-t border-line">
-          <h2 className="font-mono text-eyebrow uppercase text-ink-3 mb-3">Or look around first</h2>
-          <div className="flex flex-wrap gap-2">
-            <a href="/cv/Md-Sabbirul-Islam-Khan-CV-2026.pdf" download className="inline-flex min-h-10 items-center gap-2 px-4 rounded-full surface-card surface-interactive text-sm font-semibold text-ink">
-              <FileDown aria-hidden="true" className="w-4 h-4" /> CV (PDF)
-            </a>
-            <Link href="/resume" className="inline-flex min-h-10 items-center gap-2 px-4 rounded-full surface-card surface-interactive text-sm font-semibold text-ink">
-              Resume
-            </Link>
-            <a href="https://github.com/thesabbirbd" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center gap-2 px-4 rounded-full surface-card surface-interactive text-sm font-semibold text-ink">
-              <Code aria-hidden="true" className="w-4 h-4" /> GitHub
-            </a>
-            <a href={SOCIAL_LINKS.find((l) => l.id === "linkedin")?.url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center gap-2 px-4 rounded-full surface-card surface-interactive text-sm font-semibold text-ink">
-              <User aria-hidden="true" className="w-4 h-4" /> LinkedIn
-            </a>
-          </div>
-        </div>
+        <ContactQuickLinks />
       </div>
     </section>
   );
@@ -257,5 +151,168 @@ function IntentButton({ active, onClick, title, desc }: { active: boolean, onCli
       <span className={cn("block text-sm md:text-base font-bold mb-0.5 md:mb-1", active ? "text-primary" : "text-ink")}>{title}</span>
       <span className="block text-xs text-ink-2 leading-snug">{desc}</span>
     </button>
+  );
+}
+
+function ContactEmptyState(props: HTMLMotionProps<"div">) {
+  return (
+    <motion.div
+      className="flex flex-col items-center justify-center text-center p-6 md:p-8 md:min-h-[380px] rounded-card border border-dashed border-line-strong bg-muted/30"
+      {...props}
+    >
+      <MessageSquare aria-hidden="true" className="w-9 h-9 text-ink-3 mb-3" />
+      <p className="text-sm text-ink-2 max-w-xs">
+        Pick a reason to open the form. It prepares an email draft — nothing is sent until you press Send in your email app.
+      </p>
+    </motion.div>
+  );
+}
+
+interface ContactSuccessStateProps extends HTMLMotionProps<"div"> {
+  copied: boolean;
+  copyDraft: () => void;
+  setIsSuccess: (success: boolean) => void;
+  mailtoHref: string;
+}
+
+function ContactSuccessState({ copied, copyDraft, setIsSuccess, mailtoHref, ...props }: ContactSuccessStateProps) {
+  return (
+    <motion.div
+      role="status"
+      className="flex flex-col items-center justify-center text-center p-6 md:p-8 md:min-h-[380px] rounded-card border border-primary/25 bg-primary/5"
+      {...props}
+    >
+      <Mail aria-hidden="true" className="w-12 h-12 text-primary mb-4" />
+      <h3 className="text-xl sm:text-2xl font-bold text-ink mb-2">Draft opened in your email app</h3>
+      <p className="text-sm sm:text-base text-ink-2 max-w-sm mb-6">
+        Nothing has been sent yet — press <strong>Send</strong> in your email app to deliver it.
+        If no email app opened, copy the draft and send it to <span className="font-mono text-ink break-all">{CONTACT_EMAIL}</span>.
+      </p>
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        <GlassButton onClick={copyDraft} variant="primary" magnetic={false}>
+          {copied ? <><Check aria-hidden="true" className="w-4 h-4" /> Copied</> : "Copy draft"}
+        </GlassButton>
+        <GlassButton onClick={() => setIsSuccess(false)} variant="secondary" magnetic={false}>
+          Edit message
+        </GlassButton>
+        <a href={mailtoHref} className="inline-flex min-h-10 items-center text-sm font-medium text-primary hover:underline underline-offset-4">Open email app again</a>
+      </div>
+    </motion.div>
+  );
+}
+
+interface FormDataState {
+  name: string;
+  email: string;
+  message: string;
+  _honey: string;
+}
+
+interface ContactFormStateProps extends HTMLMotionProps<"div"> {
+  current: { title: string; hint: string };
+  handleSubmit: (e: React.FormEvent) => void;
+  formData: FormDataState;
+  setFormData: (data: FormDataState) => void;
+}
+
+function ContactFormState({ current, handleSubmit, formData, setFormData, ...props }: ContactFormStateProps) {
+  return (
+    <motion.div className="rounded-card surface-elevated p-4 sm:p-6 md:p-8" {...props}>
+      <h3 className="text-xl sm:text-2xl font-bold text-ink">{current.title}</h3>
+      <p className="mt-2 mb-5 p-3 rounded-lg bg-muted text-sm text-ink-2 flex items-start gap-2">
+        <Lightbulb aria-hidden="true" className="w-4 h-4 shrink-0 mt-0.5 text-primary" />
+        <span>{current.hint}</span>
+      </p>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Honeypot */}
+        <input
+          type="text"
+          name="_honey"
+          aria-hidden="true"
+          style={{ display: 'none' }}
+          tabIndex={-1}
+          autoComplete="off"
+          value={formData._honey}
+          onChange={(e) => setFormData({...formData, _honey: e.target.value})}
+        />
+
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="contact-name" className={LABEL}>Name</label>
+            <GlassInput
+              id="contact-name"
+              name="name"
+              autoComplete="name"
+              required
+              placeholder="Your name"
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
+            />
+          </div>
+          <div>
+            <label htmlFor="contact-email" className={LABEL}>Email</label>
+            <GlassInput
+              id="contact-email"
+              name="email"
+              autoComplete="email"
+              required
+              type="email"
+              inputMode="email"
+              placeholder="you@example.com"
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+            />
+          </div>
+        </div>
+
+        <div>
+          <label htmlFor="contact-message" className={LABEL}>Message</label>
+          <textarea
+            id="contact-message"
+            name="message"
+            required
+            rows={5}
+            placeholder="What would you like to talk about?"
+            className="w-full surface-card px-4 py-3 text-base sm:text-sm rounded-xl outline-none text-ink placeholder:text-ink-3 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-[border-color,box-shadow] resize-y"
+            value={formData.message}
+            onChange={(e) => setFormData({...formData, message: e.target.value})}
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="w-full min-h-12 py-3 px-4 bg-primary text-on-primary font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+        >
+          <Send aria-hidden="true" className="w-4 h-4" /> Compose in email app
+        </button>
+        <p className="text-xs text-ink-3 text-center">
+          Opens a pre-filled draft in your email app — or write directly to{" "}
+          <a href={`mailto:${CONTACT_EMAIL}`} className="font-mono text-ink hover:text-primary break-all">{CONTACT_EMAIL}</a>
+        </p>
+      </form>
+    </motion.div>
+  );
+}
+
+function ContactQuickLinks() {
+  return (
+    <div className="md:col-span-5 pt-6 border-t border-line">
+      <h2 className="font-mono text-eyebrow uppercase text-ink-3 mb-3">Or look around first</h2>
+      <div className="flex flex-wrap gap-2">
+        <a href="/cv/Md-Sabbirul-Islam-Khan-CV-2026.pdf" download className="inline-flex min-h-10 items-center gap-2 px-4 rounded-full surface-card surface-interactive text-sm font-semibold text-ink">
+          <FileDown aria-hidden="true" className="w-4 h-4" /> CV (PDF)
+        </a>
+        <Link href="/resume" className="inline-flex min-h-10 items-center gap-2 px-4 rounded-full surface-card surface-interactive text-sm font-semibold text-ink">
+          Resume
+        </Link>
+        <a href="https://github.com/thesabbirbd" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center gap-2 px-4 rounded-full surface-card surface-interactive text-sm font-semibold text-ink">
+          <Code aria-hidden="true" className="w-4 h-4" /> GitHub
+        </a>
+        <a href={SOCIAL_LINKS.find((l) => l.id === "linkedin")?.url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center gap-2 px-4 rounded-full surface-card surface-interactive text-sm font-semibold text-ink">
+          <User aria-hidden="true" className="w-4 h-4" /> LinkedIn
+        </a>
+      </div>
+    </div>
   );
 }
