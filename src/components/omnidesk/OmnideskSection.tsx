@@ -13,7 +13,6 @@ import {
   Terminal, 
   Network,
   Activity,
-  Maximize2
 } from "lucide-react";
 import { PROJECTS_DATA, projectHref } from "@/data/projects";
 import { GlassCard } from "@/components/ui/GlassCard";
