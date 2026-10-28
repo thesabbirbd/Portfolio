@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Building2, HeartHandshake, Briefcase, GraduationCap, ExternalLink, Award } from "lucide-react";
+import { Building2, HeartHandshake, Briefcase, GraduationCap, ExternalLink } from "lucide-react";
 import { COMMUNITY_DATA, ActivityItem } from "@/data/community";
 import { sound } from "@/lib/sound";
 import { SectionHeader, Accent } from "@/components/system/SectionHeader";
