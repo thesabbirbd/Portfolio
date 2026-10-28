@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDebounce } from '@/hooks/use-debounce';
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Command, X, Home, Folder, Cpu, Terminal, Globe, MessageSquare, Palette, Box, Volume2, Activity, Mail, Briefcase } from "lucide-react";
+import { Search, Command, X, Home, Folder, Terminal, Globe, MessageSquare, Palette, Box, Volume2, Activity, Mail, Briefcase } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
 import { useTheme } from "next-themes";
 import { useSettings } from "@/contexts/SettingsContext";
