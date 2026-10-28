@@ -10,7 +10,9 @@ describe('getSlugs', () => {
   });
 
   it('should return an empty array if the directory does not exist', () => {
-    mock.spyOn(fs, 'existsSync').mockReturnValue(false);
+    const err = new Error('ENOENT: no such file or directory');
+    (err as NodeJS.ErrnoException).code = 'ENOENT';
+    mock.spyOn(fs, 'readdirSync').mockImplementation(() => { throw err; });
 
     const result = getSlugs('notes');
     expect(result).toEqual([]);

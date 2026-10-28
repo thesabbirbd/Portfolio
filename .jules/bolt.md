@@ -24,3 +24,7 @@
 ## O(n) rendering filters
 - **What**: Replaced implicit `.some()` loop filters array creations with single `for` loops in `src/components/content/ConnectedKnowledge.tsx`, as well as removed `.filter` spread instantiations on backlinks.
 - **Why**: Reduced CPU overhead massively for knowledge base components by stopping multiple temporary array `Set`/spread allocations on every global list iteration.
+
+## 2024-05-24 - Optimizing getSlugs with EAFP and single loop
+**Learning:** Replacing LBYL (`fs.existsSync` then `fs.readdirSync`) with EAFP (`try/catch` around `fs.readdirSync`) saves synchronous file system I/O. Furthermore, condensing `.filter().map()` into a single `for` loop prevents the creation of intermediate arrays and reduces multiple passes over the dataset, which saves CPU cycles and garbage collection overhead.
+**Action:** When working on performance-sensitive Node.js backend logic, look for chained array methods and unnecessary I/O checks that can be optimized through single-pass iteration and EAFP exception handling.
