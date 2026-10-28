@@ -10,14 +10,17 @@ describe('getSlugs', () => {
   });
 
   it('should return an empty array if the directory does not exist', () => {
-    mock.spyOn(fs, 'existsSync').mockReturnValue(false);
+    mock.spyOn(fs, 'readdirSync').mockImplementation(() => {
+      const err = new Error();
+      (err as any).code = 'ENOENT';
+      throw err;
+    });
 
     const result = getSlugs('notes');
     expect(result).toEqual([]);
   });
 
   it('should return an array of slugs for md and mdx files and ignore others', () => {
-    mock.spyOn(fs, 'existsSync').mockReturnValue(true);
     mock.spyOn(fs, 'readdirSync').mockReturnValue([
       'test-note.md' as unknown as fs.Dirent,
       'image.png' as unknown as fs.Dirent,
