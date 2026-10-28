@@ -9,6 +9,7 @@ const ICON: Record<string, React.ComponentType<{ className?: string }>> = {
   pos: Store, store: ShoppingBag, inventory: Boxes, khata: BookOpen, baki: HandCoins, social: Bot, reports: BarChart3, team: Users,
 };
 const SPOTLIGHT = ["pos", "store", "inventory", "khata", "baki", "social", "reports", "team"];
+const FEATURE_MAP = new Map(AIYAAR_FEATURES.map((f) => [f.id, f]));
 
 /**
  * Home — the featured current role, placed right after the hero so it is the first thing
@@ -16,7 +17,7 @@ const SPOTLIGHT = ["pos", "store", "inventory", "khata", "baki", "social", "repo
  * the full /aiyaar page, the product site and LinkedIn.
  */
 export function AiyaarFeature() {
-  const spotlight = SPOTLIGHT.map((id) => AIYAAR_FEATURES.find((f) => f.id === id)!).filter(Boolean);
+  const spotlight = SPOTLIGHT.map((id) => FEATURE_MAP.get(id)!).filter(Boolean);
   return (
     <section id="aiyaar" aria-labelledby="aiyaar-title" className="relative py-10 sm:py-14 md:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full scroll-mt-20">
       <div className="reveal relative overflow-hidden rounded-panel border border-primary/25 surface-elevated shadow-e3">
