@@ -2,8 +2,25 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
 import React from 'react';
 
-// The problem is that the state (`webglProbe`) inside `SafeWebGL.tsx` is being shared across tests.
-// Let's reset modules and require the component dynamically inside `beforeEach`.
+function createMockCanvasContext(contextId: string, getExtensionMock: any) {
+  return {
+    getContext: vi.fn((id: string) => {
+      if (id === contextId) {
+        return { getExtension: getExtensionMock };
+      }
+      return null;
+    })
+  } as unknown as HTMLCanvasElement;
+}
+
+function mockCreateElement(tagNameMatcher: (tagName: string, options?: ElementCreationOptions) => any, originalCreateElement: any) {
+  document.createElement = vi.fn((tagName: string, options?: ElementCreationOptions) => {
+    const matched = tagNameMatcher(tagName, options);
+    if (matched) return matched;
+    return originalCreateElement(tagName, options);
+  }) as any;
+}
+
 describe('SafeWebGL', () => {
   let hasWebGL: any;
   let SafeWebGL: any;
@@ -28,92 +45,59 @@ describe('SafeWebGL', () => {
   });
 
   describe('hasWebGL', () => {
-    it('returns true if webgl2 context is available', () => {
+    const setupContextMock = (contextType: string) => {
       const mockLoseContext = vi.fn();
       const mockGetExtension = vi.fn().mockReturnValue({ loseContext: mockLoseContext });
+      mockCreateElement((tagName) => {
+        if (tagName === 'canvas') return createMockCanvasContext(contextType, mockGetExtension);
+        return null;
+      }, originalCreateElement);
+      return { mockGetExtension, mockLoseContext };
+    };
 
-      document.createElement = vi.fn((tagName: string, options?: ElementCreationOptions) => {
-        if (tagName === 'canvas') {
-          return {
-            getContext: vi.fn((contextId: string) => {
-              if (contextId === 'webgl2') {
-                return { getExtension: mockGetExtension };
-              }
-              return null;
-            })
-          } as unknown as HTMLCanvasElement;
-        }
-        return originalCreateElement(tagName, options);
-      }) as any;
-
+    it('returns true if webgl2 context is available', () => {
+      const { mockGetExtension, mockLoseContext } = setupContextMock('webgl2');
       expect(hasWebGL()).toBe(true);
       expect(mockGetExtension).toHaveBeenCalledWith('WEBGL_lose_context');
       expect(mockLoseContext).toHaveBeenCalled();
     });
 
     it('returns true if webgl context is available as fallback', () => {
-      const mockLoseContext = vi.fn();
-      const mockGetExtension = vi.fn().mockReturnValue({ loseContext: mockLoseContext });
-
-      document.createElement = vi.fn((tagName: string, options?: ElementCreationOptions) => {
-        if (tagName === 'canvas') {
-          return {
-            getContext: vi.fn((contextId: string) => {
-              if (contextId === 'webgl') {
-                return { getExtension: mockGetExtension };
-              }
-              return null;
-            })
-          } as unknown as HTMLCanvasElement;
-        }
-        return originalCreateElement(tagName, options);
-      }) as any;
-
+      const { mockGetExtension, mockLoseContext } = setupContextMock('webgl');
       expect(hasWebGL()).toBe(true);
       expect(mockGetExtension).toHaveBeenCalledWith('WEBGL_lose_context');
       expect(mockLoseContext).toHaveBeenCalled();
     });
 
     it('returns false if no webgl context is available', () => {
-      document.createElement = vi.fn((tagName: string, options?: ElementCreationOptions) => {
+      mockCreateElement((tagName) => {
         if (tagName === 'canvas') {
-          return {
-            getContext: vi.fn(() => null)
-          } as unknown as HTMLCanvasElement;
+          return { getContext: vi.fn(() => null) } as unknown as HTMLCanvasElement;
         }
-        return originalCreateElement(tagName, options);
-      }) as any;
-
+        return null;
+      }, originalCreateElement);
       expect(hasWebGL()).toBe(false);
     });
 
     it('returns false if getContext throws an error', () => {
-      document.createElement = vi.fn((tagName: string, options?: ElementCreationOptions) => {
+      mockCreateElement((tagName) => {
         if (tagName === 'canvas') {
-          return {
-            getContext: vi.fn(() => {
-              throw new Error('Not supported');
-            })
-          } as unknown as HTMLCanvasElement;
+          return { getContext: vi.fn(() => { throw new Error('Not supported'); }) } as unknown as HTMLCanvasElement;
         }
-        return originalCreateElement(tagName, options);
-      }) as any;
-
+        return null;
+      }, originalCreateElement);
       expect(hasWebGL()).toBe(false);
     });
   });
 
   describe('SafeWebGL component', () => {
     it('renders fallback when WebGL is not supported', async () => {
-      // Mock hasWebGL to return false *before* importing
-      document.createElement = vi.fn((tagName: string, options?: ElementCreationOptions) => {
+      mockCreateElement((tagName) => {
         if (tagName === 'canvas') {
-          return {
-            getContext: vi.fn(() => null)
-          } as unknown as HTMLCanvasElement;
+          return { getContext: vi.fn(() => null) } as unknown as HTMLCanvasElement;
         }
-        return originalCreateElement(tagName, options);
-      }) as any;
+        return null;
+      }, originalCreateElement);
 
       vi.resetModules();
       const { SafeWebGL: SafeWebGLNoWebGL } = await import('./SafeWebGL');
@@ -131,20 +115,10 @@ describe('SafeWebGL', () => {
     it('renders children when WebGL is supported', async () => {
       const mockLoseContext = vi.fn();
       const mockGetExtension = vi.fn().mockReturnValue({ loseContext: mockLoseContext });
-
-      document.createElement = vi.fn((tagName: string, options?: ElementCreationOptions) => {
-        if (tagName === 'canvas') {
-          return {
-            getContext: vi.fn((contextId: string) => {
-              if (contextId === 'webgl2') {
-                return { getExtension: mockGetExtension };
-              }
-              return null;
-            })
-          } as unknown as HTMLCanvasElement;
-        }
-        return originalCreateElement(tagName, options);
-      }) as any;
+      mockCreateElement((tagName) => {
+        if (tagName === 'canvas') return createMockCanvasContext('webgl2', mockGetExtension);
+        return null;
+      }, originalCreateElement);
 
       vi.resetModules();
       const { SafeWebGL: SafeWebGLWithWebGL } = await import('./SafeWebGL');
@@ -162,20 +136,10 @@ describe('SafeWebGL', () => {
     it('catches runtime WebGL errors and shows fallback', async () => {
       const mockLoseContext = vi.fn();
       const mockGetExtension = vi.fn().mockReturnValue({ loseContext: mockLoseContext });
-
-      document.createElement = vi.fn((tagName: string, options?: ElementCreationOptions) => {
-        if (tagName === 'canvas') {
-          return {
-            getContext: vi.fn((contextId: string) => {
-              if (contextId === 'webgl2') {
-                return { getExtension: mockGetExtension };
-              }
-              return null;
-            })
-          } as unknown as HTMLCanvasElement;
-        }
-        return originalCreateElement(tagName, options);
-      }) as any;
+      mockCreateElement((tagName) => {
+        if (tagName === 'canvas') return createMockCanvasContext('webgl2', mockGetExtension);
+        return null;
+      }, originalCreateElement);
 
       vi.resetModules();
       const { SafeWebGL: SafeWebGLWithWebGL } = await import('./SafeWebGL');
@@ -185,7 +149,6 @@ describe('SafeWebGL', () => {
         return null;
       };
 
-      // Suppress React error logging in console just for this test to avoid noisy output
       const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       render(
