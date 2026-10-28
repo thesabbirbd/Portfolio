@@ -30,7 +30,7 @@ export function JourneyTimeline() {
     const fromHash = window.location.hash.replace("#journey-", "");
     if (JOURNEY_STEPS.some((st) => st.id === fromHash)) setActive(fromHash);
 
-    const items = Array.from(containerRef.current?.querySelectorAll<HTMLElement>("[data-step]") ?? []);
+    const items = JOURNEY_STEPS.map((st) => document.getElementById(`journey-${st.id}`)).filter((el): el is HTMLElement => el !== null);
     const observer = new IntersectionObserver(
       (entries) => {
         const hit = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
