@@ -63,11 +63,18 @@ export function getSlugs(type: ContentType): string[] {
     return slugsCache.get(type)!;
   }
   const dirPath = path.join(contentDirectory, type);
-  if (!fs.existsSync(dirPath)) return [];
-  const files = fs.readdirSync(dirPath);
-  const slugs = files.filter(file => file.endsWith('.mdx') || file.endsWith('.md')).map(file => file.replace(/\.mdx?$/, ''));
-  slugsCache.set(type, slugs);
-  return slugs;
+  try {
+    const files = fs.readdirSync(dirPath);
+    const slugs = files.filter(file => file.endsWith('.mdx') || file.endsWith('.md')).map(file => file.replace(/\.mdx?$/, ''));
+    slugsCache.set(type, slugs);
+    return slugs;
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
+      slugsCache.set(type, []);
+      return [];
+    }
+    throw err;
+  }
 }
 
 export function getContentBySlug(type: ContentType, slug: string): ContentItem | null {
