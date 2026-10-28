@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ContentItem, getContentBySlug } from '@/lib/content';
 import { MDXContent } from './MDXContent';
 import { ConnectedKnowledge } from './ConnectedKnowledge';
-import { ExternalLink, ArrowLeft, ArrowRight, Code } from 'lucide-react';
+import { ExternalLink, ArrowLeft, Code } from 'lucide-react';
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
