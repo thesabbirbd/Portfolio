@@ -24,3 +24,7 @@
 ## O(n) rendering filters
 - **What**: Replaced implicit `.some()` loop filters array creations with single `for` loops in `src/components/content/ConnectedKnowledge.tsx`, as well as removed `.filter` spread instantiations on backlinks.
 - **Why**: Reduced CPU overhead massively for knowledge base components by stopping multiple temporary array `Set`/spread allocations on every global list iteration.
+
+## 2024-05-18 - Optimized Array Inclusion Checks in React Components
+**Learning:** Found nested O(N*M) checks (`array.includes()`) iterating over large `globalContent` arrays in `ConnectedKnowledge.tsx` to calculate implicit connections. Moving the source array into a `Set` outside the loop, and then checking `.has()` on that set against the dynamic iteration array, dramatically reduced calculation time by changing complexity from `O(N * (T_m * T_t))` to `O(T_m + N * T_t)`.
+**Action:** When performing inclusion checks between arrays inside loops that run frequently or over large datasets (like global content aggregators), extract the static side of the check into a `Set` initialized before the loop to leverage O(1) lookups.

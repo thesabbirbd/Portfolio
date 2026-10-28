@@ -39,6 +39,9 @@ export function ConnectedKnowledge({ meta }: { meta: ContentItem['meta'], }) {
   const explicitSlugsSet = new Set(explicitContent.map(e => e.meta.slug));
   const backlinkSlugsSet = new Set(backlinks.map(b => b.meta.slug));
 
+  const myTechsSet = new Set(myTechs);
+  const myTagsSet = new Set(myTags);
+
   const allImplicit = [];
   for (let i = 0; i < globalContent.length; i++) {
     const c = globalContent[i];
@@ -50,15 +53,15 @@ export function ConnectedKnowledge({ meta }: { meta: ContentItem['meta'], }) {
     let strength = 0;
     const shared = [];
 
-    for (const t of myTechs) {
-      if (theirTechs.includes(t)) {
+    for (const t of theirTechs) {
+      if (myTechsSet.has(t)) {
         strength += 2;
         shared.push(t);
       }
     }
 
-    for (const t of myTags) {
-      if (theirTags.includes(t)) {
+    for (const t of theirTags) {
+      if (myTagsSet.has(t)) {
         strength += 1;
         shared.push(t);
       }
