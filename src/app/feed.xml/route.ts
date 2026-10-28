@@ -10,11 +10,17 @@ export async function GET() {
     ...getAllContent('lab'),
   ];
   
+  // Map to include parsed date to avoid repetitive parsing
+  const mappedContent = allContent.map(item => ({
+    item,
+    time: new Date(item.meta.date).getTime()
+  }));
+
   // Sort by date descending
-  allContent.sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime());
+  mappedContent.sort((a, b) => b.time - a.time);
 
   // Only take latest 20 items
-  const recentContent = allContent.slice(0, 20);
+  const recentContent = mappedContent.slice(0, 20).map(m => m.item);
 
   const baseUrl = 'https://sabbir.nav.bd';
 
