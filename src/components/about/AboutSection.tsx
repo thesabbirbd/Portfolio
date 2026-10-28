@@ -101,7 +101,14 @@ export function AboutSection({ variant = "full" }: { variant?: "full" | "overvie
 }
 
 // "Current stack": the skills marked Active Focus in src/data/skills.ts (real data, no new claims).
-const CURRENT_STACK = SKILL_CATEGORIES.flatMap((c) => c.skills.filter((sk) => sk.level === "Active Focus").map((sk) => sk.name));
+const CURRENT_STACK = SKILL_CATEGORIES.reduce<string[]>((acc, c) => {
+  for (const sk of c.skills) {
+    if (sk.level === "Active Focus") {
+      acc.push(sk.name);
+    }
+  }
+  return acc;
+}, []);
 
 const PHOTO_MODES: { id: PhotoMode; label: string; src: string }[] = [
   { id: "glass", label: "Glass", src: "/assets/about-glass.jpg" },
