@@ -60,7 +60,7 @@ export function Eyebrow({
     return (
       <span className={cn("inline-flex items-center gap-2 font-mono text-eyebrow uppercase text-signal", className)}>
         <span aria-hidden="true">[</span>
-        {index && <span className="text-ink-3">{index}</span>}
+        {index && <span className="eyebrow-index">{index}</span>}
         <span>{children}</span>
         <span aria-hidden="true">]</span>
       </span>
@@ -69,15 +69,15 @@ export function Eyebrow({
   if (expression === "glass") {
     return (
       <span className={cn("inline-flex items-center gap-2 px-3 py-1 rounded-full surface-card font-mono text-eyebrow uppercase text-ink-2", className)}>
-        {index && <span className="text-primary">{index}</span>}
+        {index && <span className="eyebrow-index">{index}</span>}
         <span>{children}</span>
       </span>
     );
   }
   return (
     <span className={cn("inline-flex items-center gap-2.5 font-mono text-eyebrow uppercase text-primary", className)}>
-      <span aria-hidden="true" className="reveal-bar h-0.5 w-6 rounded-full bg-brand" />
-      {index && <span className="text-ink-3">{index} /</span>}
+      <span aria-hidden="true" className="eyebrow-bar reveal-bar h-0.5 w-6 rounded-full bg-brand" />
+      {index && <span className="eyebrow-index">{index} /</span>}
       <span>{children}</span>
     </span>
   );

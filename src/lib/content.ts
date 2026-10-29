@@ -1,10 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { contentDateTime } from './content-date';
 
 const contentDirectory = path.join(process.cwd(), 'content');
 
-export type ContentType = 'notes' | 'journal' | 'projects' | 'lab';
+/** Quoted frontmatter dates stay as written; unquoted YAML dates arrive as Date objects. */
+const dateString = (v: unknown): string => (v instanceof Date ? (Number.isNaN(v.getTime()) ? '' : v.toISOString()) : typeof v === 'string' ? v : '');
+
+export type ContentType = 'notes' | 'journal' | 'projects' | 'lab' | 'articles';
 
 export interface ContentMeta {
   slug: string;
@@ -17,6 +21,8 @@ export interface ContentMeta {
   tags?: string[];
   status?: string;
   featured?: boolean;
+  /** Placeholder content shown so a new section isn't empty: labelled in the UI, noindex, kept out of sitemap/feed. */
+  demo?: boolean;
   author?: string;
   brand?: string;
   relatedProjects?: string[];
@@ -97,12 +103,14 @@ export function getContentBySlug(type: ContentType, slug: string): ContentItem |
         type,
         title: data.title || 'Untitled',
         description: data.description || '',
-        date: data.date || new Date().toISOString(),
-        updated: data.updated,
+        // Never invent a date: a missing one stays empty (seo-publishing.test.ts requires one).
+        date: dateString(data.date),
+        updated: data.updated === undefined ? undefined : dateString(data.updated),
         category: data.category,
         tags: data.tags || [],
         status: data.status || 'published',
         featured: data.featured || false,
+        demo: data.demo === true,
         author: data.author || 'Md Sabbirul Islam Khan',
         brand: data.brand || 'THE SABBiR',
         relatedProjects: data.relatedProjects || [],
@@ -147,7 +155,7 @@ export function getAllContent(type: ContentType): ContentItem[] {
     });
 
   // Sort by date descending
-  return items.sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime());
+  return items.sort((a, b) => contentDateTime(b.meta.date) - contentDateTime(a.meta.date));
 }
 
 let globalContentCache: (ContentItem & { _type: ContentType })[] | null = null;
@@ -155,7 +163,7 @@ let globalContentCache: (ContentItem & { _type: ContentType })[] | null = null;
 export function getGlobalContent(): (ContentItem & { _type: ContentType })[] {
   if (globalContentCache) return globalContentCache;
 
-  const types: ContentType[] = ['projects', 'notes', 'lab', 'journal'];
+  const types: ContentType[] = ['projects', 'notes', 'lab', 'journal', 'articles'];
   const allContent: (ContentItem & { _type: ContentType })[] = [];
 
   for (const type of types) {
@@ -174,6 +182,6 @@ export function getLatestContent(count: number = 3): ContentItem[] {
   const journal = getAllContent('journal');
   const lab = getAllContent('lab');
   
-  const all = [...notes, ...journal, ...lab].sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime());
+  const all = [...notes, ...journal, ...lab].sort((a, b) => contentDateTime(b.meta.date) - contentDateTime(a.meta.date));
   return all.slice(0, count);
 }

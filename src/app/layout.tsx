@@ -3,7 +3,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { ToastProvider } from "@/contexts/ToastContext";
-import { ThemeWelcomePopup } from "@/components/ui/ThemeWelcomePopup";
+import { ThemeToast } from "@/components/ui/ThemeToast";
+import { THEME_INIT_SCRIPT } from "@/lib/theme-color";
+import { DeferredThirdParty } from "@/components/system/DeferredThirdParty";
+import { AIYAAR } from "@/data/aiyaar";
+import { SOCIAL_LINKS } from "@/data/socials";
 import { IdentityDock } from "@/components/ui/IdentityDock";
 import { CommandMenu } from "@/components/ui/CommandMenu";
 import { MorphingNav } from "@/components/navigation/MorphingNav";
@@ -17,6 +21,7 @@ import { CustomCursor } from "@/components/ui/CustomCursor";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
+import { SoundScape } from "@/components/system/SoundScape";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -27,13 +32,10 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://sabbir.nav.bd"),
   title: "Md Sabbirul Islam Khan — THE SABBiR | Backend, DevOps, AI & Systems",
   description: "Md Sabbirul Islam Khan, known online as THE SABBiR, is a Management student from Rajshahi, Bangladesh exploring Backend Engineering, DevOps, AI, Linux, Networking, IT Systems and Creative Technology.",
-  keywords: ["Md Sabbirul Islam Khan", "THE SABBiR", "sabbir.nav.bd", "Backend Engineering", "DevOps", "Local AI", "IT Systems", "Aiyaar", "Aiyaar Ltd", "Chief Project Manager", "POS software Bangladesh", "digital khata"],
+  keywords: ["Md Sabbirul Islam Khan", "THE SABBiR", "sabbir.nav.bd", "Backend Engineering", "DevOps", "Local AI", "IT Systems", "Aiyaar", "Chief Product Manager", "POS software Bangladesh", "digital khata"],
   authors: [{ name: "Md Sabbirul Islam Khan", url: "https://github.com/thesabbirbd" }],
   creator: "Md Sabbirul Islam Khan",
   publisher: "THE SABBiR",
-  alternates: {
-    canonical: "https://sabbir.nav.bd",
-  },
   openGraph: {
     title: "Md Sabbirul Islam Khan — THE SABBiR | Backend, DevOps, AI & Systems",
     description: "Md Sabbirul Islam Khan, known online as THE SABBiR, is a Management student from Rajshahi, Bangladesh exploring Backend Engineering, DevOps, AI, Linux, Networking, IT Systems and Creative Technology.",
@@ -97,11 +99,11 @@ const jsonLd = {
         "addressLocality": "Rajshahi",
         "addressCountry": "Bangladesh"
       },
-      "jobTitle": "Chief Project Manager",
+      "jobTitle": AIYAAR.roleTitle,
       "worksFor": {
         "@type": "Organization",
-        "name": "Aiyaar Ltd",
-        "url": "https://aiyaar.ltd"
+        "name": AIYAAR.name,
+        "url": AIYAAR.url
       },
       "alumniOf": [
         {
@@ -120,14 +122,8 @@ const jsonLd = {
         "Ollama",
         "Networking"
       ],
-      "sameAs": [
-        "https://github.com/thesabbirbd",
-        "https://www.linkedin.com/in/thesabbirbd/",
-        "https://facebook.com/iamthesabbir",
-        "https://x.com/thesabbirbd",
-        "https://instagram.com/iam_thesabbir",
-        "https://www.google.com/maps/contrib/115922089427483699024"
-      ]
+      // Same canonical profile URLs the site links to (src/data/socials.ts), minus tracking params.
+      "sameAs": SOCIAL_LINKS.filter((l) => l.url.startsWith("https://")).map((l) => l.url.replace(/\?utm_[^#]*$/, ""))
     },
     {
       "@type": "WebSite",
@@ -148,22 +144,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
       <head>
-        {/* Google Analytics Tag */}
-        {/* Analytics load after the page is idle (lazyOnload) so they never compete with hydration. */}
-        <Script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-47T386XBN6"
-          strategy="lazyOnload"
-        />
-        <Script id="google-analytics" strategy="lazyOnload">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-47T386XBN6');
-          `}
-        </Script>
-
         <Script id="service-worker" strategy="afterInteractive">
           {/* Production only: dev chunks are not content-hashed, so a caching SW would serve stale JS
               (hydration mismatches). In dev, remove any worker and caches left from a production run.
@@ -172,21 +152,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             ? `if ("serviceWorker" in navigator) { var r = function() { navigator.serviceWorker.register("/sw.js").catch(function() {}); }; if (document.readyState === "complete") r(); else window.addEventListener("load", r); }`
             : `if ("serviceWorker" in navigator) { navigator.serviceWorker.getRegistrations().then(function(rs) { rs.forEach(function(r) { r.unregister(); }); }); if (window.caches) caches.keys().then(function(ks) { ks.forEach(function(k) { caches.delete(k); }); }); }`}
         </Script>
-        <Script id="microsoft-clarity" strategy="lazyOnload">
-          {`
-            (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-            })(window, document, "clarity", "script", "ypf1mf272k");
-          `}
-        </Script>
-        {/* Apply the saved colour palette and motion preference before first paint (no flash, no reveal for reduced motion). */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `try{var d=document.documentElement,c=localStorage.getItem("sabbir_color_theme");if(c==="orange"||c==="blue"||c==="green")d.setAttribute("data-theme-color",c);if(localStorage.getItem("sabbir_reduced_motion")==="true")d.dataset.motion="reduced"}catch(e){}`,
-          }}
-        />
+        {/* Colour theme (saved choice → this session's pick → new random pick) and the motion
+            preference are applied before first paint: no flash, no hydration mismatch. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <script type="application/ld+json">
           {JSON.stringify(jsonLd).replaceAll('<', String.raw`\u003c`)}
         </script>
@@ -201,10 +169,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <MotionPreferences>
           <ToastProvider>
-          <ThemeWelcomePopup />
+          <ThemeToast />
           <LiquidBackground />
           <FloatingGlassBackground />
           <div className="grain-overlay" />
+          <div aria-hidden="true" className="scroll-thread print:hidden" />
           <MorphingNav />
           <main id="main-content" tabIndex={-1} className="flex-1 w-full focus:outline-none max-w-full relative z-10 pt-[max(0.75rem,env(safe-area-inset-top))] md:pt-24 short-landscape:pt-16 overflow-x-clip">{children}</main>
           <Footer />
@@ -217,6 +186,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
           <SpeedInsights />
           <Analytics />
+          {/* Google Analytics + Microsoft Clarity, loaded once the page has settled. */}
+          <DeferredThirdParty />
+          <SoundScape />
         </ToastProvider>
           </MotionPreferences>
         </ThemeProvider>

@@ -7,7 +7,10 @@ export const MOBILE_EDGE = 16;
 /** Lift applied to Terminal & Settings while the mobile nav pill is visible (pill ~48px + gap). */
 export const MOBILE_CORNER_RAISE = 68;
 
-/** Lift for the collapsed IdentityDock so it rests above the raised Settings button. */
+/**
+ * Lift for the collapsed IdentityDock so it rests above the raised Settings button (44px bubble
+ * on 44px Settings, 12px gap). While scrolling it drops to 0 and tucks behind Settings (z-46).
+ */
 export const MOBILE_DOCK_RAISE = 124;
 
 /** Lift for the expanded dock when the nav is hidden, so it clears the corner buttons. */

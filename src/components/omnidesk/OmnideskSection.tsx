@@ -20,6 +20,7 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { GlowButton } from "@/components/ui/GlowButton";
 import { GithubIcon } from "@/components/ui/BrandIcons";
 import { MotionLoopVideo } from "@/components/ui/MotionLoopVideo";
+import { sound } from "@/lib/sound";
 import { cn } from "@/lib/utils";
 
 const SCREENS = [
@@ -124,7 +125,11 @@ export function OmnideskSection({ embedded = false }: { embedded?: boolean }) {
               Case Study
             </GlowButton>
             <GlowButton
-              onClick={() => setShowArchModal(!showArchModal)}
+              onClick={() => {
+                if (!showArchModal) sound.launch();
+                else sound.modalClose();
+                setShowArchModal(!showArchModal);
+              }}
               variant="glass"
               size="md"
               icon={<Network className="w-4 h-4" />}
@@ -206,7 +211,10 @@ export function OmnideskSection({ embedded = false }: { embedded?: boolean }) {
           {SCREENS.map((screen, idx) => (
             <button
               key={screen.id}
-              onClick={() => setActiveScreenIndex(idx)}
+              onClick={() => {
+                sound.swipe();
+                setActiveScreenIndex(idx);
+              }}
               role="tab"
               aria-selected={activeScreenIndex === idx}
               className={cn(
@@ -247,14 +255,13 @@ export function OmnideskSection({ embedded = false }: { embedded?: boolean }) {
 
           {/* Actual Screen Image */}
           <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden mt-3 bg-slate-950">
+            {/* Optimised (WebP at the rendered width): the source PNGs are ~500 KB each. */}
             <Image
               src={SCREENS[activeScreenIndex].src}
               alt={SCREENS[activeScreenIndex].title}
               fill
-              sizes="100vw"
-                  quality={100}
-                  unoptimized
-              className="object-cover object-top filter contrast-105 group-hover:scale-[1.015] transition-transform duration-700"
+              sizes="(min-width: 1280px) 1174px, 92vw"
+              className="object-cover object-top group-hover:scale-[1.015] transition-transform duration-700"
             />
           </div>
 

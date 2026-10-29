@@ -1,5 +1,5 @@
 // Minimal Chrome DevTools Protocol helper (no dependencies; Node >= 22 global WebSocket).
-// Launches a throwaway headless Chrome profile and returns { send, once, evaluate, close }.
+// Launches a throwaway headless Chrome profile and returns { send, once, on, evaluate, close }.
 import { spawn } from "node:child_process";
 import { mkdtempSync, rmSync } from "node:fs";
 import os from "node:os";
@@ -25,16 +25,25 @@ export async function launch() {
   ws.addEventListener("message", (e) => { const m = JSON.parse(e.data); if (m.id && pending.has(m.id)) { pending.get(m.id)(m); pending.delete(m.id); } else listeners.forEach((l) => l(m)); });
   const send = (method, params = {}) => new Promise((res) => { const i = ++id; pending.set(i, res); ws.send(JSON.stringify({ id: i, method, params })); });
   const once = (method) => new Promise((res) => { const l = (m) => { if (m.method === method) { listeners.splice(listeners.indexOf(l), 1); res(m); } }; listeners.push(l); });
+  /** Subscribe to every event of `method`; returns an unsubscribe function. */
+  const on = (method, fn) => { const l = (m) => { if (m.method === method) fn(m); }; listeners.push(l); return () => listeners.splice(listeners.indexOf(l), 1); };
   const evaluate = async (expression) => (await send("Runtime.evaluate", { expression, awaitPromise: true, returnByValue: true })).result.result?.value;
   const errors = [];
   listeners.push((m) => { if (m.method === "Runtime.exceptionThrown") errors.push(m.params.exceptionDetails.exception?.description?.split("\n")[0] || m.params.exceptionDetails.text); });
   await send("Page.enable"); await send("Runtime.enable");
   // NO_SW=1: bypass the service worker so byte counts reflect real network transfers.
   if (process.env.NO_SW) { await send("Network.enable"); await send("Network.setBypassServiceWorker", { bypass: true }); }
-  // Suppress the welcome toast before any page script runs (never mutate React-owned DOM).
-  await send("Page.addScriptToEvaluateOnNewDocument", { source: "try{sessionStorage.setItem('hasSeenThemePopup','true')}catch(e){}" });
+  // Deterministic QA runs (before any page script; never mutate React-owned DOM):
+  //  THEME=orange|green|blue (default orange) saves that colour theme; THEME=random keeps the
+  //  site's random-per-session behaviour. The entry toast is suppressed unless TOAST=1.
+  const theme = process.env.THEME || "orange";
+  const init = [
+    theme !== "random" ? `localStorage.setItem('sabbir_color_theme','${theme}')` : "",
+    process.env.TOAST ? "" : "sessionStorage.setItem('sabbir_theme_toast_seen','1')",
+  ].filter(Boolean).map((x) => `try{${x}}catch(e){}`).join(";");
+  if (init) await send("Page.addScriptToEvaluateOnNewDocument", { source: init });
   const close = () => { try { ws.close(); } catch {} chrome.kill("SIGKILL"); setTimeout(() => rmSync(dir, { recursive: true, force: true }), 500); };
-  return { send, once, evaluate, close, errors, sleep };
+  return { send, once, on, evaluate, close, errors, sleep };
 }
 
 /** viewport: "mobile" | "desktop" | "WxH" */

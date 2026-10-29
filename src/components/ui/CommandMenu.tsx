@@ -3,12 +3,15 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDebounce } from '@/hooks/use-debounce';
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Command, X, Home, Folder, Cpu, Terminal, Globe, MessageSquare, Palette, Box, Volume2, Activity, Mail, Briefcase } from "lucide-react";
+import { Search, Command, X, Home, Folder, Cpu, Terminal, Globe, MessageSquare, Palette, Box, Volume2, Activity, Mail, Briefcase, Compass } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
 import { useTheme } from "next-themes";
 import { useSettings } from "@/contexts/SettingsContext";
 import { PROJECTS_DATA } from "@/data/projects";
 import { SOCIAL_LINKS } from "@/data/socials";
+import { AIYAAR } from "@/data/aiyaar";
+import { THEME_COLORS, THEME_META } from "@/lib/theme-color";
+import { useThemeColor, setThemeColor, randomizeThemeColor } from "@/lib/theme-color-store";
 import { sound } from "@/lib/sound";
 import { GlassInput } from "@/components/ui/glass/GlassInput";
 import { cn } from "@/lib/utils";
@@ -31,6 +34,7 @@ export function CommandMenu() {
   const [activeIndex, setActiveIndex] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
   const { spatial3D, toggle3D, soundEnabled, toggleSound, reducedMotion, toggleMotion, setLens } = useSettings();
+  const colorTheme = useThemeColor();
   
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -40,11 +44,11 @@ export function CommandMenu() {
       if (e.key.toLowerCase() === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen((open) => !open);
-        sound.click();
+        if (open) sound.modalClose(); else sound.launch();
       } else if (e.key === "/" && !open && !isTypingTarget(e.target)) {
         e.preventDefault();
         setOpen(true);
-        sound.click();
+        sound.launch();
       } else if (e.key === "Escape" && open) {
         setOpen(false);
       }
@@ -67,7 +71,7 @@ export function CommandMenu() {
   }, [open]);
 
   const runCommand = (command: () => void) => {
-    sound.click();
+    sound.navigate();
     command();
     setOpen(false);
   };
@@ -76,7 +80,7 @@ export function CommandMenu() {
     // NAVIGATION
     { category: "NAVIGATION", name: "Search Knowledge Base", icon: Search, action: () => runCommand(() => router.push('/search')) },
     { category: "NAVIGATION", name: "Home", icon: Home, action: () => runCommand(() => router.push('/')) },
-    { category: "NAVIGATION", name: "Aiyaar Ltd — Chief Project Manager", icon: Briefcase, action: () => runCommand(() => router.push('/aiyaar')) },
+    { category: "NAVIGATION", name: `Aiyaar — ${AIYAAR.role}`, icon: Briefcase, action: () => runCommand(() => router.push('/aiyaar')) },
     { category: "NAVIGATION", name: "About", icon: User, action: () => runCommand(() => router.push('/about')) },
     { category: "NAVIGATION", name: "Experience & Skills", icon: Terminal, action: () => runCommand(() => router.push('/experience')) },
 
@@ -89,6 +93,16 @@ export function CommandMenu() {
     { category: "NAVIGATION", name: "Journal", icon: Box, action: () => runCommand(() => router.push('/journal')) },
     { category: "NAVIGATION", name: "Maps & Exploration", icon: Globe, action: () => runCommand(() => router.push('/exploration')) },
     { category: "NAVIGATION", name: "Contact", icon: MessageSquare, action: () => runCommand(() => router.push('/contact')) },
+    { category: "NAVIGATION", name: "Visit Aiyaar website (aiyaar.ltd)", icon: Globe, action: () => runCommand(() => { window.open(AIYAAR.url, "_blank", "noopener,noreferrer"); }) },
+
+    // DISCOVER
+    { category: "DISCOVER", name: "Explore hub", icon: Compass, action: () => runCommand(() => router.push('/explore')) },
+    { category: "DISCOVER", name: "Technical articles", icon: Box, action: () => runCommand(() => router.push('/articles')) },
+    { category: "DISCOVER", name: "Vlogs", icon: Box, action: () => runCommand(() => router.push('/vlogs')) },
+    { category: "DISCOVER", name: "News commentary", icon: Box, action: () => runCommand(() => router.push('/news')) },
+    { category: "DISCOVER", name: "Tools: subnet, chmod, Base64, JSON, Unix time", icon: Cpu, action: () => runCommand(() => router.push('/tools')) },
+    { category: "DISCOVER", name: "Engineering playground", icon: Activity, action: () => runCommand(() => router.push('/playground')) },
+    { category: "DISCOVER", name: "Browser games (coming soon)", icon: Box, action: () => runCommand(() => router.push('/games')) },
     
     // WORK / QUICK EXPLORE
     ...PROJECTS_DATA.map(p => ({
@@ -107,6 +121,13 @@ export function CommandMenu() {
     // PREFERENCES
     { category: "PREFERENCES", name: `Toggle 3D: ${spatial3D ? 'OFF' : 'ON'}`, icon: Box, action: () => runCommand(() => toggle3D()) },
     { category: "PREFERENCES", name: `Change Theme: ${resolvedTheme === 'dark' ? 'Light' : 'Dark'}`, icon: Palette, action: () => runCommand(() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')) },
+    ...THEME_COLORS.filter((c) => c !== colorTheme).map((c) => ({
+      category: "PREFERENCES",
+      name: `Colour theme: ${THEME_META[c].label} (${THEME_META[c].family})`,
+      icon: Palette,
+      action: () => runCommand(() => setThemeColor(c)),
+    })),
+    { category: "PREFERENCES", name: "Randomize colour theme", icon: Palette, action: () => runCommand(() => { randomizeThemeColor(); }) },
     { category: "PREFERENCES", name: `Toggle Sound: ${soundEnabled ? 'OFF' : 'ON'}`, icon: Volume2, action: () => runCommand(() => toggleSound()) },
     { category: "PREFERENCES", name: `Toggle Motion: ${reducedMotion ? 'Enable' : 'Reduce'}`, icon: Activity, action: () => runCommand(() => toggleMotion()) },
     

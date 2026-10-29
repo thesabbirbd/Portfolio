@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useSettings } from "@/contexts/SettingsContext";
+import { swapTransition } from "@/lib/motion-presets";
 
 // The first page load must paint immediately from server HTML. Only client-side
 // navigations (after the first mount) get the soft entrance transition.
@@ -23,7 +24,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
     <motion.div
       initial={animateEntrance ? { opacity: 0, y: 12 } : false}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      transition={swapTransition}
     >
       {children}
     </motion.div>

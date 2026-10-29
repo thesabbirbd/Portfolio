@@ -1,13 +1,18 @@
-// Aiyaar Ltd — facts from the official "Aiyaar Complete Feature Guide" (October 2026, aiyaar.ltd).
-// The owner is Aiyaar's Chief Project Manager (CPM); product copy below describes the product,
-// not personal claims.
+// Aiyaar — facts from the official "Aiyaar Complete Feature Guide" (October 2026, aiyaar.ltd).
+// The owner's role is **Chief Product Manager at Aiyaar (CPM)** (brief v4.0.1). Every page, the
+// terminal, metadata and JSON-LD read the role from here so the wording can never drift again.
+// Product copy below describes the product itself, not personal outcomes.
 
 export const AIYAAR = {
   name: "Aiyaar",
-  company: "Aiyaar Ltd",
   url: "https://aiyaar.ltd",
   docsUrl: "https://aiyaar.ltd/docs",
-  role: "Chief Project Manager (CPM)",
+  /** Job title without the abbreviation (JSON-LD `jobTitle`, headings). */
+  roleTitle: "Chief Product Manager",
+  /** Abbreviation used in compact UI (hero badge, footer). */
+  roleShort: "CPM",
+  /** Full form for running text: "Chief Product Manager (CPM)". */
+  role: "Chief Product Manager (CPM)",
   tagline: "One app to sell at the counter, sell online, keep your stock and khata, manage your team and see what you made.",
   summary:
     "Aiyaar is an all-in-one business management SaaS for shops and businesses in Bangladesh. It replaces the cash memo book, the stock register, the khata and a separate website with one connected system — a sale at the counter lowers stock, lands in the khata and shows in today's report at once.",
@@ -104,8 +109,8 @@ export const AIYAAR_BUSINESS_TYPES = [
 ];
 
 export const AIYAAR_KEYWORDS = [
-  "Aiyaar", "Aiyaar Ltd", "aiyaar.ltd", "POS software Bangladesh", "business management software Bangladesh",
+  "Aiyaar", "aiyaar.ltd", "POS software Bangladesh", "business management software Bangladesh",
   "digital khata app", "baki khata", "inventory management software", "online store builder Bangladesh",
   "pharmacy software Bangladesh", "grocery POS", "bKash Nagad POS", "Facebook Instagram AI reply",
-  "SaaS Bangladesh", "Chief Project Manager",
+  "SaaS Bangladesh", "Chief Product Manager",
 ];

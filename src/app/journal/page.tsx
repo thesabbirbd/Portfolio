@@ -3,11 +3,13 @@ import { ContentCard } from '@/components/content/ContentCard';
 import Link from 'next/link';
 import { PageHeader } from "@/components/system/PageHeader";
 import { Accent } from "@/components/system/SectionHeader";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Engineering Journal | THE SABBiR",
   description: "Chronological engineering documentation and process logs by Md Sabbirul Islam Khan.",
-};
+  path: "/journal",
+});
 
 export default function JournalIndexPage() {
   const journals = getAllContent('journal');

@@ -23,6 +23,8 @@ export interface JourneyStep {
   stage: string;
   status: JourneyStatus;
   context: string;
+  /** Only dates documented in the CV (public/cv/) — omitted where no date exists. */
+  period?: string;
   desc: string;
   evidence: JourneyEvidence[];
 }
@@ -30,6 +32,7 @@ export interface JourneyStep {
 export const JOURNEY_STEPS: JourneyStep[] = [
   {
     id: "management",
+    period: "2021 – exp. 2026",
     title: "MANAGEMENT",
     icon: Briefcase,
     stage: "Foundation",
@@ -40,6 +43,7 @@ export const JOURNEY_STEPS: JourneyStep[] = [
   },
   {
     id: "support",
+    period: "2021 – 2022",
     title: "IT SUPPORT",
     icon: Monitor,
     stage: "Hands-on",
@@ -50,6 +54,7 @@ export const JOURNEY_STEPS: JourneyStep[] = [
   },
   {
     id: "networking",
+    period: "2025",
     title: "NETWORKING",
     icon: Network,
     stage: "Hands-on",
@@ -76,6 +81,7 @@ export const JOURNEY_STEPS: JourneyStep[] = [
   },
   {
     id: "python",
+    period: "2023 – 2024",
     title: "PYTHON",
     icon: Code,
     stage: "Hands-on",
@@ -100,6 +106,7 @@ export const JOURNEY_STEPS: JourneyStep[] = [
   },
   {
     id: "backend",
+    period: "2026 – now",
     title: "BACKEND",
     icon: Server,
     stage: "Active focus",

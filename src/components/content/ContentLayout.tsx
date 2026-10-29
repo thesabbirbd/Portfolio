@@ -1,7 +1,11 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { ContentItem } from '@/lib/content';
 import { MDXContent } from './MDXContent';
 import { ConnectedKnowledge } from './ConnectedKnowledge';
+import { formatContentDate, isValidContentDate, lastModified } from '@/lib/content-date';
+import { articleJsonLd, breadcrumbJsonLd } from '@/lib/seo';
+import { JsonLd } from '@/components/system/JsonLd';
 
 export function ContentLayout({ item, baseUrl, breadcrumbLabel }: { item: ContentItem; baseUrl: string; breadcrumbLabel: string }) {
   const { meta, content } = item;
@@ -9,6 +13,18 @@ export function ContentLayout({ item, baseUrl, breadcrumbLabel }: { item: Conten
   return (
     <div className="flex flex-col w-full pt-6 md:pt-8">
       <div className="container mx-auto px-4 max-w-3xl mb-24">
+        <JsonLd data={breadcrumbJsonLd([{ label: "Home", href: "/" }, { label: breadcrumbLabel, href: baseUrl }, { label: meta.title }])} />
+        <JsonLd
+          data={articleJsonLd({
+            type: baseUrl === "/journal" ? "BlogPosting" : "TechArticle",
+            title: meta.title,
+            description: meta.description,
+            path: `${baseUrl}/${meta.slug}`,
+            datePublished: isValidContentDate(meta.date) ? meta.date : undefined,
+            dateModified: lastModified(meta),
+            keywords: meta.tags,
+          })}
+        />
         <nav className="flex text-sm text-muted-foreground mb-8" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-3">
             <li className="inline-flex items-center">
@@ -35,7 +51,7 @@ export function ContentLayout({ item, baseUrl, breadcrumbLabel }: { item: Conten
               {meta.category || breadcrumbLabel}
             </span>
             <time className="text-sm text-muted-foreground" dateTime={meta.date}>
-              {new Date(meta.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              {formatContentDate(meta.date, 'long')}
             </time>
           </div>
           <h1 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight leading-tight">{meta.title}</h1>
@@ -57,7 +73,7 @@ export function ContentLayout({ item, baseUrl, breadcrumbLabel }: { item: Conten
             ))}
           </div>
           <div className="flex items-center gap-4 p-6 bg-muted/30 rounded-2xl border border-border/50">
-            <img src="/branding/the-sabbir-avatar-180.png" alt="Md Sabbirul Islam Khan" className="w-16 h-16 rounded-full ring-2 ring-primary/20" />
+            <Image src="/branding/the-sabbir-avatar-180.png" alt="Md Sabbirul Islam Khan" width={64} height={64} className="w-16 h-16 rounded-full ring-2 ring-primary/20" />
             <div>
               <p className="font-semibold text-lg text-foreground">{meta.author || 'Md Sabbirul Islam Khan'}</p>
               <p className="text-sm text-muted-foreground">Written by THE SABBiR</p>

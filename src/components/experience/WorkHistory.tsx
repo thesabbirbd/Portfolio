@@ -39,6 +39,11 @@ export function WorkHistory() {
               <ul className="mt-2 space-y-1 list-disc pl-5 text-sm text-ink-2 leading-relaxed">
                 {w.points.map((p) => <li key={p}>{p}</li>)}
               </ul>
+              {w.detailsHref && (
+                <Link href={w.detailsHref} className="mt-2 inline-flex min-h-8 items-center gap-1 text-sm font-semibold text-primary hover:underline underline-offset-4">
+                  Details: {w.org} <span aria-hidden="true">→</span>
+                </Link>
+              )}
             </Card>
           );
         })}

@@ -25,7 +25,9 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const toast = useCallback((message: string, type: ToastType = "info") => {
     const id = Math.random().toString(36).substr(2, 9);
     setToasts((prev) => [...prev, { id, message, type }]);
-    sound.click();
+    if (type === "error") sound.error();
+    else if (type === "success") sound.confirm();
+    else sound.click();
 
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));

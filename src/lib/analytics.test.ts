@@ -1,5 +1,5 @@
 import { test, describe, vi as mock, beforeEach, afterEach } from 'vitest';
-import { trackEvent } from './analytics.ts';
+import { trackEvent } from './analytics';
 
 describe('trackEvent', () => {
   let originalWindow: typeof globalThis.window | undefined;

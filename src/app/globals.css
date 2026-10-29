@@ -70,6 +70,8 @@
   --color-brand-3: rgb(var(--brand-3));
   --color-signal: rgb(var(--signal));
   --color-ok: rgb(var(--ok));
+  /* Luxury accent shared by every theme (hairlines, badges, sheen). Text-safe in both modes. */
+  --color-gold: rgb(var(--gold));
   --color-on-primary: rgb(var(--on-primary));
   /* shadcn-style names used across content pages (~290 uses). They were never defined, so Tailwind
      emitted nothing: "muted" text wasn't muted, bg-muted was transparent and border-border fell
@@ -93,30 +95,31 @@
    Values chosen by measured WCAG contrast: text tokens ≥ 4.5:1 on paper in both themes.
    ====================================================================== */
 :root {
-  /* Editorial base: warm paper + stone ink */
-  --paper: 250 248 245;
-  --ink: 28 25 23;
-  --ink-2: 68 64 60;
-  --ink-3: 87 83 78;
+  /* Base = Orange "Royal" light: warm ivory paper, champagne tint, deep warm ink.
+     Green and Blue override these in the COLOR THEMES section below. */
+  --paper: 250 247 241;
+  --ink: 28 24 20;
+  --ink-2: 66 60 54;
+  --ink-3: 87 80 72;
   --surface: 255 255 255;
   --surface-alpha: 0.72;
-  --muted: 240 237 232;        /* solid tint so bg-muted/30-style modifiers stay visible */
-  --line: 28 25 23;
+  --muted: 241 234 222;        /* solid tint so bg-muted/30-style modifiers stay visible */
+  --line: 28 24 20;
   --line-alpha: 0.09;
+  --shadow: 40 26 12;          /* shadow hue follows the theme (warm here) */
 
   /* Supporting roles (never brand colours): data/telemetry and verified/status */
-  --signal: 14 116 144;
-  --ok: 4 120 87;
+  --signal: 12 104 130;
+  --ok: 4 108 79;
   --on-primary: 255 255 255;
 
   /* Display gradient for large headings (≥ 3:1 large-text contrast) */
   --display-from: 194 65 12;
-  --display-to: 234 88 12;
+  --display-to: 217 105 6;
 
-  /* Elevation: warm-neutral shadows, never blue */
-  --elev-1: 0 1px 2px rgb(28 25 23 / 0.04), 0 8px 24px -14px rgb(28 25 23 / 0.14);
-  --elev-2: 0 2px 6px rgb(28 25 23 / 0.05), 0 18px 40px -20px rgb(28 25 23 / 0.24);
-  --elev-3: 0 28px 70px -28px rgb(28 25 23 / 0.38);
+  --elev-1: 0 1px 2px rgb(var(--shadow) / 0.05), 0 8px 24px -14px rgb(var(--shadow) / 0.16);
+  --elev-2: 0 2px 6px rgb(var(--shadow) / 0.06), 0 18px 40px -20px rgb(var(--shadow) / 0.26);
+  --elev-3: 0 28px 70px -28px rgb(var(--shadow) / 0.4);
 
   /* Motion (mirrors src/lib/motion-presets.ts) */
   --dur-fast: 150ms;
@@ -124,8 +127,8 @@
   --dur-slow: 500ms;
 
   /* Legacy names → semantic tokens (60+ components use these) */
-  --background: 250 248 245;
-  --foreground: 28 25 23;
+  --background: var(--paper);
+  --foreground: var(--ink);
   --bg-primary: rgb(var(--paper));
   --bg-secondary: rgb(var(--surface));
   --bg-card: rgb(var(--surface) / var(--surface-alpha));
@@ -143,30 +146,28 @@
 }
 
 .dark {
-  /* Controlled graphite, not pitch black */
-  --paper: 13 13 16;
-  --ink: 242 240 236;
-  --ink-2: 214 211 209;
-  --ink-3: 168 162 158;
-  --surface: 26 26 30;
+  /* Orange "Royal" dark: warm graphite, not pitch black */
+  --paper: 17 14 12;
+  --ink: 245 240 232;
+  --ink-2: 219 211 201;
+  --ink-3: 173 163 151;
+  --surface: 31 27 24;
   --surface-alpha: 0.66;
-  --muted: 34 34 39;
-  --line: 255 255 255;
+  --muted: 38 33 29;
+  --line: 255 248 240;
   --line-alpha: 0.08;
+  --shadow: 0 0 0;
 
   --signal: 34 211 238;
   --ok: 52 211 153;
-  --on-primary: 13 13 16;
+  --on-primary: 17 14 12;
 
   --display-from: 255 106 0;
   --display-to: 255 184 0;
 
-  --elev-1: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 28px -14px rgb(0 0 0 / 0.6);
-  --elev-2: 0 2px 8px rgb(0 0 0 / 0.35), 0 22px 48px -20px rgb(0 0 0 / 0.7);
-  --elev-3: 0 30px 80px -28px rgb(0 0 0 / 0.8);
-
-  --background: 13 13 16;
-  --foreground: 242 240 236;
+  --elev-1: 0 1px 2px rgb(var(--shadow) / 0.3), 0 10px 28px -14px rgb(var(--shadow) / 0.6);
+  --elev-2: 0 2px 8px rgb(var(--shadow) / 0.35), 0 22px 48px -20px rgb(var(--shadow) / 0.7);
+  --elev-3: 0 30px 80px -28px rgb(var(--shadow) / 0.8);
 }
 
 *, *::before, *::after {
@@ -270,6 +271,21 @@ body {
     border: 1px solid rgb(var(--line) / var(--line-alpha));
     box-shadow: var(--elev-2);
   }
+  /* Fixed controls (nav pill, dock, corner buttons): glass from tablet up. On phones an
+     opaque surface instead — a blurred backdrop over scrolling content is re-rendered every
+     frame by mobile GPUs, which is a common cause of scroll jank on mid-range Android. */
+  .surface-control {
+    background: rgb(var(--surface) / 0.94);
+    border: 1px solid rgb(var(--line) / var(--line-alpha));
+    box-shadow: var(--elev-2);
+  }
+  @media (min-width: 768px) {
+    .surface-control {
+      background: rgb(var(--surface) / var(--surface-alpha));
+      backdrop-filter: blur(16px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+    }
+  }
   .surface-overlay,
   .glass-spatial,
   .spatial-glass-heavy {
@@ -357,8 +373,12 @@ body {
    toggle via html[data-motion="reduced"]) and no-JS visitors simply see the content.
    ======================================================== */
 @keyframes reveal-in {
-  from { opacity: 0; transform: translate3d(0, 28px, 0); }
+  /* v4.0.1 motion-graphics entry: cards tip up out of depth (3D, transform-only). */
+  from { opacity: 0; transform: perspective(900px) translate3d(0, 36px, 0) rotateX(14deg) scale(0.97); }
 }
+/* Hero exit parallax: copy and portrait leave at different speeds, like a camera move. */
+@keyframes cine-exit-slow { to { opacity: 0.15; transform: translate3d(0, -60px, 0) scale(0.96); } }
+@keyframes cine-exit-fast { to { opacity: 0; transform: translate3d(0, -140px, 0) scale(0.86) rotate(-6deg); } }
 @keyframes draw-x {
   from { transform: scaleX(0); }
 }
@@ -382,6 +402,16 @@ body {
       animation-name: draw-x;
       animation-range: entry 30% cover 30%;
     }
+    html:not([data-motion="reduced"]) .cine-exit-slow,
+    html:not([data-motion="reduced"]) .cine-exit-fast {
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+    html:not([data-motion="reduced"]) .cine-exit-slow { animation-name: cine-exit-slow; }
+    html:not([data-motion="reduced"]) .cine-exit-fast { animation-name: cine-exit-fast; }
   }
 }
 
@@ -533,18 +563,25 @@ html[data-motion="reduced"] ::after {
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* ==================== COLOR PALETTES ====================
-   Set by Settings via <html data-theme-color>. Defaults (no attribute yet) = orange, so the
-   first paint is already on-brand. Light-mode text/fill colours pass WCAG AA on paper and
-   under on-primary text; dark mode uses the vivid brand values with dark on-primary text.
-   --brand* are decorative (shapes, gradients) and stay vivid in both themes.
+/* ==================== COLOR THEMES (v4.0.1) ====================
+   html[data-theme-color] is set before first paint by THEME_INIT_SCRIPT (src/lib/theme-color.ts):
+   a saved choice, else this session's random pick. Each theme has its own paper, ink, tint,
+   shadow hue, brand and text colours in both light and dark mode.
+   - orange  "Royal"  — warm ivory, champagne, amber/gold     (luxury glass & fluid cinema)
+   - green   "Studio" — warm cream, emerald, mint, leaf       (tactile editorial & studio pop)
+   - blue    "Tech"   — clean cool neutrals, blue, cyan       (technology studio / cyber AI)
+   Text tokens (ink-3, primary, accent, signal, ok) are ≥ 4.5:1 on paper, cards, muted and the
+   primary/10 tint in every theme and mode (scripts/qa/theme-contrast.mjs).
+   Specificity: each theme's light block is (0,2,0) and is always followed by its dark block of
+   the same specificity that redefines every property the light block sets.
+   --brand* are decorative (shapes, gradients) and stay vivid in both modes.
    ========================================================= */
 :root, :root[data-theme-color="orange"] {
-  --primary: 188 63 11;      /* #bc3f0b  5.1:1 on paper, 4.6:1 on its own 10% tint, 5.5:1 under white */
-  --accent: 173 79 8;        /* #ad4f08  5.1:1 on paper, 4.6:1 on tint */
-  --color-secondary: #ad4f08;
+  --primary: 178 58 10;      /* #b23a0a */
+  --accent: 156 78 8;        /* #9c4e08 amber-gold */
+  --color-secondary: #9c4e08;
   --brand: 255 106 0;        /* #ff6a00 */
-  --brand-2: 255 184 0;      /* #ffb800 */
+  --brand-2: 255 184 0;      /* #ffb800 gold */
   --brand-3: 255 51 0;       /* #ff3300 */
 }
 .dark, .dark[data-theme-color="orange"] {
@@ -552,38 +589,133 @@ html[data-motion="reduced"] ::after {
   --accent: 255 184 0;
   --color-secondary: #ffb800;
 }
+
+:root[data-theme-color="green"] {
+  --paper: 247 246 238;      /* warm cream */
+  --ink: 20 28 23;
+  --ink-2: 55 66 58;
+  --ink-3: 76 86 79;
+  --surface: 255 255 252;
+  --surface-alpha: 0.74;
+  --muted: 237 236 224;
+  --line: 20 28 23;
+  --line-alpha: 0.09;
+  --shadow: 16 40 28;
+  --primary: 4 106 77;       /* #046a4d emerald */
+  --accent: 13 104 97;       /* #0d6861 teal */
+  --color-secondary: #046a4d;
+  --brand: 16 185 129;       /* emerald */
+  --brand-2: 52 211 153;     /* mint */
+  --brand-3: 101 163 13;     /* leaf */
+  --display-from: 4 120 87;
+  --display-to: 77 124 15;
+}
+.dark[data-theme-color="green"] {
+  --paper: 11 17 14;
+  --ink: 236 243 238;
+  --ink-2: 205 218 210;
+  --ink-3: 156 173 163;
+  --surface: 21 30 25;
+  --surface-alpha: 0.68;
+  --muted: 27 37 31;
+  --line: 236 255 244;
+  --line-alpha: 0.08;
+  --shadow: 0 0 0;
+  --primary: 52 211 153;
+  --accent: 163 230 53;
+  --color-secondary: #34d399;
+  --display-from: 16 185 129;
+  --display-to: 163 230 53;
+}
+
 :root[data-theme-color="blue"] {
-  --primary: 29 78 216;
-  --accent: 109 40 217;
+  --paper: 246 248 251;      /* clean cool neutral */
+  --ink: 15 23 42;
+  --ink-2: 51 65 85;
+  --ink-3: 71 85 105;
+  --surface: 255 255 255;
+  --surface-alpha: 0.74;
+  --muted: 233 238 245;
+  --line: 15 23 42;
+  --line-alpha: 0.09;
+  --shadow: 15 23 42;
+  --primary: 29 78 216;      /* #1d4ed8 */
+  --accent: 12 104 130;      /* #0c6882 cyan */
   --color-secondary: #1d4ed8;
   --brand: 59 130 246;
   --brand-2: 0 200 255;
-  --brand-3: 139 92 246;
+  --brand-3: 99 102 241;
+  --display-from: 29 78 216;
+  --display-to: 8 145 178;
 }
 .dark[data-theme-color="blue"] {
+  --paper: 8 12 20;
+  --ink: 232 238 247;
+  --ink-2: 203 213 225;
+  --ink-3: 148 163 184;
+  --surface: 17 24 38;
+  --surface-alpha: 0.68;
+  --muted: 23 31 48;
+  --line: 226 236 255;
+  --line-alpha: 0.08;
+  --shadow: 0 0 0;
   --primary: 96 165 250;
-  --accent: 167 139 250;
+  --accent: 34 211 238;
   --color-secondary: #60a5fa;
   --display-from: 96 165 250;
-  --display-to: 0 200 255;
+  --display-to: 34 211 238;
+}
+
+/* ==================== SHARED DESIGN LANGUAGE (v4.0.1, Phase 4) ====================
+   One set of primitives (Card, SectionHeader, buttons, chips) with a per-theme motif, applied
+   in CSS only (no extra DOM, no animation):
+   - orange "Royal"  — Art-Deco hairline corners, double-rule eyebrow, refined 20px radius
+   - green  "Studio" — Bauhaus: solid dot + bar eyebrow, quarter-circle card corner, softer 24px
+                       radius and a slightly deeper "clay" shadow
+   - blue   "Tech"   — schematic: dashed eyebrow rule, cyan corner brackets, tighter 14px radius
+   ================================================================================= */
+:root[data-theme-color="green"] { --radius-card: 1.5rem; --radius-panel: 2rem; }
+:root[data-theme-color="blue"] { --radius-card: 0.875rem; --radius-panel: 1.25rem; }
+
+/* Eyebrow bar (SectionHeader editorial expression) */
+:root[data-theme-color="orange"] .eyebrow-bar,
+:root:not([data-theme-color]) .eyebrow-bar {
+  height: 3px; background: transparent;
+  border-top: 1px solid rgb(var(--brand)); border-bottom: 1px solid rgb(var(--brand-2));
+}
+:root[data-theme-color="green"] .eyebrow-bar {
+  height: 4px; width: 1.75rem;
+  background: linear-gradient(90deg, rgb(var(--brand)) 0 4px, transparent 4px 8px, rgb(var(--brand-3)) 8px);
+  border-radius: 9999px;
+}
+:root[data-theme-color="blue"] .eyebrow-bar {
+  height: 0; background: transparent;
+  border-top: 2px dashed rgb(var(--brand-2));
+}
+
+/* Card corner motif (Card deco / .deco-corners) */
+:root[data-theme-color="green"] .deco-corners::after {
+  inset: auto 14px auto auto; top: 14px; width: 14px; height: 14px;
+  background: rgb(var(--brand) / 0.55);
+  border-radius: 0 100% 0 0; /* Bauhaus quarter circle */
+}
+:root[data-theme-color="blue"] .deco-corners::after {
+  --deco: rgb(var(--signal) / 0.65);
 }
 :root[data-theme-color="green"] {
-  --primary: 4 120 87;
-  --accent: 15 118 110;
-  --color-secondary: #047857;
-  --brand: 16 185 129;
-  --brand-2: 52 211 153;
-  --brand-3: 0 160 120;
+  --elev-1: 0 1px 2px rgb(var(--shadow) / 0.06), 0 10px 24px -12px rgb(var(--shadow) / 0.2);
 }
 .dark[data-theme-color="green"] {
-  --primary: 52 211 153;
-  --accent: 45 212 191;
-  --color-secondary: #34d399;
-  --display-from: 16 185 129;
-  --display-to: 52 211 153;
+  --elev-1: 0 1px 2px rgb(var(--shadow) / 0.3), 0 10px 28px -14px rgb(var(--shadow) / 0.6);
 }
-:root[data-theme-color="blue"]:not(.dark) { --display-from: 29 78 216; --display-to: 37 99 235; }
-:root[data-theme-color="green"]:not(.dark) { --display-from: 4 120 87; --display-to: 5 150 105; }
+
+/* Entry toast (ThemeToast): a short rise-in; reduced motion is handled globally. */
+@keyframes toast-in {
+  from { opacity: 0; transform: translate3d(0, -8px, 0); }
+}
+.theme-toast[data-state="open"] > div {
+  animation: toast-in var(--dur-base) var(--ease-out-expo);
+}
 
 /* ========================================================
    THE SABBiR V2.2 - SPATIAL GLASS OS SYSTEM
@@ -598,7 +730,10 @@ html[data-motion="reduced"] ::after {
   z-index: 10;
 }
 
+/* Film grain: desktop only. On phones a full-viewport alpha layer above all content adds a
+   blend pass to every scrolled frame for an effect that is invisible at 4% on small screens. */
 .grain-overlay {
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -608,6 +743,9 @@ html[data-motion="reduced"] ::after {
   z-index: 50;
   opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+@media (min-width: 768px) {
+  .grain-overlay { display: block; }
 }
 
 .hide-scrollbar::-webkit-scrollbar {
@@ -687,4 +825,260 @@ p {
 }
 .will-change-transform {
   will-change: transform, opacity;
+}
+
+/* ===== Sound FX volume slider (Settings) =====
+   Native range input for keyboard/screen-reader support; filled track via --fill. The input box
+   is 2.5rem tall so the touch target stays large while the visible track is thin. */
+.volume-slider {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 2.5rem;
+  background: transparent;
+  cursor: pointer;
+}
+.volume-slider::-webkit-slider-runnable-track {
+  height: 0.375rem;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--color-primary) var(--fill, 50%), var(--color-line-strong) var(--fill, 50%));
+}
+.volume-slider::-moz-range-track {
+  height: 0.375rem;
+  border-radius: 999px;
+  background: var(--color-line-strong);
+}
+.volume-slider::-moz-range-progress {
+  height: 0.375rem;
+  border-radius: 999px;
+  background: var(--color-primary);
+}
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: -0.4375rem;
+  border-radius: 999px;
+  background: rgb(var(--surface));
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 1px 4px rgb(var(--shadow) / 0.25);
+}
+.volume-slider::-moz-range-thumb {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  background: rgb(var(--surface));
+  border: 2px solid var(--color-primary);
+}
+.volume-slider:focus-visible {
+  outline: none;
+}
+.volume-slider:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 35%, transparent);
+}
+.volume-slider:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 35%, transparent);
+}
+
+/* ===== Gold: the shared luxury accent (v4.0.1) =====
+   Light: deep antique gold (≥ 4.5:1 on paper for small text). Dark: warm champagne gold. */
+:root { --gold: 138 99 20; --gold-bright: 212 168 72; }
+.dark { --gold: 226 190 112; --gold-bright: 240 205 130; }
+
+/* ==================== AMBIENT BACKDROP (v4.0.1) ====================
+   Fixed, behind content, every device. Transform/opacity animations only; the global
+   reduced-motion rules freeze them. Theme objects are switched by html[data-theme-color]. */
+.ambient { color: rgb(var(--gold-bright)); opacity: 0.6; }
+.dark .ambient { opacity: 0.55; }
+.ambient svg { position: absolute; fill: none; stroke: currentColor; }
+.ambient .amb-only { position: absolute; inset: 0; display: none; perspective: 900px; }
+:root[data-theme-color="orange"] .amb-orange,
+:root:not([data-theme-color]) .amb-orange,
+:root[data-theme-color="green"] .amb-green,
+:root[data-theme-color="blue"] .amb-blue { display: block; }
+
+/* Gold art-deco rays, top right */
+.amb-rays { top: 0; right: 0; width: min(46vmin, 420px); height: min(46vmin, 420px); stroke-width: 0.6; opacity: 0.55; }
+
+/* Equaliser bars, bottom left */
+.amb-bars { position: absolute; left: 4vw; bottom: 9vh; display: flex; align-items: flex-end; gap: 5px; height: clamp(54px, 10vh, 96px); }
+.amb-bars span {
+  width: 5px; height: 100%; border-radius: 3px; transform-origin: bottom;
+  background: linear-gradient(to top, rgb(var(--gold-bright) / 0.9), rgb(var(--brand) / 0.35));
+  animation: amb-eq 3.6s ease-in-out infinite;
+}
+@keyframes amb-eq { 0%, 100% { transform: scaleY(0.25); } 50% { transform: scaleY(1); } }
+
+/* Line graph that "draws" itself */
+.amb-graph { left: 3vw; top: 34vh; width: clamp(140px, 30vmin, 300px); height: clamp(48px, 10vmin, 100px); stroke-width: 1.6; stroke-linejoin: round; }
+.amb-graph polyline { stroke-dasharray: 420; animation: amb-draw 9s ease-in-out infinite; }
+.amb-graph .amb-graph-ghost { stroke-width: 0.8; opacity: 0.45; animation-delay: -4.5s; }
+@keyframes amb-draw { 0% { stroke-dashoffset: 420; } 55%, 80% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -420; } }
+
+/* Gold dust drifting up */
+.amb-dust i {
+  position: absolute; width: 3px; height: 3px; border-radius: 50%;
+  background: rgb(var(--gold-bright)); box-shadow: 0 0 6px rgb(var(--gold-bright) / 0.8);
+  animation: amb-rise 14s linear infinite;
+}
+@keyframes amb-rise { 0% { transform: translate3d(0, 30px, 0); opacity: 0; } 15%, 80% { opacity: 0.9; } 100% { transform: translate3d(12px, -140px, 0); opacity: 0; } }
+
+/* Shared 3D object frame */
+.amb-3d { position: absolute; transform-style: preserve-3d; }
+
+/* Orange: gold gyroscope */
+.amb-gyro { width: clamp(76px, 14vmin, 140px); aspect-ratio: 1; animation: amb-spin3d 22s linear infinite; }
+.amb-gyro .ring { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid rgb(var(--gold-bright) / 0.9); }
+.amb-gyro .r1 { transform: rotateX(70deg); }
+.amb-gyro .r2 { transform: rotateY(70deg); border-color: rgb(var(--brand) / 0.7); }
+.amb-gyro .core { position: absolute; inset: 38%; border-radius: 50%; background: radial-gradient(circle at 35% 35%, rgb(255 240 200), rgb(var(--gold-bright)) 55%, rgb(var(--gold) / 0.6)); }
+.amb-deco { right: 4vw; bottom: 6vh; width: clamp(110px, 18vmin, 200px); height: auto; stroke-width: 1; opacity: 0.6; }
+@keyframes amb-spin3d { from { transform: rotateX(18deg) rotateY(0deg) rotateZ(8deg); } to { transform: rotateX(18deg) rotateY(360deg) rotateZ(8deg); } }
+
+/* Cubes (green solid, blue wireframe) */
+.amb-cube { --s: clamp(54px, 10vmin, 110px); width: var(--s); height: var(--s); transform-style: preserve-3d; }
+.amb-cube > i { position: absolute; inset: 0; border: 1.5px solid currentColor; }
+.amb-cube > .f1 { transform: translateZ(calc(var(--s) / 2)); }
+.amb-cube > .f2 { transform: rotateY(180deg) translateZ(calc(var(--s) / 2)); }
+.amb-cube > .f3 { transform: rotateY(90deg) translateZ(calc(var(--s) / 2)); }
+.amb-cube > .f4 { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); }
+.amb-cube > .f5 { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); }
+.amb-cube > .f6 { transform: rotateX(-90deg) translateZ(calc(var(--s) / 2)); }
+.amb-cube.amb-3d { animation: amb-tumble 26s linear infinite; }
+@keyframes amb-tumble { from { transform: rotateX(0deg) rotateY(0deg); } to { transform: rotateX(360deg) rotateY(720deg); } }
+
+.amb-cube-solid { color: rgb(var(--brand-3)); }
+.amb-cube-solid > i { background: rgb(var(--brand) / 0.16); }
+.amb-cube-solid > .f1, .amb-cube-solid > .f2 { background: rgb(var(--gold-bright) / 0.22); }
+
+.amb-cube-wire { color: rgb(var(--signal)); }
+.amb-cube-wire > i { box-shadow: inset 0 0 12px rgb(var(--signal) / 0.35); }
+.amb-cube-inner { --s: clamp(26px, 5vmin, 54px); position: absolute; left: 50%; top: 50%; margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2); color: rgb(var(--gold-bright)); animation: amb-tumble 9s linear infinite reverse; }
+
+/* Green: Bauhaus shapes */
+.amb-green .bh { position: absolute; animation: amb-float 16s ease-in-out infinite; }
+.bh-circle { width: clamp(48px, 9vmin, 96px); aspect-ratio: 1; border-radius: 50%; background: rgb(var(--gold-bright) / 0.5); }
+.bh-half { width: clamp(60px, 11vmin, 120px); aspect-ratio: 2 / 1; border-radius: 999px 999px 0 0; background: rgb(var(--brand) / 0.35); animation-delay: -5s; }
+.bh-tri { width: 0; height: 0; border-left: 34px solid transparent; border-right: 34px solid transparent; border-bottom: 58px solid rgb(var(--brand-2) / 0.35); animation-delay: -9s; }
+.bh-stripes { width: clamp(50px, 9vmin, 90px); aspect-ratio: 1; background: repeating-linear-gradient(45deg, rgb(var(--gold) / 0.45) 0 4px, transparent 4px 10px); animation-delay: -3s; }
+@keyframes amb-float { 0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); } 50% { transform: translate3d(0, -22px, 0) rotate(8deg); } }
+
+/* Blue: circuits + perspective grid floor */
+.amb-circuit { width: clamp(180px, 40vmin, 380px); color: rgb(var(--signal)); stroke-width: 1.2; opacity: 0.7; }
+.amb-circuit path { stroke-dasharray: 6 10; animation: amb-flow 2.4s linear infinite; }
+.amb-circuit circle { fill: rgb(var(--signal)); stroke: none; }
+@keyframes amb-flow { to { stroke-dashoffset: -32; } }
+.amb-floor {
+  position: absolute; left: -20vw; right: -20vw; bottom: -8vh; height: 40vh;
+  transform: rotateX(72deg); transform-origin: bottom;
+  background-image: linear-gradient(rgb(var(--signal) / 0.35) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--signal) / 0.35) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to top, black, transparent 85%);
+  -webkit-mask-image: linear-gradient(to top, black, transparent 85%);
+}
+
+/* Small screens: keep everything visible but smaller and farther from the reading column */
+@media (max-width: 639px) {
+  .ambient { opacity: 0.5; }
+  .amb-graph { top: 26vh; }
+  .amb-bars { bottom: 16vh; left: 3vw; }
+}
+
+/* ==================== LUXURY GOLD TOUCHES (v4.0.1) ==================== */
+@layer components {
+/* A gold hairline across the top of every card: one inset shadow, no extra DOM. */
+.surface-card, .surface-elevated, .lux-card {
+  box-shadow: inset 0 1px 0 rgb(var(--gold-bright) / 0.32), var(--elev-1);
+}
+.surface-card.surface-interactive:hover, .lux-card:hover {
+  box-shadow: inset 0 1px 0 rgb(var(--gold-bright) / 0.6), 0 0 0 1px rgb(var(--gold-bright) / 0.25), var(--elev-2);
+}
+}
+/* Section index numbers ("02 /") in gold */
+.eyebrow-index { color: rgb(var(--gold)); }
+
+/* Site-wide scroll progress: a gold thread across the top (CSS scroll timeline, zero JS). */
+.scroll-thread {
+  position: fixed; inset: 0 0 auto 0; height: 2px; z-index: 70; pointer-events: none; transform-origin: left;
+  background: linear-gradient(90deg, rgb(var(--gold)), rgb(var(--gold-bright)), rgb(var(--brand)));
+  transform: scaleX(0);
+}
+@supports (animation-timeline: scroll()) {
+  .scroll-thread { animation: thread-grow linear both; animation-timeline: scroll(root); }
+}
+@keyframes thread-grow { to { transform: scaleX(1); } }
+
+/* Gold sheen that sweeps across the hero wordmark once after load */
+.gold-sheen { position: relative; }
+.gold-sheen::after {
+  content: ""; position: absolute; inset: -4% -10%; pointer-events: none;
+  background: linear-gradient(105deg, transparent 40%, rgb(255 236 180 / 0.55) 50%, transparent 60%);
+  mix-blend-mode: overlay; transform: translateX(-120%);
+  animation: sheen 2.4s 0.6s var(--ease-out-expo) both;
+}
+@keyframes sheen { to { transform: translateX(120%); } }
+
+/* Theme cross-fade (View Transitions, fine pointers only): short, so input is never held long. */
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: 200ms; }
+
+/* ----- Drift layer (v4.0.1): lightweight 3D objects that rise as the page scrolls down ----- */
+.amb-drift { position: absolute; left: 0; right: 0; top: 0; height: 280vh; perspective: 900px; }
+.amb-drift > * { position: absolute; }
+@supports (animation-timeline: scroll()) {
+  html:not([data-motion="reduced"]) .amb-drift { animation: amb-drift linear both; animation-timeline: scroll(root); }
+}
+@keyframes amb-drift { to { transform: translate3d(0, -180vh, 0); } }
+
+.amb-gyro-sm { width: clamp(52px, 9vmin, 90px); }
+.amb-coin {
+  width: clamp(44px, 8vmin, 80px); aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgb(255 244 210), rgb(var(--gold-bright)) 45%, rgb(var(--gold)) 80%);
+  box-shadow: inset 0 0 0 3px rgb(var(--gold) / 0.6), 0 6px 18px -6px rgb(var(--gold) / 0.6);
+  animation: amb-coin 6s linear infinite;
+}
+.amb-coin-sm { width: clamp(30px, 5vmin, 54px); animation-duration: 4.5s; }
+@keyframes amb-coin { to { transform: rotateY(360deg); } }
+.amb-cube-gold { color: rgb(var(--gold-bright)); }
+.amb-cube-gold > i { background: linear-gradient(135deg, rgb(var(--gold-bright) / 0.18), transparent); }
+.amb-cube-sm { --s: clamp(36px, 6vmin, 70px); }
+.amb-sphere {
+  width: clamp(50px, 9vmin, 96px); aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle at 32% 30%, rgb(255 255 255 / 0.9), rgb(var(--brand-2) / 0.6) 40%, rgb(var(--brand) / 0.5) 75%);
+  animation: amb-float 12s ease-in-out infinite;
+}
+
+/* Blue: data streams, radar, network packets, mini dashboard, wire globe */
+.amb-stream { position: absolute; top: 0; width: 1.1rem; height: 100%; overflow: hidden; color: rgb(var(--signal)); font: 600 10px/1.35 var(--font-mono); opacity: 0.55; writing-mode: vertical-rl; }
+.amb-stream-l { left: 0.4rem; }
+.amb-stream-r { right: 0.4rem; opacity: 0.4; }
+.amb-stream > span { display: block; animation: amb-stream 14s linear infinite; }
+.amb-stream-r > span { animation-duration: 19s; }
+@keyframes amb-stream { from { transform: translate3d(0, -50%, 0); } to { transform: translate3d(0, 0, 0); } }
+.amb-radar { width: clamp(80px, 15vmin, 150px); aspect-ratio: 1; border-radius: 50%; color: rgb(var(--signal));
+  background: repeating-radial-gradient(circle, transparent 0 18%, rgb(var(--signal) / 0.35) 18% calc(18% + 1px)); border: 1px solid rgb(var(--signal) / 0.5); overflow: hidden; }
+.amb-radar .sweep { position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 0deg, rgb(var(--signal) / 0.55), transparent 22%); animation: amb-sweep 3.2s linear infinite; }
+.amb-radar .blip { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: rgb(var(--gold-bright)); box-shadow: 0 0 8px rgb(var(--gold-bright)); animation: amb-blip 3.2s ease-out infinite; }
+.amb-radar .b1 { left: 62%; top: 30%; }
+.amb-radar .b2 { left: 30%; top: 64%; animation-delay: -1.6s; }
+@keyframes amb-sweep { to { transform: rotate(360deg); } }
+@keyframes amb-blip { 0%, 60% { opacity: 0; transform: scale(0.4); } 70% { opacity: 1; transform: scale(1.2); } 100% { opacity: 0; transform: scale(1); } }
+.amb-net { width: clamp(150px, 30vmin, 280px); color: rgb(var(--signal)); stroke-width: 1.2; }
+.amb-net circle { fill: rgb(var(--paper)); stroke: rgb(var(--signal)); stroke-width: 1.5; }
+.amb-net .pkt { stroke: rgb(var(--gold-bright)); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 6 400; animation: amb-pkt 2.8s linear infinite; }
+.amb-net .pkt-2 { animation-duration: 2.1s; animation-delay: -1s; }
+@keyframes amb-pkt { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -406; } }
+.amb-dash { width: clamp(120px, 22vmin, 200px); padding: 10px; border-radius: 12px; border: 1px solid rgb(var(--signal) / 0.45); background: rgb(var(--surface) / 0.35); }
+.amb-dash-bars { display: flex; align-items: flex-end; gap: 4px; height: 48px; }
+.amb-dash-bars span { flex: 1; height: 100%; transform-origin: bottom; background: linear-gradient(to top, rgb(var(--signal)), rgb(var(--gold-bright) / 0.8)); border-radius: 2px; animation: amb-eq 2.6s ease-in-out infinite; }
+.amb-dash svg { position: static; width: 100%; height: 22px; margin-top: 6px; color: rgb(var(--gold-bright)); stroke-width: 1.5; }
+.amb-dash polyline { stroke-dasharray: 160; animation: amb-draw 6s ease-in-out infinite; }
+.amb-globe { width: clamp(70px, 13vmin, 130px); aspect-ratio: 1; animation: amb-spin3d 18s linear infinite; }
+.amb-globe .ring { position: absolute; inset: 0; border-radius: 50%; border: 1.2px solid rgb(var(--signal) / 0.8); }
+.amb-globe .g2 { transform: rotateY(60deg); }
+.amb-globe .g3 { transform: rotateY(120deg); }
+.amb-globe .g4 { transform: rotateX(90deg); border-color: rgb(var(--gold-bright) / 0.8); }
+
+@media (max-width: 639px) {
+  .amb-stream-r, .amb-net { display: none; }
+  .amb-stream { width: 0.85rem; font-size: 9px; }
 }

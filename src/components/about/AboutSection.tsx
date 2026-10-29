@@ -13,6 +13,7 @@ import { sound } from "@/lib/sound";
 import { SectionHeader, Accent } from "@/components/system/SectionHeader";
 import { Card, RoleIcon } from "@/components/system/Card";
 import { MoreLink, MoreLinks } from "@/components/system/MoreLink";
+import { AiyaarName } from "@/components/system/AiyaarName";
 
 type PhotoMode = "glass" | "spatial" | "editorial" | "clean";
 
@@ -23,7 +24,7 @@ const IDENTITY_FACTS = [
   { role: "ok" as const, Icon: Award, label: "Honors", value: "Google Local Guide", sub: "Google HQ gift recipient", extra: "Local Guide since 2017", extraAlways: false },
 ];
 
-/** Current role (Aiyaar Ltd): a prominent, clickable card linking to /aiyaar, plus LinkedIn. */
+/** Current role (Aiyaar): a prominent, clickable card linking to /aiyaar, plus LinkedIn. */
 function CurrentRole({ className = "" }: { className?: string }) {
   return (
     <div className={`reveal flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5 rounded-card border border-primary/25 bg-primary/5 p-4 sm:p-5 ${className}`}>
@@ -33,7 +34,7 @@ function CurrentRole({ className = "" }: { className?: string }) {
         </span>
         <p className="mt-1 text-lg sm:text-xl font-bold text-ink">
           {CURRENT_ROLE.title} at{" "}
-          <Link href="/aiyaar" className="text-primary hover:underline underline-offset-4">{CURRENT_ROLE.org}</Link>
+          <AiyaarName>{CURRENT_ROLE.org}</AiyaarName>
         </p>
         <p className="text-sm text-ink-2">All-in-one POS, online store, inventory &amp; digital khata SaaS for Bangladeshi businesses.</p>
       </div>
@@ -140,7 +141,7 @@ function AboutFull() {
         />
         <CurrentRole className="mb-6 sm:mb-8" />
 
-        {/* Spiritual greeting (requested by Sabbir) */}
+        {/* Spiritual greeting (requested by the owner) */}
         <div className="mb-8 sm:mb-12 inline-block px-4 py-3 rounded-card surface-card">
           <div className="text-sm font-semibold text-ink">{PROFILE_DATA.spiritualEthos.greeting}</div>
           <div className="text-xs text-ink-3 mt-0.5 font-mono">{PROFILE_DATA.spiritualEthos.smile}</div>
@@ -183,7 +184,7 @@ function AboutFull() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
                   <div className="relative z-10 space-y-1.5">
                     <h2 className="text-lg sm:text-xl font-bold tracking-tight">Md Sabbirul Islam Khan</h2>
-                    <div className="text-[11px] sm:text-xs font-mono font-semibold tracking-widest uppercase text-[rgb(var(--brand-2))]">THE SABBiR</div>
+                    <div className="text-[11px] sm:text-xs font-mono font-semibold tracking-widest text-[rgb(var(--brand-2))]">THE SABBiR</div>
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/15 text-[11px] font-mono text-[rgb(52_211_153)]">
                       <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[rgb(52_211_153)]" />
                       ONLINE · BUILDING · LEARNING

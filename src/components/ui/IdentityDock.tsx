@@ -8,13 +8,16 @@ import { GithubIcon } from "@/components/ui/BrandIcons";
 import { useTheme } from "next-themes";
 import { useSettings } from "@/contexts/SettingsContext";
 import { SOCIAL_LINKS } from "@/data/socials";
+import { AIYAAR } from "@/data/aiyaar";
 import { sound } from "@/lib/sound";
 import Image from "next/image";
+import Link from "next/link";
 import { GlassButton } from "./glass/GlassButton";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useNavVisibility } from "@/hooks/useNavVisibility";
 import { goToSection, openCommandMenu } from "@/lib/ui-events";
 import { dockTransition, MOBILE_DOCK_RAISE, MOBILE_DOCK_EXPANDED_RAISE, MOBILE_EDGE } from "@/lib/fixed-controls";
+import { AiyaarName } from "@/components/system/AiyaarName";
 
 export function IdentityDock() {
   const [expanded, setExpanded] = useState(false);
@@ -31,12 +34,17 @@ export function IdentityDock() {
   // dock can glide between slots with a pure transform instead of swapping flex alignment.
   const dockRef = useRef<HTMLDivElement>(null);
   const [rightShift, setRightShift] = useState(0);
+  // The first measurement places the dock instantly (no sideways slide or spring overshoot on load).
+  const [placed, setPlaced] = useState(false);
 
   useEffect(() => {
     const el = dockRef.current;
     if (!el) return;
-    const measure = () => setRightShift(Math.max(0, window.innerWidth / 2 - MOBILE_EDGE - el.offsetWidth / 2));
+    // Settings sits at right-4 (16px), or right-3 (12px) on short landscape screens.
+    const edge = () => (window.matchMedia?.("(orientation: landscape) and (max-height: 520px)").matches ? 12 : MOBILE_EDGE);
+    const measure = () => setRightShift(Math.max(0, window.innerWidth / 2 - edge() - el.offsetWidth / 2));
     measure();
+    requestAnimationFrame(() => setPlaced(true));
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     window.addEventListener("resize", measure);
@@ -102,17 +110,18 @@ export function IdentityDock() {
   };
 
   const dockItems = [
-    { id: "cmd", name: "Command Menu", icon: Command, onClick: () => { sound.click(); openCommandMenu(); } },
-    { id: "theme", name: "Toggle Theme", icon: Palette, onClick: () => { sound.click(); setTheme(resolvedTheme === "dark" ? "light" : "dark"); } },
-    { id: "3d", name: "3D Effect", icon: Box, onClick: () => { sound.click(); toggle3D(); } },
+    { id: "cmd", name: "Command Menu", icon: Command, onClick: () => { sound.launch(); openCommandMenu(); } },
+    { id: "theme", name: "Toggle Theme", icon: Palette, onClick: () => { sound.themeSwitch(); setTheme(resolvedTheme === "dark" ? "light" : "dark"); } },
+    { id: "3d", name: "3D Effect", icon: Box, onClick: () => { sound.toggleSwitch(); toggle3D(); } },
     { id: "github", name: "GitHub", icon: GithubIcon, onClick: () => { sound.click(); openExternal("github"); } },
-    { id: "contact", name: "Contact", icon: MessageSquare, onClick: () => { sound.click(); goToSection("contact", "/contact", router.push); } },
+    { id: "contact", name: "Contact", icon: MessageSquare, onClick: () => { sound.navigate(); goToSection("contact", "/contact", router.push); } },
   ];
 
-  // Slot choreography:
-  //  phones, nav visible -> collapsed dock rests above Settings on the right
-  //  phones, nav hidden  -> dock settles bottom-centre between Terminal and Settings
-  //  phones, expanded    -> centred, lifted clear of the corner buttons
+  // Slot choreography (v4.0.1: one stable anchor on phones, vertical movement only):
+  //  phones, collapsed   -> a 44px bubble on the right, the same size and column as Settings.
+  //                         While the visitor scrolls (nav hidden) it slides down *behind*
+  //                         Settings; when scrolling stops it rises back above it, like the nav.
+  //  phones, expanded    -> centred, lifted clear of the corner buttons (an explicit tap)
   //  desktop             -> bottom-centre; it steps out of the reading column while the
   //                         visitor scrolls down and returns with the nav
   const desktopAway = isDesktop && isNavHidden && !expanded;
@@ -120,9 +129,8 @@ export function IdentityDock() {
     ? { x: 0, y: desktopAway ? 96 : 0 }
     : expanded
       ? { x: 0, y: isNavHidden ? -MOBILE_DOCK_EXPANDED_RAISE : -MOBILE_DOCK_RAISE }
-      : isNavHidden
-        ? { x: 0, y: 0 }
-        : { x: rightShift, y: -MOBILE_DOCK_RAISE };
+      : { x: rightShift, y: isNavHidden ? 0 : -MOBILE_DOCK_RAISE };
+  const tuckedBehindSettings = !isDesktop && !expanded && isNavHidden;
 
   return (
     <>
@@ -156,7 +164,7 @@ export function IdentityDock() {
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                 BUILDING · LEARNING
               </div>
-              <p className="text-sm text-foreground/80 mb-2 leading-relaxed">Chief Project Manager (CPM) at Aiyaar Ltd</p>
+              <p className="text-sm text-foreground/80 mb-2 leading-relaxed">{AIYAAR.role} at <AiyaarName /></p>
               <p className="text-sm text-foreground/80 mb-6 leading-relaxed">Management student exploring<br />Backend Engineering, DevOps &amp; Local AI.</p>
               <div className="flex items-center justify-center gap-2 text-xs text-ink-3 font-mono mb-6 bg-background/30 px-3 py-1.5 rounded-lg border border-white/5">
                 <MapPin className="w-3 h-3 text-accent" />
@@ -176,24 +184,25 @@ export function IdentityDock() {
         <motion.div
           ref={dockRef}
           initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: desktopAway ? 0 : 1, ...target }}
-          transition={dockTransition(isNavHidden)}
-          aria-hidden={desktopAway || undefined}
-          inert={desktopAway || undefined}
+          animate={{ opacity: desktopAway || !placed ? 0 : 1, ...target }}
+          transition={placed ? dockTransition(isNavHidden) : { duration: 0 }}
+          aria-hidden={desktopAway || tuckedBehindSettings || undefined}
+          inert={desktopAway || tuckedBehindSettings || undefined}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onFocus={() => isDesktop && setExpanded(true)}
-          className="pointer-events-auto flex items-center gap-1.5 glass-panel rounded-full p-1.5 shadow-2xl border border-white/10 backdrop-blur-lg bg-background/75 will-change-transform"
+          className="pointer-events-auto flex items-center gap-1.5 surface-control rounded-full p-1.5 will-change-transform"
         >
           {/* Phones: the collapsed dock is just this avatar bubble; first tap expands, next tap opens the profile. */}
           <button
             ref={avatarRef}
             onClick={() => {
-              sound.click();
+              sound.launch();
               if (!isDesktop && !expanded) setExpanded(true);
               else setProfileOpen(true);
             }}
-            className="w-10 h-10 rounded-full overflow-hidden relative border border-white/10 hover:border-primary/50 transition-colors shrink-0"
+            // Collapsed on phones: 32px avatar + 6px padding = 44px, matching the Settings button.
+            className={`${!isDesktop && !expanded ? "w-8 h-8" : "w-10 h-10"} rounded-full overflow-hidden relative border border-white/10 hover:border-primary/50 transition-colors shrink-0`}
             title="Identity"
             aria-label={!isDesktop && !expanded ? "Expand quick actions dock" : "Open profile panel"}
             aria-expanded={!isDesktop ? expanded : undefined}

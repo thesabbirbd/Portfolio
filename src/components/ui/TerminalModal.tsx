@@ -9,6 +9,8 @@ import { CONTROL_SPRING, MOBILE_CORNER_RAISE } from "@/lib/fixed-controls";
 import { OPEN_TERMINAL, isTypingTarget } from "@/lib/ui-events";
 import { sound } from "@/lib/sound";
 import { SKILL_CATEGORIES } from "@/data/skills";
+import { AIYAAR } from "@/data/aiyaar";
+import { APP_VERSION } from "@/lib/version";
 
 interface LogEntry {
   command?: string;
@@ -21,7 +23,7 @@ export function TerminalModal() {
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<LogEntry[]>([
     {
-      output: "THE SABBiR CORE TERMINAL v1.2.0\nType 'help' to inspect available system commands.",
+      output: `THE SABBiR CORE TERMINAL v${APP_VERSION}\nType 'help' to inspect available system commands.`,
     },
   ]);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -65,7 +67,6 @@ export function TerminalModal() {
     e.preventDefault();
     const cmd = input.trim().toLowerCase();
     if (!cmd) return;
-    sound.click();
 
     let output = "";
     let isError = false;
@@ -83,7 +84,7 @@ export function TerminalModal() {
       case "about":
       case "whoami":
         output =
-          "THE SABBiR — Md Sabbirul Islam Khan\nChief Project Manager (CPM) @ Aiyaar Ltd · aiyaar.ltd\nBBA Management (Rajshahi College) × Backend & DevOps Engineering Focus\nLocation: Rajshahi, Bangladesh\nFocus: learning backend & DevOps by building — FastAPI, PostgreSQL, Docker, local AI.";
+          `THE SABBiR — Md Sabbirul Islam Khan\n${AIYAAR.role} @ ${AIYAAR.name} · aiyaar.ltd · /aiyaar\nBBA Management (Rajshahi College) × Backend & DevOps Engineering Focus\nLocation: Rajshahi, Bangladesh\nFocus: learning backend & DevOps by building — FastAPI, PostgreSQL, Docker, local AI.`;
         break;
       case "status":
         output =
@@ -126,6 +127,7 @@ export function TerminalModal() {
         isError = true;
     }
 
+    if (isError) sound.error(); else sound.terminalSubmit();
     setHistory((prev) => [...prev, { command: cmd, output, isError }]);
     setInput("");
   };
@@ -142,9 +144,9 @@ export function TerminalModal() {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => { sound.click(); setIsOpen(true); }}
+          onClick={() => { sound.launch(); setIsOpen(true); }}
           aria-label="Open terminal"
-          className="flex items-center justify-center gap-2 p-3 md:px-3 md:py-1.5 short-landscape:p-3 rounded-full surface-glass text-xs font-mono text-ink-2 hover:border-signal/40 transition-colors"
+          className="flex items-center justify-center gap-2 p-3 md:px-3 md:py-1.5 short-landscape:p-3 rounded-full surface-control text-xs font-mono text-ink-2 hover:border-signal/40 transition-colors"
           title="Open Terminal (press `)"
         >
           <Terminal className="w-5 h-5 md:w-3.5 md:h-3.5 short-landscape:w-5 short-landscape:h-5 text-signal" />
@@ -218,7 +220,7 @@ export function TerminalModal() {
                   ref={inputRef}
                   type="text"
                   value={input}
-                  onChange={(e) => setInput(e.target.value)}
+                  onChange={(e) => { setInput(e.target.value); sound.type(); }}
                   placeholder="type 'help', 'whoami', 'omnidesk'..."
                   aria-label="Terminal command"
                   autoComplete="off"

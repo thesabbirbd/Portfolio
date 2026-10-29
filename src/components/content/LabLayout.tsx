@@ -3,6 +3,9 @@ import { ContentItem } from '@/lib/content';
 import { MDXContent } from './MDXContent';
 import { ConnectedKnowledge } from './ConnectedKnowledge';
 import { FlaskConical, AlertTriangle, CheckCircle, XCircle, Activity } from 'lucide-react';
+import { formatContentDate, isValidContentDate, lastModified } from '@/lib/content-date';
+import { articleJsonLd, breadcrumbJsonLd } from '@/lib/seo';
+import { JsonLd } from '@/components/system/JsonLd';
 
 function ResultBadge({ result }: { result: string }) {
   const mapping: Record<string, { icon: React.ReactNode, class: string }> = {
@@ -28,6 +31,18 @@ export function LabLayout({ item }: { item: ContentItem }) {
     <div className="flex flex-col w-full pt-6 md:pt-8">
       <div className="container mx-auto px-4 max-w-4xl mb-24">
         
+        <JsonLd data={breadcrumbJsonLd([{ label: "Home", href: "/" }, { label: "Engineering Lab", href: "/engineering-lab" }, { label: meta.title }])} />
+        <JsonLd
+          data={articleJsonLd({
+            type: "TechArticle",
+            title: meta.title,
+            description: meta.description,
+            path: `/engineering-lab/${meta.slug}`,
+            datePublished: isValidContentDate(meta.date) ? meta.date : undefined,
+            dateModified: lastModified(meta),
+            keywords: meta.tags,
+          })}
+        />
         {/* BREADCRUMBS */}
         <nav className="flex text-sm text-muted-foreground mb-12" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-3">
@@ -60,7 +75,7 @@ export function LabLayout({ item }: { item: ContentItem }) {
               {meta.category || 'Research'}
             </span>
             <span className="text-sm text-muted-foreground">
-              {meta.dateCompleted ? `Completed: ${meta.dateCompleted}` : `Started: ${meta.date}`}
+              {meta.dateCompleted ? `Completed: ${formatContentDate(meta.dateCompleted)}` : `Started: ${formatContentDate(meta.date)}`}
             </span>
           </div>
           

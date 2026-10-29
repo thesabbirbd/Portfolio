@@ -2,14 +2,13 @@ import { getAllContent } from "@/lib/content";
 import { ProjectBrowser } from "@/components/content/ProjectBrowser";
 import { PageHeader } from "@/components/system/PageHeader";
 import { Accent } from "@/components/system/SectionHeader";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Projects | THE SABBiR",
   description: "Explore the technical builds, engineering projects, and case studies by Md Sabbirul Islam Khan, known as THE SABBiR.",
-  alternates: {
-    canonical: "https://sabbir.nav.bd/projects",
-  }
-};
+  path: "/projects",
+});
 
 export default function ProjectsPage() {
   const projects = getAllContent('projects');

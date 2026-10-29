@@ -23,7 +23,7 @@ beforeAll(() => {
   if (typeof global.Response === 'undefined') {
     global.Response = { json: mockJson } as unknown as typeof Response;
   } else {
-    global.Response.json = mockJson;
+    global.Response.json = mockJson as unknown as typeof Response.json;
   }
 });
 

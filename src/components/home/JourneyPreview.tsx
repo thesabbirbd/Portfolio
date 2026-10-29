@@ -10,7 +10,7 @@ import { MoreLink, MoreLinks } from "@/components/system/MoreLink";
  */
 export function JourneyPreview() {
   return (
-    <section id="journey" className="relative py-12 sm:py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+    <section id="journey" data-sound-zone="timeline" className="relative py-12 sm:py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
       <SectionHeader
         index="03"
         eyebrow="Journey"
@@ -34,7 +34,7 @@ export function JourneyPreview() {
                   <Icon aria-hidden="true" className="w-4 h-4" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block font-mono text-[11px] text-ink-3 truncate">0{i + 1} · {step.stage}</span>
+                  <span className="block font-mono text-[11px] text-ink-3 truncate">0{i + 1} · {step.stage}{step.period ? ` · ${step.period}` : ""}</span>
                   <span className="block text-sm font-black tracking-tight text-ink truncate">{step.title}</span>
                 </span>
               </Link>

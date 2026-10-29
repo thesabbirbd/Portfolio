@@ -67,7 +67,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
             ref={closeRef}
             onClick={() => {
               onClose();
-              sound.click();
+              sound.modalClose();
             }}
             className="absolute top-5 right-5 p-2 rounded-full glass-interactive text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
             aria-label="Close project details" title="Close"

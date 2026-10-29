@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ContentItem, getGlobalContent } from '@/lib/content';
 import { Network, ArrowRight, Tag, Activity } from 'lucide-react';
+import { contentDateTime } from '@/lib/content-date';
 
 export function ConnectedKnowledge({ meta }: { meta: ContentItem['meta'], }) {
   // 1. Gather all content
@@ -77,7 +78,7 @@ export function ConnectedKnowledge({ meta }: { meta: ContentItem['meta'], }) {
   // 5. Chronological Neighbors (Same Type)
   const sameTypeContent = globalContent
     .filter(c => c._type === currentTypeInferred)
-    .sort((a, b) => new Date(a.meta.date).getTime() - new Date(b.meta.date).getTime());
+    .sort((a, b) => contentDateTime(a.meta.date) - contentDateTime(b.meta.date));
     
   const myIndex = sameTypeContent.findIndex(c => c.meta.slug === meta.slug);
   let nextItem = null;

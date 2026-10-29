@@ -23,6 +23,11 @@ const recorder = `(() => {
   const tick = () => {
     const f = { t: performance.now(), y: scrollY, phase: window.__phase };
     for (const [k, get] of Object.entries(q)) { const el = get(); if (el) { const r = el.getBoundingClientRect(); f[k] = [r.left, r.top, r.right, r.bottom]; } }
+    // v4.0.1: while scrolling, the phone dock deliberately tucks *behind* Settings (inert) and
+    // rises back out of it in the same column. That stacked overlap is the design, not a
+    // collision; it is excluded below (tucked, or horizontally centred on Settings).
+    const dockEl = q.dock && q.dock();
+    f.dockTucked = !!(dockEl && dockEl.closest("[inert]"));
     frames.push(f); requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
@@ -52,14 +57,17 @@ const res = await cdp.evaluate(`(() => {
   const collisions = {}, jumps = [], navTop = [];
   for (let i = 0; i < F.length; i++) {
     const f = F[i];
-    for (let a = 0; a < keys.length; a++) for (let b = a + 1; b < keys.length; b++) if (hit(f[keys[a]], f[keys[b]])) { const k = keys[a] + "×" + keys[b] + "@" + f.phase; collisions[k] = (collisions[k] || 0) + 1; }
+    for (let a = 0; a < keys.length; a++) for (let b = a + 1; b < keys.length; b++) if (hit(f[keys[a]], f[keys[b]]) && !(keys[a] === "settings" && keys[b] === "dock" && (f.dockTucked || Math.abs((f.settings[0] + f.settings[2]) - (f.dock[0] + f.dock[2])) < 4))) { const k = keys[a] + "×" + keys[b] + "@" + f.phase; collisions[k] = (collisions[k] || 0) + 1; }
     if (i) for (const k of keys) { const p = F[i - 1][k], c = f[k]; if (p && c) { const d = Math.hypot(c[0] - p[0], c[1] - p[1]); if (d > ${JUMP}) jumps.push(k + "@" + f.phase + " " + Math.round(d) + "px"); } }
   }
   // nav visibility per frame: visible if its rect intersects the viewport
   const vis = F.map((f) => f.nav ? (f.nav[3] > 0 && f.nav[1] < innerHeight) : null);
   const flips = {}; for (let i = 1; i < vis.length; i++) if (vis[i] !== vis[i - 1]) flips[F[i].phase] = (flips[F[i].phase] || 0) + 1;
   const last = F[F.length - 1]; const round = (r) => r && r.map(Math.round);
-  return { frames: F.length, collisions, jumps: jumps.slice(0, 12), jumpCount: jumps.length, navFlips: flips, rest: { terminal: round(last.terminal), settings: round(last.settings), dock: round(last.dock), nav: round(last.nav) }, vw: innerWidth, vh: innerHeight };
+  // Zig-zag check: how far the dock moves horizontally across all scroll phases.
+  const dockX = F.map((f) => f.dock && f.dock[0]).filter((x) => x != null);
+  const dockXTravel = dockX.length ? Math.round(Math.max(...dockX) - Math.min(...dockX)) : null;
+  return { frames: F.length, dockXTravel, collisions, jumps: jumps.slice(0, 12), jumpCount: jumps.length, navFlips: flips, rest: { terminal: round(last.terminal), settings: round(last.settings), dock: round(last.dock), nav: round(last.nav) }, vw: innerWidth, vh: innerHeight };
 })()`);
 console.log(`${route} ${vp}${process.argv.includes("--reduced") ? " reduced" : ""}`);
 console.log(JSON.stringify(res, null, 1));

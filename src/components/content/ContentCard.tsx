@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { ContentItem } from '@/lib/content';
+import { formatContentDate } from '@/lib/content-date';
+import { DemoBadge } from '@/components/discover/DemoBadge';
 
 /**
  * Card for notes, journal entries and lab write-ups. Uses the level-1 surface, one category
@@ -18,17 +20,19 @@ export function ContentCard({ item, baseUrl }: { item: ContentItem; baseUrl: str
           <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary font-medium">
             {meta.category || 'Note'}
           </span>
+          {meta.demo && <DemoBadge />}
           <time dateTime={meta.date} className="text-ink-3">
-            {new Date(meta.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+            {formatContentDate(meta.date)}
           </time>
         </div>
         <h3 className="text-base sm:text-xl font-bold text-ink mb-1.5 sm:mb-2 group-hover:text-primary transition-colors line-clamp-2">
           {meta.title}
         </h3>
-        <p className="text-sm text-ink-2 line-clamp-3 leading-relaxed mb-3 sm:mb-4 flex-grow">
+        <p className="text-sm text-ink-2 line-clamp-2 sm:line-clamp-3 leading-relaxed sm:mb-4 flex-grow">
           {meta.description}
         </p>
-        <div className="flex flex-wrap gap-1.5 mt-auto">
+        {/* Tags are a desktop scanning aid; phones keep the list short (they appear on the article). */}
+        <div className="hidden sm:flex flex-wrap gap-1.5 mt-auto">
           {meta.tags?.slice(0, 3).map(tag => (
             <span key={tag} className="text-[11px] font-mono text-ink-3 bg-muted px-2 py-0.5 rounded">
               {tag}

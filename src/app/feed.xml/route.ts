@@ -1,4 +1,6 @@
 import { getAllContent } from '@/lib/content';
+import { contentDateTime, rssDate } from '@/lib/content-date';
+import { SITE_URL } from '@/lib/seo';
 
 export const revalidate = 3600;
 
@@ -8,27 +10,29 @@ export async function GET() {
     ...getAllContent('journal'),
     ...getAllContent('projects'),
     ...getAllContent('lab'),
-  ];
+    ...getAllContent('articles'),
+  ].filter((item) => !item.meta.demo); // demo placeholders are not publications
   
   // Sort by date descending
-  allContent.sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime());
+  allContent.sort((a, b) => contentDateTime(b.meta.date) - contentDateTime(a.meta.date));
 
   // Only take latest 20 items
   const recentContent = allContent.slice(0, 20);
 
-  const baseUrl = 'https://sabbir.nav.bd';
+  const baseUrl = SITE_URL;
 
   const feedItems = recentContent.map(item => {
     let section = item.meta.type;
     if (section === 'lab') section = 'engineering-lab';
     
+    // pubDate is optional in RSS 2.0: omit it rather than print "Invalid Date" for unknown dates.
+    const pubDate = rssDate(item.meta.date);
     return `
       <item>
         <title><![CDATA[${item.meta.title}]]></title>
         <link>${baseUrl}/${section}/${item.meta.slug}</link>
         <guid>${baseUrl}/${section}/${item.meta.slug}</guid>
-        <pubDate>${new Date(item.meta.date).toUTCString()}</pubDate>
-        <description><![CDATA[${item.meta.description || ''}]]></description>
+${pubDate ? `        <pubDate>${pubDate}</pubDate>\n` : ''}        <description><![CDATA[${item.meta.description || ''}]]></description>
       </item>
     `;
   }).join('');

@@ -50,7 +50,7 @@ export function BeyondChapters() {
   return (
     <section id="beyond" className="relative py-12 sm:py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
       <SectionHeader
-        index="06"
+        index="07"
         eyebrow="Beyond the code"
         title={<>Skills, mission &amp; <Accent>community</Accent></>}
         lede="The rest of the story lives on its own pages — pick a chapter."

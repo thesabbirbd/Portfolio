@@ -3,11 +3,13 @@ import { NotesBrowser } from '@/components/content/NotesBrowser';
 import Link from 'next/link';
 import { PageHeader } from "@/components/system/PageHeader";
 import { Accent } from "@/components/system/SectionHeader";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Engineering Notes | THE SABBiR",
   description: "Technical notes, learnings, and engineering observations by Md Sabbirul Islam Khan, known as THE SABBiR.",
-};
+  path: "/notes",
+});
 
 export default function NotesIndexPage() {
   const notes = getAllContent('notes');

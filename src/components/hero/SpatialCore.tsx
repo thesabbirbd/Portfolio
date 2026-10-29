@@ -3,16 +3,19 @@
 import React, { useState, useEffect } from "react";
 import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { Terminal, Database, Server, Cpu, Cloud, Shield } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { sound } from "@/lib/sound";
 
+// Each orbiting node opens the real evidence for that skill (purposeful, not decoration).
 const ORBITING_NODES = [
-  { label: "FastAPI", icon: Server, color: "#00f0ff", angle: 30 },
-  { label: "Docker", icon: Cloud, color: "#2496ED", angle: 90 },
-  { label: "PostgreSQL", icon: Database, color: "#4169E1", angle: 150 },
-  { label: "Ollama / AI", icon: Cpu, color: "#a855f7", angle: 210 },
-  { label: "Ubuntu / Linux", icon: Terminal, color: "#E95420", angle: 270 },
-  { label: "NOC & Network", icon: Shield, color: "#00f5a0", angle: 330 },
+  { label: "FastAPI", icon: Server, color: "#00f0ff", angle: 30, href: "/projects/omnidesk", hint: "Omnidesk BD case study" },
+  { label: "Docker", icon: Cloud, color: "#2496ED", angle: 90, href: "/experience#skills", hint: "skills by area" },
+  { label: "PostgreSQL", icon: Database, color: "#4169E1", angle: 150, href: "/projects/omnidesk", hint: "Omnidesk BD case study" },
+  { label: "Ollama / AI", icon: Cpu, color: "#a855f7", angle: 210, href: "/projects/ollama-bench", hint: "local LLM benchmarks" },
+  { label: "Ubuntu / Linux", icon: Terminal, color: "#E95420", angle: 270, href: "/journal/ubuntu-dev-environment", hint: "Ubuntu dev environment journal" },
+  { label: "NOC & Network", icon: Shield, color: "#00f5a0", angle: 330, href: "/projects/noc-router", hint: "MikroTik NOC lab" },
 ];
 
 export function SpatialCore() {
@@ -38,7 +41,8 @@ export function SpatialCore() {
   // Pointer tilt only after hydration and on pointer-capable layouts (keeps SSR markup stable).
   const tiltEnabled = mounted && !shouldReduceMotion && !isMobile;
 
-  const orbitRadius = isMobile ? 115 : 175;
+  // Phones: nodes sit on the outer ring (ring ≈ min(250px, 68vw) wide → radius ≈ half).
+  const orbitRadius = isMobile ? 112 : 175;
 
   
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -59,7 +63,7 @@ export function SpatialCore() {
     <div 
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full max-w-[220px] xs:max-w-[260px] sm:max-w-[500px] short-landscape:max-w-[240px] short-portrait:max-w-[170px] aspect-square mx-auto flex items-center justify-center select-none perspective-1000"
+      className="cine-exit-fast relative w-full max-w-[220px] xs:max-w-[260px] sm:max-w-[500px] short-landscape:max-w-[240px] short-portrait:max-w-[170px] aspect-square mx-auto flex items-center justify-center select-none perspective-1000"
     >
 
       {/* 3 Vibrant Ambient Glow Backdrops */}
@@ -70,26 +74,26 @@ export function SpatialCore() {
         className="relative w-full h-full flex items-center justify-center"
       >
         {/* ================= 3D GYROSCOPIC GIMBAL RINGS ================= */}
-        {/* Rings rotate only on tablet/desktop with motion allowed; on phones they stay static (benchmarked cost). */}
+        {/* Rings turn on every device (v4.0.1: owner wants the phone hero to match desktop); transform-only, motion-safe. */}
         {/* Ring 1: Electric Cyan (XY Plane) */}
-        <div className="absolute w-[min(215px,60vw)] xs:w-[min(250px,68vw)] sm:w-[440px] short-landscape:w-[230px] short-portrait:w-[165px] h-[min(215px,60vw)] xs:h-[min(250px,68vw)] sm:h-[440px] short-landscape:h-[230px] short-portrait:h-[165px] rounded-full border border-dashed border-brand/35 md:motion-safe:animate-[spin_36s_linear_infinite]" />
+        <div className="absolute w-[min(215px,60vw)] xs:w-[min(250px,68vw)] sm:w-[440px] short-landscape:w-[230px] short-portrait:w-[165px] h-[min(215px,60vw)] xs:h-[min(250px,68vw)] sm:h-[440px] short-landscape:h-[230px] short-portrait:h-[165px] rounded-full border border-dashed border-brand/35 motion-safe:animate-[spin_36s_linear_infinite]" />
 
         {/* Ring 2: Neon Purple (Tilted Gimbal 3D) */}
         <div
           style={{ transform: "rotateX(68deg)" }}
-          className="absolute w-[min(195px,55vw)] xs:w-[min(225px,62vw)] sm:w-[400px] short-landscape:w-[210px] short-portrait:w-[150px] h-[min(195px,55vw)] xs:h-[min(225px,62vw)] sm:h-[400px] short-landscape:h-[210px] short-portrait:h-[150px] rounded-full border border-ink-3/25 md:motion-safe:animate-[spin_24s_linear_infinite_reverse]"
+          className="absolute w-[min(195px,55vw)] xs:w-[min(225px,62vw)] sm:w-[400px] short-landscape:w-[210px] short-portrait:w-[150px] h-[min(195px,55vw)] xs:h-[min(225px,62vw)] sm:h-[400px] short-landscape:h-[210px] short-portrait:h-[150px] rounded-full border border-ink-3/25 motion-safe:animate-[spin_24s_linear_infinite_reverse]"
         />
 
         {/* Ring 3: Radiant Emerald (Opposite Tilted Gimbal 3D) */}
         <div
           style={{ transform: "rotateY(68deg)" }}
-          className="absolute w-[min(150px,42vw)] xs:w-[min(170px,48vw)] sm:w-[310px] short-landscape:w-[160px] short-portrait:w-[115px] h-[min(150px,42vw)] xs:h-[min(170px,48vw)] sm:h-[310px] short-landscape:h-[160px] short-portrait:h-[115px] rounded-full border border-brand-2/40 md:motion-safe:animate-[spin_30s_linear_infinite]"
+          className="absolute w-[min(150px,42vw)] xs:w-[min(170px,48vw)] sm:w-[310px] short-landscape:w-[160px] short-portrait:w-[115px] h-[min(150px,42vw)] xs:h-[min(170px,48vw)] sm:h-[310px] short-landscape:h-[160px] short-portrait:h-[115px] rounded-full border border-brand-2/40 motion-safe:animate-[spin_30s_linear_infinite]"
         />
 
         {/* ================= CENTRAL SPATIAL GLASS SPHERE ================= */}
-        {/* Bob is a CSS keyframe (compositor-only), tablet/desktop only — phones keep one continuous motion in view. */}
+        {/* Bob is a CSS keyframe (compositor-only) on every device; stops under reduced motion. */}
         <div
-          className="relative z-10 w-[min(145px,40vw)] xs:w-[min(170px,46vw)] sm:w-80 short-landscape:w-[150px] short-portrait:w-[115px] h-[min(145px,40vw)] xs:h-[min(170px,46vw)] sm:h-80 short-landscape:h-[150px] short-portrait:h-[115px] rounded-full p-2 bg-gradient-to-br from-white/70 to-white/30 dark:from-white/10 dark:to-white/[0.03] border border-white/50 dark:border-brand/30 shadow-[0_24px_60px_-18px_rgb(var(--brand)/0.45)] flex items-center justify-center overflow-hidden group md:motion-safe:animate-bob"
+          className="relative z-10 w-[min(145px,40vw)] xs:w-[min(170px,46vw)] sm:w-80 short-landscape:w-[150px] short-portrait:w-[115px] h-[min(145px,40vw)] xs:h-[min(170px,46vw)] sm:h-80 short-landscape:h-[150px] short-portrait:h-[115px] rounded-full p-2 bg-gradient-to-br from-white/70 to-white/30 dark:from-white/10 dark:to-white/[0.03] border border-white/50 dark:border-brand/30 shadow-[0_24px_60px_-18px_rgb(var(--brand)/0.45)] flex items-center justify-center overflow-hidden group motion-safe:animate-bob"
         >
           {/* Specular Edge Highlight Overlay */}
           <div className="absolute inset-0 bg-gradient-to-tr from-white/30 via-transparent to-brand-2/20 pointer-events-none rounded-full" />
@@ -103,9 +107,10 @@ export function SpatialCore() {
               fill
               priority
               draggable={false}
-              sizes="(max-width: 768px) 300px, 600px"
-              quality={100}
-              className="object-cover object-top filter contrast-105 group-hover:scale-105 transition-transform duration-500"
+              // LCP image: rendered 115–215px on phones and 320px from `sm`; default quality keeps
+              // it ~5× lighter than q100 (e.g. 640w WebP: 30 KB vs 150 KB).
+              sizes="(max-width: 639px) 215px, 320px"
+              className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
             />
           </div>
 
@@ -126,9 +131,8 @@ export function SpatialCore() {
           return (
             <motion.div
               key={node.label}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.15 + i * 0.08, duration: 0.5 }}
+              // Entrance is the CSS `rise` keyframe on the link (opacity/translate only): the chip is
+              // full size from first paint, so it never overflows or shrinks below its tap target.
               style={{
                 left: "50%",
                 top: "50%",
@@ -138,16 +142,27 @@ export function SpatialCore() {
                 y: "-50%",
               }}
               whileHover={{ scale: 1.15 }}
-              className="absolute z-20 hidden sm:flex short-landscape:hidden items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface border border-line shadow-e1 hover:border-primary/50 transition-colors cursor-default group"
+              className="absolute z-20 flex short-landscape:hidden rounded-full"
             >
-              <span
-                className="w-2 h-2 rounded-full"
-                style={{ backgroundColor: node.color }}
-              />
-              <Icon className="w-3.5 h-3.5 text-ink-2 group-hover:text-primary transition-colors" />
-              <span className="text-[11px] font-mono font-medium text-ink group-hover:text-primary transition-colors">
-                {node.label}
-              </span>
+              <Link
+                href={node.href}
+                aria-label={`${node.label}: ${node.hint}`}
+                title={node.hint}
+                onMouseEnter={() => sound.hover()}
+                onClick={() => sound.launch()}
+                style={{ animationDelay: `${150 + i * 80}ms` }}
+                className="motion-safe:animate-rise flex items-center gap-1.5 p-1.5 sm:px-2.5 sm:py-1 rounded-full bg-surface border border-gold/40 shadow-e1 hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 transition-colors group"
+              >
+                <span
+                  className="hidden sm:block w-2 h-2 rounded-full"
+                  style={{ backgroundColor: node.color }}
+                />
+                <Icon className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-[var(--node)] sm:text-ink-2 group-hover:text-primary transition-colors" style={{ "--node": node.color } as React.CSSProperties} />
+                {/* Phones: icon-only chips (the label is the link's aria-label/title). */}
+                <span className="hidden sm:inline text-[11px] font-mono font-medium text-ink group-hover:text-primary transition-colors">
+                  {node.label}
+                </span>
+              </Link>
             </motion.div>
           );
         })}

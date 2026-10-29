@@ -140,7 +140,7 @@ export function EngineeringLabSection({
                   {exp.title}
                 </h3>
 
-                <p className="text-xs sm:text-sm text-ink-2 mb-3 sm:mb-4 leading-relaxed line-clamp-3 sm:line-clamp-none">
+                <p className={cn("text-xs sm:text-sm text-ink-2 mb-3 sm:mb-4 leading-relaxed sm:line-clamp-none", teaser ? "line-clamp-2" : "line-clamp-3")}>
                   {exp.description}
                 </p>
 
@@ -158,7 +158,8 @@ export function EngineeringLabSection({
                   {exp.technologies.map((tech, idx) => (
                     <span
                       key={idx}
-                      className="px-2 py-0.5 text-[11px] font-mono rounded bg-ink/5 dark:bg-white/5 text-ink-2"
+                      // Home teaser on phones: the first three tags are enough; the Lab page shows all.
+                      className={cn("px-2 py-0.5 text-[11px] font-mono rounded bg-ink/5 dark:bg-white/5 text-ink-2", teaser && idx >= 3 && "hidden sm:inline")}
                     >
                       {tech}
                     </span>

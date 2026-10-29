@@ -11,6 +11,10 @@ type SearchIndexItem = {
   url: string;
 };
 
+// The index only changes when content changes, i.e. at build time: prerender it as a static
+// file instead of running a function per request (cheaper on Vercel's free tier).
+export const dynamic = 'force-static';
+
 let cachedSearchIndex: SearchIndexItem[] | null = null;
 
 export async function GET() {

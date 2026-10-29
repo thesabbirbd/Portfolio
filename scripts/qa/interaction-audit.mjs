@@ -25,6 +25,8 @@ async function tap(js) {
   if (!b) return false;
   for (const t of ["mousePressed", "mouseReleased"]) await cdp.send("Input.dispatchMouseEvent", { type: t, x: b.x, y: b.y, button: "left", clickCount: 1 });
   await sleep(500);
+  // A theme change may start a View Transition, which holds input until it finishes: wait for it.
+  await ev(`(async () => { const vt = document.activeViewTransition; if (vt) await vt.finished.catch(() => {}); })()`);
   return true;
 }
 const byText = (sel, text) => `[...document.querySelectorAll(${JSON.stringify(sel)})].find((e) => e.textContent.trim().includes(${JSON.stringify(text)}))`;
@@ -102,6 +104,21 @@ check("dock: Toggle Theme flips the colour scheme", (await ev(`document.document
 await tap(`document.querySelector('button[aria-label="Toggle Theme"]')`);
 await tap(`document.querySelector('button[aria-label="Contact"]')`); await sleep(1200);
 check("dock: Contact scrolls to the Home contact chapter", await ev(`(() => { const r = document.getElementById("contact").getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0; })()`));
+
+// 7c. Contact form: validation blocks an empty submit; a filled form prepares an honest mailto draft
+await goto(cdp, BASE + "/contact", 1500);
+await tap(byText('[role="radio"]', "Collaboration"));
+await tap(`document.querySelector('form button[type="submit"]')`);
+const draftShown = () => ev(`[...document.querySelectorAll('h3')].some((h) => h.textContent.includes('Draft opened in your email app'))`);
+check("contact: empty form is blocked by validation (no fake success)", !(await draftShown()));
+await tap(`document.getElementById('contact-name')`); await type("QA Visitor");
+await tap(`document.getElementById('contact-email')`); await type("qa@example.com");
+await tap(`document.getElementById('contact-message')`); await type("Hello from the link audit");
+await ev(`window.__mailto = []; window.addEventListener('beforeunload', () => window.__mailto.push(location.href))`);
+await tap(`document.querySelector('form button[type="submit"]')`); await sleep(600);
+const again = await ev(`[...document.querySelectorAll('a')].find((a) => a.textContent.includes('Open email app again'))?.getAttribute('href') || ''`);
+check("contact: filled form shows the draft state with a mailto to the right inbox, subject and body",
+  (await draftShown()) && again.startsWith("mailto:iamthesabbir@gmail.com?subject=Inquiry%3A%20Collaboration") && again.includes("QA%20Visitor"), again.slice(0, 90));
 
 // 8. 404 page
 const res404 = await fetch(BASE + "/this-route-does-not-exist");

@@ -1,13 +1,12 @@
 import { AboutSection } from "@/components/about/AboutSection";
 import Link from "next/link";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "About Md Sabbirul Islam Khan | THE SABBiR",
   description: "Learn more about Md Sabbirul Islam Khan, known as THE SABBiR, a Management student from Rajshahi, Bangladesh focusing on Backend Engineering, DevOps, AI, and Systems.",
-  alternates: {
-    canonical: "https://sabbir.nav.bd/about",
-  }
-};
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (

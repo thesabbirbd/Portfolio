@@ -19,7 +19,7 @@ export function ContactCTA() {
     <section id="contact" className="relative py-12 sm:py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full scroll-mt-20">
       <Card variant="elevated" deco className="px-5 py-8 sm:px-10 sm:py-12 text-center">
         <SectionHeader
-          index="07"
+          index="08"
           align="center"
           expression="glass"
           eyebrow="Contact"

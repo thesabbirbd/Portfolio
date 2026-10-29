@@ -11,8 +11,9 @@ const CHAPTERS = [
   { id: "journey", n: "03", label: "Journey" },
   { id: "lab", n: "04", label: "Lab" },
   { id: "writing", n: "05", label: "Writing" },
-  { id: "beyond", n: "06", label: "Beyond" },
-  { id: "contact", n: "07", label: "Contact" },
+  { id: "discover", n: "06", label: "Discover" },
+  { id: "beyond", n: "07", label: "Beyond" },
+  { id: "contact", n: "08", label: "Contact" },
 ];
 
 /**
@@ -62,7 +63,7 @@ export function ChapterRail() {
           active ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
       >
-        <div className="relative flex flex-col gap-3 pl-4">
+        <div className="relative flex flex-col gap-0.5 pl-4">
           <span aria-hidden="true" className="absolute left-0 top-1 bottom-1 w-px bg-line-strong" />
           <motion.span
             aria-hidden="true"
@@ -77,7 +78,7 @@ export function ChapterRail() {
                 href={`#${c.id}`}
                 aria-label={`${c.n} ${c.label}`}
                 aria-current={isActive ? "location" : undefined}
-                className="group flex items-center gap-2 font-mono text-[11px] leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded"
+                className="group flex items-center gap-2 min-h-6 font-mono text-[11px] leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded"
               >
                 <span className={cn("transition-colors", isActive ? "text-primary font-bold" : "text-ink-3 group-hover:text-ink")}>{c.n}</span>
                 <span

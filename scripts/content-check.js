@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
 
-const contentDirs = ['projects', 'notes', 'journal', 'lab'];
+const contentDirs = ['projects', 'notes', 'journal', 'lab', 'articles'];
 const contentPath = path.join(__dirname, '..', 'content');
 
 let errors = 0;

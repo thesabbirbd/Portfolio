@@ -3,6 +3,7 @@
 
 export const OPEN_COMMAND_MENU = "sabbir:open-command-menu";
 export const OPEN_TERMINAL = "sabbir:open-terminal";
+export const OPEN_SETTINGS = "sabbir:open-settings";
 
 export function openCommandMenu() {
   window.dispatchEvent(new Event(OPEN_COMMAND_MENU));
@@ -10,6 +11,10 @@ export function openCommandMenu() {
 
 export function openTerminal() {
   window.dispatchEvent(new Event(OPEN_TERMINAL));
+}
+
+export function openSettings() {
+  window.dispatchEvent(new Event(OPEN_SETTINGS));
 }
 
 /** True when the keyboard focus is in a text field, so global shortcuts should stand down. */

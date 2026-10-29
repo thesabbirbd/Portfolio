@@ -1,11 +1,14 @@
 import { Variants } from "framer-motion";
 
-// Unified motion tokens — keep in sync with --dur-* / --ease-* in globals.css
+// Unified motion vocabulary (v4.0.1). Seconds here mirror the CSS tokens in globals.css:
+// --dur-fast 150ms · --dur-base 300ms · --dur-slow 500ms · --ease-out-expo (= ease.spatial).
+// Rules: animate transform/opacity only, one owner per property, reduced motion handled by
+// MotionPreferences (MotionConfig) for Framer and by the global CSS rules for everything else.
 export const duration = {
   instant: 0,
-  fast: 0.2,
-  normal: 0.4,
-  slow: 0.8,
+  fast: 0.15,
+  normal: 0.3,
+  slow: 0.5,
 };
 
 export const ease = {
@@ -15,6 +18,9 @@ export const ease = {
   mobileStandard: [0.4, 0, 0.2, 1], // optimized for mobile
   mobileSpatial: [0.2, 0.8, 0.2, 1], // smoother for mobile
 } satisfies Record<string, [number, number, number, number]>;
+
+/** Route/content swap: a short rise + fade, used by the route template and the hero role line. */
+export const swapTransition = { duration: 0.35, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] };
 
 export const springs = {
   soft: { type: "spring", stiffness: 100, damping: 20, mass: 1 },

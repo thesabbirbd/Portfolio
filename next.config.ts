@@ -1,18 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Dev only: let phones/tablets on the local network (e.g. http://192.168.1.114:3000) use the
+  // dev server, including hot reload. Has no effect on production builds.
+  allowedDevOrigins: ["192.168.*.*"],
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
   images: {
-    qualities: [75, 100],
+    // Only the default quality is used (Phase 1 removed quality={100}); fewer variants to optimise.
+    qualities: [75],
   },
-  typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    ignoreBuildErrors: true,
-  },
+  // Type errors now fail the build (v4.0.1: the 9 test-file errors that needed
+  // `ignoreBuildErrors` were fixed, and `tsc --noEmit` is clean).
   async headers() {
     return [
       {

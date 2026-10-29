@@ -4,6 +4,7 @@ import { ArrowRight, ArrowUpRight, Store, ShoppingBag, Boxes, BookOpen, HandCoin
 import { AIYAAR, AIYAAR_FEATURES } from "@/data/aiyaar";
 import { LINKEDIN_URL } from "@/data/experience";
 import { LinkedinIcon } from "@/components/ui/BrandIcons";
+import { AiyaarName } from "@/components/system/AiyaarName";
 
 const ICON: Record<string, React.ComponentType<{ className?: string }>> = {
   pos: Store, store: ShoppingBag, inventory: Boxes, khata: BookOpen, baki: HandCoins, social: Bot, reports: BarChart3, team: Users,
@@ -12,13 +13,13 @@ const SPOTLIGHT = ["pos", "store", "inventory", "khata", "baki", "social", "repo
 
 /**
  * Home — the featured current role, placed right after the hero so it is the first thing
- * visitors meet: Chief Project Manager at Aiyaar Ltd, what the Aiyaar SaaS does, and links to
+ * visitors meet: Chief Product Manager (CPM) at Aiyaar, what the Aiyaar SaaS does, and links to
  * the full /aiyaar page, the product site and LinkedIn.
  */
 export function AiyaarFeature() {
   const spotlight = SPOTLIGHT.map((id) => AIYAAR_FEATURES.find((f) => f.id === id)!).filter(Boolean);
   return (
-    <section id="aiyaar" aria-labelledby="aiyaar-title" className="relative py-10 sm:py-14 md:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full scroll-mt-20">
+    <section id="aiyaar" aria-labelledby="aiyaar-title" className="relative py-8 sm:py-14 md:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full scroll-mt-20">
       <div className="reveal relative overflow-hidden rounded-panel border border-primary/25 surface-elevated shadow-e3">
         <div aria-hidden="true" className="absolute inset-0 pointer-events-none bg-[radial-gradient(120%_80%_at_0%_0%,rgb(var(--brand)/0.16),transparent_55%),radial-gradient(90%_70%_at_100%_100%,rgb(var(--brand-2)/0.12),transparent_60%)]" />
         <div className="relative p-5 sm:p-8 lg:p-12">
@@ -32,11 +33,11 @@ export function AiyaarFeature() {
           <div className="mt-5 grid gap-8 lg:grid-cols-12 lg:items-end">
             <div className="lg:col-span-7">
               <h2 id="aiyaar-title" className="text-h2 font-extrabold text-ink text-balance">
-                Chief Project Manager at{" "}
-                <Link href="/aiyaar" className="text-display-gradient hover:underline decoration-primary/40 underline-offset-8">Aiyaar Ltd</Link>
+                {AIYAAR.roleTitle} at{" "}
+                <AiyaarName className="text-display-gradient decoration-primary/40 underline-offset-8">{AIYAAR.name}</AiyaarName>
               </h2>
               <p className="mt-4 text-lede text-ink-2 max-w-2xl text-pretty">{AIYAAR.tagline}</p>
-              <p className="mt-3 text-sm sm:text-base text-ink-2 max-w-2xl leading-relaxed">
+              <p className="hidden sm:block mt-3 text-sm sm:text-base text-ink-2 max-w-2xl leading-relaxed">
                 POS, online store, inventory, digital khata, baki, invoices, reports, Facebook &amp; Instagram AI replies, delivery and staff roles —
                 one connected system built for 22 kinds of business, from pharmacies and grocery shops to restaurants and turfs.
               </p>
@@ -51,11 +52,12 @@ export function AiyaarFeature() {
             </dl>
           </div>
 
-          <ul className="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3" aria-label="What Aiyaar does">
-            {spotlight.map((f) => {
+          <ul className="mt-6 sm:mt-8 grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3" aria-label="What Aiyaar does">
+            {/* Phones: the first four areas (the rest are one tap away on /aiyaar). */}
+            {spotlight.map((f, i) => {
               const Icon = ICON[f.id] ?? Store;
               return (
-                <li key={f.id}>
+                <li key={f.id} className={i >= 4 ? "hidden sm:block" : undefined}>
                   <Link
                     href={`/aiyaar#${f.id}`}
                     className="group flex h-full flex-col gap-2 rounded-xl surface-card surface-interactive p-3 sm:p-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"

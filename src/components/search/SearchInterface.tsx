@@ -5,6 +5,7 @@ import { useDebounce } from '@/hooks/use-debounce';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Search, X, Filter } from 'lucide-react';
+import { formatContentDate } from '@/lib/content-date';
 
 type SearchItem = {
   title: string;
@@ -52,7 +53,7 @@ export function SearchInterface({ initialData }: { initialData: SearchItem[] }) 
     return results;
   }, [debouncedQuery, activeType, initialData]);
 
-  const types = ['notes', 'journal', 'projects', 'lab'];
+  const types = ['notes', 'journal', 'projects', 'lab', 'articles'];
 
   return (
     <div className="w-full">
@@ -116,7 +117,7 @@ export function SearchInterface({ initialData }: { initialData: SearchItem[] }) 
                   <span className="text-xs text-muted-foreground">{item.category}</span>
                 )}
                 <time className="text-xs text-muted-foreground ml-auto">
-                  {new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  {formatContentDate(item.date)}
                 </time>
               </div>
               <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">{item.title}</h3>

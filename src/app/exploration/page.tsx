@@ -1,14 +1,13 @@
 import { MapsExplorerSection } from "@/components/maps/MapsExplorerSection";
 import { PageHeader } from "@/components/system/PageHeader";
 import { Accent } from "@/components/system/SectionHeader";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Google Maps & 360° Exploration | THE SABBiR",
   description: "Explore geospatial projects, 360° photography, and Google Maps Local Guide contributions by Md Sabbirul Islam Khan across Bangladesh.",
-  alternates: {
-    canonical: "https://sabbir.nav.bd/exploration",
-  }
-};
+  path: "/exploration",
+});
 
 export default function ExplorationPage() {
   return (

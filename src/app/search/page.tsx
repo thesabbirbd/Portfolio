@@ -3,14 +3,14 @@ import { Suspense } from 'react';
 import { getAllContent } from '@/lib/content';
 import { PageHeader } from "@/components/system/PageHeader";
 import { Accent } from "@/components/system/SectionHeader";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Search | THE SABBiR",
   description: "Search the engineering knowledge base, projects, notes, and experiments.",
-  alternates: {
-    canonical: "https://sabbir.nav.bd/search",
-  }
-};
+  path: "/search",
+  noindex: true,
+});
 
 export default function SearchPage() {
   const allContent = [

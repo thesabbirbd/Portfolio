@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { APP_VERSION } from "@/lib/version";
 import { MotionLoopVideo } from "@/components/ui/MotionLoopVideo";
 import { Terminal } from "lucide-react";
 import { sound } from "@/lib/sound";
@@ -20,7 +21,7 @@ export function TerminalCard() {
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [input, setInput] = useState("");
   const [logs, setLogs] = useState<Log[]>([
-    { id: 0, text: "Welcome to SABBiR_OS [Version 2.2.0]", isCommand: false },
+    { id: 0, text: `Welcome to SABBiR_OS [Version ${APP_VERSION}]`, isCommand: false },
     { id: 1, text: "Type 'help' to see available commands.", isCommand: false },
   ]);
   const endRef = useRef<HTMLDivElement>(null);
@@ -44,7 +45,7 @@ export function TerminalCard() {
     e.preventDefault();
     if (!input.trim()) return;
 
-    sound.click();
+    sound.terminalSubmit();
     const cmd = input.trim().toLowerCase();
     const newLogs = [...logs, { id: Date.now(), text: `guest@sabbir.nav.bd:~$ ${input}`, isCommand: true }];
     
@@ -80,6 +81,7 @@ export function TerminalCard() {
           response = "COMMANDS: whoami, focus, projects, skills, status, contact, clear";
           break;
         default:
+          sound.error();
           response = `Command not found: ${cmd}. Type 'help' for options.`;
       }
       setLogs((prev) => [...prev, { id: Date.now() + 1, text: response, isCommand: false }]);
@@ -130,7 +132,7 @@ export function TerminalCard() {
           <input
             type="text"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => { setInput(e.target.value); sound.type(); }}
             aria-label="Lab terminal command"
             className="flex-1 min-w-0 min-h-7 bg-transparent outline-none text-slate-200"
             spellCheck={false}

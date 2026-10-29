@@ -3,7 +3,9 @@
 import React from "react";
 import Link from "next/link";
 import { SOCIAL_LINKS } from "@/data/socials";
-import { Mail, ArrowUp, MapPin, Terminal, FileText, Command, Compass } from "lucide-react";
+import { AIYAAR } from "@/data/aiyaar";
+import { APP_VERSION } from "@/lib/version";
+import { Mail, ArrowUp, MapPin, Terminal, FileText, Command, Compass, Sparkles } from "lucide-react";
 import {
   GithubIcon,
   LinkedinIcon,
@@ -30,7 +32,8 @@ const COLUMNS = [
     links: [
       { href: "/", label: "Home" },
       { href: "/about", label: "About" },
-      { href: "/aiyaar", label: "Aiyaar Ltd (CPM)" },
+      { href: "/aiyaar", label: `Aiyaar role · ${AIYAAR.roleShort}` },
+      { href: AIYAAR.url, label: "Aiyaar website ↗", external: true },
       { href: "/resume", label: "Resume" },
       { href: "/contact", label: "Contact" },
     ],
@@ -42,6 +45,19 @@ const COLUMNS = [
       { href: "/projects", label: "Projects" },
       { href: "/engineering-lab", label: "Engineering Lab" },
       { href: "/experience", label: "Experience & Skills" },
+    ],
+  },
+  {
+    title: "Discover",
+    icon: Sparkles,
+    links: [
+      { href: "/explore", label: "Explore hub" },
+      { href: "/articles", label: "Technical articles" },
+      { href: "/vlogs", label: "Vlogs" },
+      { href: "/news", label: "News commentary" },
+      { href: "/tools", label: "Interactive tools" },
+      { href: "/playground", label: "Engineering playground" },
+      { href: "/games", label: "Browser games" },
     ],
   },
   {
@@ -62,14 +78,14 @@ const COLUMNS = [
  */
 export function Footer() {
   const scrollToTop = () => {
-    sound.click();
+    sound.launch();
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <footer className="relative z-10 w-full mt-16 md:mt-24 border-t border-line bg-surface">
       <div className="container mx-auto px-4 md:px-6 pt-12 md:pt-16 pb-[calc(7rem+env(safe-area-inset-bottom))] md:pb-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-10 mb-12 md:mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-6 gap-y-10 mb-12 md:mb-16">
           <div className="col-span-2 lg:col-span-2 space-y-5">
             <p className="text-xl font-bold tracking-tight text-ink">THE SABBiR</p>
             <p className="text-sm text-ink-2 leading-relaxed max-w-sm">
@@ -103,9 +119,15 @@ export function Footer() {
               <ul className="space-y-0.5">
                 {links.map((l) => (
                   <li key={l.href}>
-                    <Link href={l.href} className="inline-flex min-h-8 items-center text-sm text-ink-2 hover:text-primary transition-colors">
-                      {l.label}
-                    </Link>
+                    {"external" in l && l.external ? (
+                      <a href={l.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-8 items-center text-sm text-ink-2 hover:text-primary transition-colors">
+                        {l.label}
+                      </a>
+                    ) : (
+                      <Link href={l.href} className="inline-flex min-h-8 items-center text-sm text-ink-2 hover:text-primary transition-colors">
+                        {l.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -115,7 +137,7 @@ export function Footer() {
 
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-line gap-4">
           <div className="text-xs text-ink-3 flex flex-col md:flex-row items-center gap-2 md:gap-4">
-            <span>&copy; {new Date().getFullYear()} Md Sabbirul Islam Khan · THE SABBiR</span>
+            <span>&copy; {new Date().getFullYear()} Md Sabbirul Islam Khan · THE SABBiR · v{APP_VERSION}</span>
             <span aria-hidden="true" className="hidden md:inline">|</span>
             <span className="hidden md:flex items-center gap-2"><Command aria-hidden="true" className="w-3 h-3" /> Press <kbd className="px-1.5 py-0.5 bg-muted rounded border border-line font-mono text-[11px]">Ctrl+K</kbd> for the command menu</span>
           </div>

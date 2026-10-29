@@ -1,0 +1,49 @@
+---
+title: "CIDR in Five Minutes: Subnetting Without a Calculator"
+slug: "cidr-without-a-calculator"
+description: "How to read a /24, /26 or /29 in your head: block sizes, network and broadcast addresses, and usable hosts — the arithmetic behind every subnet calculator."
+date: "2026-10-29"
+type: "article"
+category: "Networking"
+tags: ["CIDR", "IPv4", "Subnetting"]
+status: "published"
+demo: true
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+> **Demo article.** This section is new; this sample shows the format until regular articles are published.
+
+## The one number that matters: block size
+
+An IPv4 address has 32 bits. A prefix like `/26` says how many of those bits are the **network** part. The rest are host bits:
+
+- `/24` → 8 host bits → 2⁸ = **256** addresses
+- `/26` → 6 host bits → 2⁶ = **64** addresses
+- `/29` → 3 host bits → 2³ = **8** addresses
+
+That count is the **block size**. Networks always start on a multiple of the block size.
+
+## Network and broadcast in your head
+
+Take `192.168.10.77/26`. The block size is 64, so networks in the last octet start at 0, 64, 128, 192. 77 falls in the block that starts at **64**:
+
+- Network: `192.168.10.64`
+- Broadcast: `192.168.10.127` (next block minus one)
+- Usable hosts: `.65` to `.126` → **62** hosts (64 − 2)
+
+## Quick table
+
+- `/24` — mask 255.255.255.0 — 256 addresses, 254 usable
+- `/25` — mask 255.255.255.128 — 128 addresses, 126 usable
+- `/26` — mask 255.255.255.192 — 64 addresses, 62 usable
+- `/27` — mask 255.255.255.224 — 32 addresses, 30 usable
+- `/28` — mask 255.255.255.240 — 16 addresses, 14 usable
+- `/29` — mask 255.255.255.248 — 8 addresses, 6 usable
+- `/30` — mask 255.255.255.252 — 4 addresses, 2 usable
+
+`/31` (point-to-point links, RFC 3021) and `/32` (a single host) are the special cases where the "minus two" rule does not apply.
+
+## Check your answer
+
+Use the [subnet calculator](/tools#subnet) on this site — it does exactly this arithmetic with bitwise operations.

@@ -4,14 +4,13 @@ import { EngineeringLabSection } from "@/components/lab/EngineeringLabSection";
 import { Accent } from "@/components/system/SectionHeader";
 import { PageHeader } from "@/components/system/PageHeader";
 import { AsciiRule } from "@/components/system/Signal";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Engineering Lab & Experiments | THE SABBiR",
   description: "A documented engineering lab for local AI, infrastructure, automation, and backend experiments by Md Sabbirul Islam Khan, known as THE SABBiR.",
-  alternates: {
-    canonical: "https://sabbir.nav.bd/engineering-lab",
-  }
-};
+  path: "/engineering-lab",
+});
 
 export default function EngineeringLabPage() {
   const experiments = getAllContent('lab');

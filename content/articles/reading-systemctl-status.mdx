@@ -1,0 +1,45 @@
+---
+title: "Reading systemctl status Like an On-Call Engineer"
+slug: "reading-systemctl-status"
+description: "Load state, active state, main PID and the last log lines: what each part of systemctl status tells you, and the three commands to run next when a service is down."
+date: "2026-10-29"
+type: "article"
+category: "Linux"
+tags: ["Linux", "systemd", "Troubleshooting"]
+status: "published"
+demo: true
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+> **Demo article.** This section is new; this sample shows the format until regular articles are published.
+
+## The four lines that matter
+
+```text
+● nginx.service - A high performance web server
+     Loaded: loaded (/lib/systemd/system/nginx.service; enabled; preset: enabled)
+     Active: failed (Result: exit-code) since Tue 10:42:07 UTC; 3min ago
+    Process: 1234 ExecStartPre=/usr/sbin/nginx -t -q (code=exited, status=1/FAILURE)
+```
+
+- **Loaded** — the unit file was found. `enabled` means it starts at boot.
+- **Active** — the current state. `failed (Result: exit-code)` means the process exited non-zero.
+- **Process / Main PID** — *which* command failed. Here it is `ExecStartPre`, the config test, so nginx never even started.
+- The **log tail** at the bottom usually names the exact file and line.
+
+## What to run next
+
+```bash
+journalctl -u nginx -b --no-pager | tail -50   # full logs for this boot
+sudo nginx -t                                   # reproduce the failing pre-check
+systemctl cat nginx                             # the unit file actually in use (incl. overrides)
+```
+
+## After the fix
+
+```bash
+sudo systemctl restart nginx && systemctl is-active nginx
+```
+
+`is-active` prints a single word and sets the exit code, which makes it ideal for scripts and health checks.

@@ -179,6 +179,13 @@ export function ResumeInterface() {
                     </div>
                     <ul className={`space-y-1.5 leading-relaxed list-disc pl-5 ${mode === 'professional' ? 'text-gray-700 text-sm' : 'text-muted-foreground'}`}>
                       {exp.points.map((pt) => <li key={pt}>{pt}</li>)}
+                      {exp.detailsHref && (
+                        <li className="list-none -ml-5 print:hidden">
+                          <Link href={exp.detailsHref} className={`inline-flex min-h-7 items-center gap-1 font-semibold hover:underline underline-offset-4 ${mode === 'professional' ? 'text-blue-700' : 'text-primary'}`}>
+                            Details: {exp.org} →
+                          </Link>
+                        </li>
+                      )}
                     </ul>
                   </div>
                 ))}

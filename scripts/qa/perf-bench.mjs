@@ -6,6 +6,8 @@ const [url, profile = "mobile", rate = profile === "mobile" ? "4" : "2", setup =
 const cdp = await launch();
 const { send, evaluate, sleep } = cdp;
 await send("Performance.enable"); await send("Network.enable"); await send("Network.setCacheDisabled", { cacheDisabled: true });
+// BLOCK_URLS="*clarity.ms*,…" blocks those requests (e.g. to separate first-party cost from analytics).
+if (process.env.BLOCK_URLS) await send("Network.setBlockedURLs", { urls: process.env.BLOCK_URLS.split(",") });
 await setViewport(send, profile);
 if (profile === "mobile") await send("Network.setUserAgentOverride", { userAgent: "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36" });
 await send("Emulation.setCPUThrottlingRate", { rate: Number(rate) });

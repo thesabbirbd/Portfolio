@@ -59,7 +59,7 @@ export function JourneyTimeline() {
   const current = JOURNEY_STEPS[activeIndex];
 
   return (
-    <div id="timeline" ref={containerRef} className="relative w-full max-w-6xl mx-auto py-8 sm:py-16 scroll-mt-20">
+    <div id="timeline" ref={containerRef} data-sound-zone="timeline" className="relative w-full max-w-6xl mx-auto py-8 sm:py-16 scroll-mt-20">
       <div className="reveal text-center mb-6 sm:mb-14">
         <h2 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tighter text-ink mb-2 sm:mb-4">
           THE ENGINEERING <span className="text-display-gradient">EVOLUTION</span>
@@ -78,6 +78,7 @@ export function JourneyTimeline() {
             </p>
             <p className="mt-3 text-lg font-black tracking-tight text-ink">{current.title}</p>
             <p className="text-sm text-ink-2">{current.context}</p>
+            {current.period && <p className="mt-1 font-mono text-xs text-ink-3">{current.period}</p>}
 
             <nav className="relative mt-8 pl-5" aria-label="Jump to phase">
               <span aria-hidden="true" className="absolute left-[5px] top-2 bottom-2 w-0.5 rounded-full bg-line-strong" />
@@ -164,6 +165,7 @@ export function JourneyTimeline() {
                           <span>PHASE 0{i + 1}</span>
                           <span aria-hidden="true">·</span>
                           <span>{step.stage}</span>
+                          {step.period && <span className="font-mono text-ink-3">· {step.period}</span>}
                           {step.status === "current" && <span className="ml-1 px-1.5 py-0.5 rounded bg-ok/10 text-ok font-semibold">NOW</span>}
                         </div>
                         <h3 className="text-base sm:text-xl font-black tracking-tight text-ink">{step.title}</h3>

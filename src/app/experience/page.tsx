@@ -2,16 +2,18 @@ import { SkillsBento } from "@/components/skills/SkillsBento";
 import { MissionSection } from "@/components/mission/MissionSection";
 import { WorkHistory } from "@/components/experience/WorkHistory";
 import { CommunitySection } from "@/components/community/CommunitySection";
+import Link from "next/link";
 import { PageHeader } from "@/components/system/PageHeader";
+import { AIYAAR } from "@/data/aiyaar";
 import { Accent } from "@/components/system/SectionHeader";
+import { pageMetadata } from "@/lib/seo";
+import { AiyaarName } from "@/components/system/AiyaarName";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Experience & Skills | THE SABBiR",
   description: "Review the professional skills, IT operations, NOC, and technical engineering experience of Md Sabbirul Islam Khan, known as THE SABBiR in Bangladesh.",
-  alternates: {
-    canonical: "https://sabbir.nav.bd/experience",
-  }
-};
+  path: "/experience",
+});
 
 export default function ExperiencePage() {
   return (
@@ -20,7 +22,7 @@ export default function ExperiencePage() {
         crumbs={[{ label: "Experience" }]}
         eyebrow="Experience · Skills · Community"
         title={<>Experience &amp; <Accent>skills</Accent></>}
-        lede="Chief Project Manager at Aiyaar Ltd, with a background in IT support, NOC-side troubleshooting and Python training — plus the current backend sprint, skills with an honest level for each, and community work."
+        lede={<>{AIYAAR.role} at <AiyaarName />, with a background in IT support, NOC-side troubleshooting and Python training — plus the current backend sprint, skills with an honest level for each, and community work.</>}
         className="mb-2 md:mb-4"
       />
       <WorkHistory />

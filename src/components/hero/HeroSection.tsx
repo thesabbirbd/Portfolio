@@ -3,9 +3,11 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, ArrowDown, Terminal, Send } from "lucide-react";
+import { ArrowRight, ArrowDown, ArrowUpRight, Terminal, Send } from "lucide-react";
 import { useSettings } from "@/contexts/SettingsContext";
 import { PROFILE_DATA } from "@/data/profile";
+import { AIYAAR } from "@/data/aiyaar";
+import { swapTransition } from "@/lib/motion-presets";
 import { GlowButton } from "@/components/ui/GlowButton";
 import { MotionLoopVideo } from "@/components/ui/MotionLoopVideo";
 import { BauhausField } from "@/components/system/BauhausField";
@@ -51,18 +53,21 @@ export function HeroSection() {
 
       <motion.div style={parallax} className="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 short-landscape:grid-cols-12 gap-5 short-portrait:gap-3 sm:gap-8 items-center">
         {/* Left Column: Typography & Dynamic Identity */}
-        <div className="lg:col-span-7 short-landscape:col-span-7 flex flex-col order-2 lg:order-1 short-landscape:order-1 items-center lg:items-start short-landscape:items-start text-center lg:text-left short-landscape:text-left space-y-3.5 short-portrait:space-y-2.5 md:space-y-6 short-landscape:space-y-3">
+        <div className="cine-exit-slow lg:col-span-7 short-landscape:col-span-7 flex flex-col order-2 lg:order-1 short-landscape:order-1 items-center lg:items-start short-landscape:items-start text-center lg:text-left short-landscape:text-left space-y-3.5 short-portrait:space-y-2.5 md:space-y-6 short-landscape:space-y-3">
           {/* Status Badge */}
           {/* Entrances use the CSS `rise` keyframe: visible from first paint, no hydration wait. */}
-          <Link
-            href="/aiyaar"
+          <a
+            href={AIYAAR.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Visit aiyaar.ltd (opens in a new tab)"
             className="motion-safe:animate-rise group inline-flex items-center gap-2 px-3 xs:px-3.5 py-1.5 rounded-full surface-card border-primary/30 hover:border-primary/60 text-[11px] xs:text-xs font-mono tracking-normal xs:tracking-wider whitespace-nowrap transition-colors"
           >
             <span className="w-2 h-2 rounded-full bg-ok md:motion-safe:animate-pulse" />
-            <span className="text-ink-2">CPM @</span>
-            <span className="font-bold text-primary">Aiyaar Ltd</span>
-            <ArrowRight aria-hidden="true" className="w-3 h-3 text-primary group-hover:translate-x-0.5 transition-transform" />
-          </Link>
+            <span className="text-ink-2">{AIYAAR.roleShort} @</span>
+            <span className="font-bold text-primary">{AIYAAR.name}</span>
+            <ArrowUpRight aria-hidden="true" className="w-3 h-3 text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </a>
 
           {/* Names */}
           <div className="space-y-1">
@@ -77,7 +82,7 @@ export function HeroSection() {
               <span className="inline-block overflow-hidden align-bottom pb-[0.08em] -mb-[0.08em]">
                 <span className="inline-block motion-safe:animate-reveal">{PROFILE_DATA.shortName.split(" ")[0]}</span>
               </span>{" "}
-              <span className="inline-block overflow-hidden align-bottom pb-[0.08em] -mb-[0.08em]">
+              <span className="gold-sheen inline-block overflow-hidden align-bottom pb-[0.08em] -mb-[0.08em]">
                 <span style={{ animationDelay: "90ms" }} className="inline-block text-display-gradient motion-safe:animate-reveal">
                   {PROFILE_DATA.shortName.split(" ").slice(1).join(" ")}
                 </span>
@@ -94,7 +99,7 @@ export function HeroSection() {
                 initial={{ y: 24, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: -24, opacity: 0 }}
-                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                transition={swapTransition}
                 className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 rounded-xl surface-card text-ink font-mono text-xs sm:text-sm md:text-base font-semibold tracking-tight max-w-full truncate"
               >
                 <Terminal className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />

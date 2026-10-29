@@ -1,5 +1,7 @@
 // Canonical career data, taken from the owner's CV (IT CV 2026 v3.1, public/cv/) plus the
-// current Aiyaar Ltd role the owner confirmed. Resume and /experience both read from here.
+// current Aiyaar role (title from src/data/aiyaar.ts). Resume and /experience both read from here.
+
+import { AIYAAR } from "./aiyaar";
 
 export const CV_PDF = "/cv/Md-Sabbirul-Islam-Khan-CV-2026.pdf";
 export const LINKEDIN_URL = "https://www.linkedin.com/in/thesabbirbd/";
@@ -14,6 +16,8 @@ export type WorkItem = {
   title: string;
   org: string;
   url?: string;
+  /** Internal page with the full story of this role/project (shown as "Details"). */
+  detailsHref?: string;
   date: string;
   current?: boolean;
   kind: "leadership" | "it" | "training" | "research" | "media" | "build";
@@ -21,9 +25,9 @@ export type WorkItem = {
 };
 
 export const CURRENT_ROLE = {
-  title: "Chief Project Manager (CPM)",
-  org: "Aiyaar Ltd",
-  url: "https://aiyaar.ltd",
+  title: AIYAAR.role,
+  org: AIYAAR.name,
+  url: AIYAAR.url,
 };
 
 export const WORK_EXPERIENCE: WorkItem[] = [
@@ -31,10 +35,11 @@ export const WORK_EXPERIENCE: WorkItem[] = [
     title: CURRENT_ROLE.title,
     org: CURRENT_ROLE.org,
     url: CURRENT_ROLE.url,
+    detailsHref: "/aiyaar",
     date: "Current",
     current: true,
     kind: "leadership",
-    points: ["Chief Project Manager at Aiyaar Ltd — project planning, coordination and delivery."],
+    points: [`${AIYAAR.role} for Aiyaar — the all-in-one POS, online store, inventory and digital-khata SaaS for businesses in Bangladesh.`],
   },
   {
     title: "Creator & Solo Developer (Open Source)",

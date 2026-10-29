@@ -12,11 +12,12 @@ import {
   FileText,
   Search,
   Zap,
-  ZapOff
+  ZapOff,
+  Compass
 } from "lucide-react";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 import { useSettings } from "@/contexts/SettingsContext";
-import { useNavVisibility } from "@/hooks/useNavVisibility";
+import { useNavVisibility, useScrolledPastTop } from "@/hooks/useNavVisibility";
 import { sound } from "@/lib/sound";
 import { cn } from "@/lib/utils";
 import { GlassButton } from "@/components/ui/glass/GlassButton";
@@ -38,6 +39,7 @@ const NAV_ITEMS: NavItem[] = [
   { name: "Work", href: "/#projects", section: "projects", route: "/projects", icon: FolderGit2, mobile: true },
   { name: "Lab", href: "/#lab", section: "lab", route: "/engineering-lab", icon: FlaskConical, mobile: true },
   { name: "Notes", href: "/notes", route: "/notes", icon: NotebookPen, mobile: true },
+  { name: "Explore", href: "/explore", route: "/explore", icon: Compass, mobile: false },
   { name: "Resume", href: "/resume", route: "/resume", icon: FileText, mobile: false },
 ];
 
@@ -69,25 +71,18 @@ function useActiveSection(enabled: boolean) {
 }
 
 export function MorphingNav() {
-  const [scrolled, setScrolled] = useState(false);
+  const scrolled = useScrolledPastTop();
   const { isNavHidden: hidden } = useNavVisibility();
   const { spatial3D, toggle3D } = useSettings();
   const pathname = usePathname();
   const router = useRouter();
   const activeSection = useActiveSection(pathname === "/");
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   const isActive = (item: NavItem) =>
     pathname === "/" ? item.section !== undefined && activeSection === item.section : pathname.startsWith(item.route);
 
   const openCmdk = () => {
-    sound.click();
+    sound.modalOpen();
     openCommandMenu();
   };
 
@@ -116,7 +111,7 @@ export function MorphingNav() {
           />
 
           {/* Logo */}
-          <Link href="/" aria-label="THE SABBiR — home" className="relative flex items-center gap-3 group outline-none text-foreground rounded-xl focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]" onClick={() => sound.click()}>
+          <Link href="/" aria-label="THE SABBiR — home" className="relative flex items-center gap-3 group outline-none text-foreground rounded-xl focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]" onClick={() => sound.navigate()}>
             <div className="relative w-9 h-9 overflow-hidden rounded-xl border border-white/20 bg-background/50 flex items-center justify-center">
               <Image src="/assets/sabbir-uploaded-avatar.png" alt="" fill className="object-cover" sizes="36px" />
             </div>
@@ -131,7 +126,7 @@ export function MorphingNav() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  onClick={() => sound.click()}
+                  onClick={() => sound.navigate()}
                   aria-current={active ? "page" : undefined}
                   className={cn(
                     "relative px-3.5 py-2 rounded-full text-sm font-medium transition-colors hover:bg-black/5 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]",
@@ -164,7 +159,7 @@ export function MorphingNav() {
             </button>
             <button
               onClick={() => {
-                sound.click();
+                sound.toggleSwitch();
                 toggle3D();
               }}
               className={cn(
@@ -189,11 +184,11 @@ export function MorphingNav() {
       <nav
         aria-label="Primary"
         className={cn(
-          "fixed left-1/2 bottom-4 mb-[env(safe-area-inset-bottom)] z-50 flex md:hidden justify-between items-center px-2.5 py-2 gap-1 rounded-full glass-panel backdrop-blur-lg bg-background/75 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] w-max will-change-transform print:hidden",
+          "fixed left-1/2 bottom-4 mb-[env(safe-area-inset-bottom)] z-50 flex md:hidden justify-between items-center px-2.5 py-2 gap-1 rounded-full surface-control transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] w-max will-change-transform print:hidden",
           hidden ? "translate-y-[160%] -translate-x-1/2" : "translate-y-0 -translate-x-1/2"
         )}
       >
-        <Link href="/" aria-label="THE SABBiR — home" onClick={() => sound.click()} className="flex items-center p-1">
+        <Link href="/" aria-label="THE SABBiR — home" onClick={() => sound.navigate()} className="flex items-center p-1">
           <div className="relative w-7 h-7 overflow-hidden rounded-full border border-white/20">
             <Image src="/assets/sabbir-uploaded-avatar.png" alt="" fill className="object-cover" sizes="32px" />
           </div>
@@ -205,7 +200,7 @@ export function MorphingNav() {
               <Link
                 key={item.name}
                 href={item.href}
-                onClick={() => sound.click()}
+                onClick={() => sound.navigate()}
                 aria-label={item.name}
                 aria-current={active ? "page" : undefined}
                 className={cn(

@@ -1,7 +1,7 @@
 import { describe, it, vi as mock, beforeEach, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
-import { getContentBySlug, getSlugs, getAllContent, getLatestContent, _clearContentCache } from './content.ts';
+import { getContentBySlug, getSlugs, getAllContent, getLatestContent, _clearContentCache } from './content';
 
 describe('getSlugs', () => {
   beforeEach(() => {
@@ -18,13 +18,14 @@ describe('getSlugs', () => {
 
   it('should return an array of slugs for md and mdx files and ignore others', () => {
     mock.spyOn(fs, 'existsSync').mockReturnValue(true);
+    // readdirSync is overloaded; the string[] form is what getSlugs uses.
     mock.spyOn(fs, 'readdirSync').mockReturnValue([
-      'test-note.md' as unknown as fs.Dirent,
-      'image.png' as unknown as fs.Dirent,
-      'data.json' as unknown as fs.Dirent,
-      'draft.txt' as unknown as fs.Dirent,
-      'another-note.mdx' as unknown as fs.Dirent,
-    ]);
+      'test-note.md',
+      'image.png',
+      'data.json',
+      'draft.txt',
+      'another-note.mdx',
+    ] as unknown as ReturnType<typeof fs.readdirSync>);
 
     const result = getSlugs('notes');
     expect(result).toEqual(['test-note', 'another-note']);

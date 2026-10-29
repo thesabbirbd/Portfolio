@@ -1,0 +1,53 @@
+---
+title: "Docker Volumes vs Bind Mounts: Which One, When"
+slug: "docker-volumes-vs-bind-mounts"
+description: "Named volumes for data the container owns, bind mounts for files you edit on the host — with the permission and backup gotchas that decide it in practice."
+date: "2026-10-29"
+type: "article"
+category: "DevOps"
+tags: ["Docker", "Containers", "Storage"]
+status: "published"
+demo: true
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+> **Demo article.** This section is new; this sample shows the format until regular articles are published.
+
+## The short rule
+
+- **Named volume** → data the *container* owns: a PostgreSQL data directory, uploaded files, caches.
+- **Bind mount** → files *you* own and edit on the host: source code in development, a config file.
+
+```yaml
+services:
+  db:
+    image: postgres:17
+    volumes:
+      - pgdata:/var/lib/postgresql/data   # named volume
+  api:
+    build: .
+    volumes:
+      - ./app:/code/app                   # bind mount (dev only)
+volumes:
+  pgdata:
+```
+
+## Why not bind-mount the database?
+
+A bind mount exposes the host directory as-is, including its owner and permissions. The Postgres image runs as the `postgres` user and expects to own its data directory; on Linux hosts that often means permission errors or files owned by a UID that doesn't exist on the host. A named volume is created and initialised by Docker, so ownership is right from the start.
+
+## Backups
+
+Named volumes live under Docker's own storage, so back them up *through* a container:
+
+```bash
+docker run --rm -v pgdata:/data -v "$PWD":/backup alpine \
+  tar czf /backup/pgdata.tgz -C /data .
+```
+
+For databases, prefer a logical dump (`pg_dump`) over copying files of a running server.
+
+## In production
+
+Drop the source-code bind mount: bake the code into the image so what you tested is what runs.

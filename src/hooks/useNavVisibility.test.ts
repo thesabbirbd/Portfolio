@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useNavVisibility } from './useNavVisibility';
+import { useNavVisibility, useScrolledPastTop } from './useNavVisibility';
 
 function scrollTo(y: number) {
   Object.defineProperty(window, 'scrollY', { value: y, configurable: true, writable: true });
@@ -60,6 +60,20 @@ describe('useNavVisibility', () => {
     act(() => scrollTo(100));
     act(() => scrollTo(150));
     expect(result.current.isNavHidden).toBe(false);
+    unmount();
+  });
+
+  it('reports leaving the top from the same shared listener', () => {
+    const add = vi.spyOn(window, 'addEventListener');
+    const { result, unmount } = renderHook(() => ({ past: useScrolledPastTop(), nav: useNavVisibility() }));
+    expect(result.current.past).toBe(false);
+    act(() => scrollTo(60));
+    expect(result.current.past).toBe(true);
+    act(() => scrollTo(20));
+    expect(result.current.past).toBe(false);
+    // Both hooks share one passive scroll listener.
+    expect(add.mock.calls.filter(([type]) => type === 'scroll')).toHaveLength(1);
+    add.mockRestore();
     unmount();
   });
 });

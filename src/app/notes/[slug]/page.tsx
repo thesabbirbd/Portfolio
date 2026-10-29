@@ -1,6 +1,8 @@
 import { getContentBySlug, getSlugs } from '@/lib/content';
 import { ContentLayout } from '@/components/content/ContentLayout';
 import { notFound } from 'next/navigation';
+import { pageMetadata } from '@/lib/seo';
+import { isValidContentDate, lastModified } from '@/lib/content-date';
 
 export async function generateStaticParams() {
   const slugs = getSlugs('notes');
@@ -12,13 +14,14 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
   const item = getContentBySlug('notes', params.slug);
   if (!item) return {};
   
-  return {
+  return pageMetadata({
     title: `${item.meta.title} | THE SABBiR`,
     description: item.meta.description,
-    alternates: {
-      canonical: `https://sabbir.nav.bd/notes/${item.meta.slug}`,
-    }
-  };
+    path: `/notes/${item.meta.slug}`,
+    type: 'article',
+    publishedTime: isValidContentDate(item.meta.date) ? item.meta.date : undefined,
+    modifiedTime: lastModified(item.meta),
+  });
 }
 
 export default async function NotePage(props: { params: Promise<{ slug: string }> }) {

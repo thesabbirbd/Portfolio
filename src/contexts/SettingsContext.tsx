@@ -1,21 +1,19 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { sound, type SoundLevel } from "@/lib/sound";
+import { sound, DEFAULT_LEVEL, type SoundLevel } from "@/lib/sound";
 
-type ColorTheme = "orange" | "blue" | "green";
 export type VisitorLens = "general" | "engineer" | "professional" | "explorer";
 
 type SettingsContextType = {
-  themeMode: "light" | "dark" | "system"; 
-  colorTheme: ColorTheme;
-  setColorTheme: (color: ColorTheme) => void;
+  themeMode: "light" | "dark" | "system";
   spatial3D: boolean;
   toggle3D: () => void;
   reducedMotion: boolean;
   toggleMotion: () => void;
   soundEnabled: boolean;
   toggleSound: () => void;
+  /** Sound FX level; "off" is soundEnabled = false. */
   soundLevel: SoundLevel;
   setSoundLevel: (level: SoundLevel) => void;
   lens: VisitorLens;
@@ -27,11 +25,10 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [isHydrated, setIsHydrated] = useState(false);
-  const [colorTheme, setLocalColorTheme] = useState<ColorTheme>("orange");
   const [spatial3D, setSpatial3D] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(false);
-  const [soundLevel, setLocalSoundLevel] = useState<SoundLevel>("normal");
+  const [soundLevel, setLocalSoundLevel] = useState<SoundLevel>(DEFAULT_LEVEL);
   const [lens, setLocalLens] = useState<VisitorLens>("general");
 
   useEffect(() => {
@@ -46,13 +43,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const savedLens = localStorage.getItem("sabbir_visitor_lens") as VisitorLens;
     if (savedLens) setLocalLens(savedLens);
 
-    const savedColor = localStorage.getItem("sabbir_color_theme") as ColorTheme;
-    if (savedColor) {
-      setLocalColorTheme(savedColor);
-      document.documentElement.setAttribute("data-theme-color", savedColor);
-    } else {
-      document.documentElement.setAttribute("data-theme-color", "orange");
-    }
+    // Colour theme (Orange / Green / Blue) is applied before paint by THEME_INIT_SCRIPT and
+    // managed by src/lib/theme-color-store.ts — not here, so switching it re-renders nothing else.
 
     setSoundEnabled(sound.isEnabled());
     setLocalSoundLevel(sound.getLevel());
@@ -66,16 +58,6 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     window.addEventListener("sabbir:milestone", onMilestone);
     return () => window.removeEventListener("sabbir:milestone", onMilestone);
   }, []);
-
-  const setColorTheme = (color: ColorTheme) => {
-    setLocalColorTheme(color);
-    localStorage.setItem("sabbir_color_theme", color);
-    document.documentElement.setAttribute("data-theme-color", color);
-    
-    // Palette tokens are defined in globals.css per [data-theme-color]; clear any legacy inline overrides.
-    document.documentElement.style.removeProperty('--primary');
-    document.documentElement.style.removeProperty('--accent');
-  };
 
   const toggle3D = () => {
     setSpatial3D((prev) => {
@@ -102,7 +84,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
   const setSoundLevel = (level: SoundLevel) => {
     sound.setLevel(level);
-    setLocalSoundLevel(level);
+    setLocalSoundLevel(sound.getLevel());
   };
 
   const setLens = (newLens: VisitorLens) => {
@@ -113,7 +95,6 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   return (
     <SettingsContext.Provider 
       value={{ 
-        colorTheme, setColorTheme, 
         spatial3D, toggle3D, 
         reducedMotion, toggleMotion, 
         soundEnabled, toggleSound,

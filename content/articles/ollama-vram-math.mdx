@@ -1,0 +1,38 @@
+---
+title: "Local LLMs and VRAM: The Back-of-the-Envelope Math"
+slug: "ollama-vram-math"
+description: "Why a 7B model can run on an 8 GB GPU: parameters × bytes per weight, plus the KV cache that grows with context length — and how quantisation changes the numbers."
+date: "2026-10-29"
+type: "article"
+category: "Local AI"
+tags: ["Ollama", "LLM", "GPU"]
+status: "published"
+demo: true
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+> **Demo article.** This section is new; this sample shows the format until regular articles are published.
+
+## Weights first
+
+Memory for the weights ≈ **parameters × bytes per weight**:
+
+- **FP16** (2 bytes per weight): a 7B model needs ~14 GB, an 8B model ~16 GB
+- **8-bit / Q8** (~1 byte): ~7 GB and ~8 GB
+- **4-bit / Q4** (~0.5–0.6 bytes): ~4 GB and ~4.5–5 GB
+
+That is why the 4-bit builds most local runners default to are the ones that fit consumer GPUs.
+
+## Then the KV cache
+
+During generation the model stores keys and values for every token in the context. That cache grows **linearly with context length**, so a long context can push a model that "fits" over the edge. If a model spills out of VRAM, part of it runs on the CPU and tokens per second drop sharply.
+
+## Practical checks
+
+```bash
+ollama ps        # what is loaded, and how much sits on GPU vs CPU
+nvidia-smi       # actual VRAM in use
+```
+
+Measure, don't guess: compare tokens per second at a short and a long prompt, and keep the context window no larger than the task needs.

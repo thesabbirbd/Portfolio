@@ -2,6 +2,8 @@ import React from "react";
 import Link from "next/link";
 import { SectionHeader } from "./SectionHeader";
 import { cn } from "@/lib/utils";
+import { breadcrumbJsonLd } from "@/lib/seo";
+import { JsonLd } from "./JsonLd";
 
 type Crumb = { label: string; href?: string };
 
@@ -32,6 +34,7 @@ export function PageHeader({
       {expression === "signal" && (
         <div aria-hidden="true" className="absolute inset-x-0 -top-10 h-[360px] -z-10 signal-grid pointer-events-none" />
       )}
+      <JsonLd data={breadcrumbJsonLd(trail)} />
       <nav className="mb-5 md:mb-6 text-sm text-ink-3" aria-label="Breadcrumb">
         <ol className="flex flex-wrap items-center gap-x-2">
           {trail.map((c, i) => {

@@ -8,10 +8,15 @@ import { sound } from "@/lib/sound";
 export function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(text);
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      sound.error(); // clipboard blocked (permissions / insecure context): don't claim success
+      return;
+    }
     setCopied(true);
-    sound.click();
+    sound.copy();
     setTimeout(() => setCopied(false), 2000);
   };
 

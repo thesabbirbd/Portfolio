@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef } from 'react';
+import { useThemeColor } from '@/lib/theme-color-store';
+import type { ThemeColor } from '@/lib/theme-color';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Environment, Float, MeshDistortMaterial, Sphere, Box, Cylinder, Torus, Icosahedron } from '@react-three/drei';
 import * as THREE from 'three';
@@ -65,24 +67,13 @@ function SpatialObject({ type, position, color, speed = 1, floatIntensity = 2 }:
   );
 }
 
+const SCENE_COLOR: Record<ThemeColor, string> = { orange: '#ff6a00', green: '#00f5a0', blue: '#00f0ff' };
+
 export default function SpatialScene() {
-  const [themeColor, setThemeColor] = useState('#ff6a00');
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    // Poll for theme changes from CSS var
-    const interval = setInterval(() => {
-      const el = document.documentElement;
-      const theme = el.getAttribute('data-theme-color');
-      if (theme === 'blue') setThemeColor('#00f0ff');
-      else if (theme === 'green') setThemeColor('#00f5a0');
-      else setThemeColor('#ff6a00'); // default orange
-    }, 500);
-    return () => clearInterval(interval);
-  }, []);
-
-  if (!mounted) return null;
+  // Subscribes to the colour-theme store (no polling); null until mounted on the client.
+  const theme = useThemeColor();
+  if (!theme) return null;
+  const themeColor = SCENE_COLOR[theme];
 
   return (
     <div className="fixed inset-0 z-0 pointer-events-none opacity-30 mix-blend-screen dark:opacity-40 dark:mix-blend-plus-lighter">

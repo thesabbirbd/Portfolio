@@ -1,14 +1,13 @@
 import { ContactSection } from "@/components/contact/ContactSection";
 import { PageHeader } from "@/components/system/PageHeader";
 import { Accent } from "@/components/system/SectionHeader";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Contact Md Sabbirul Islam Khan | THE SABBiR",
   description: "Get in touch with Md Sabbirul Islam Khan, known as THE SABBiR for Backend Engineering, DevOps, IT Support, or creative collaborations.",
-  alternates: {
-    canonical: "https://sabbir.nav.bd/contact",
-  }
-};
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (
