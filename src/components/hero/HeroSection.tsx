@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, ArrowDown, ArrowUpRight, Terminal, Send } from "lucide-react";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -14,22 +14,35 @@ import { BauhausField } from "@/components/system/BauhausField";
 // Server-rendered so the portrait (the LCP image) paints with the HTML and reserves its box (no layout shift).
 import { SpatialCore } from "@/components/hero/SpatialCore";
 
-export function HeroSection() {
-  const { scrollY } = useScroll();
-  const y = useTransform(scrollY, [0, 800], [0, 150]);
-  const opacity = useTransform(scrollY, [0, 500], [1, 0]);
+/** The rotating role line. Its own component so the 2.8 s swap re-renders only this line, not the hero. */
+function RotatingRole() {
   const [roleIndex, setRoleIndex] = useState(0);
-  const { spatial3D, reducedMotion } = useSettings();
-  const prefersReduced = useReducedMotion();
-  // Scroll-linked parallax is skipped entirely for reduced motion (MotionConfig does not cover style-bound values).
-  const parallax = prefersReduced || reducedMotion ? undefined : { y, opacity };
-
   useEffect(() => {
     const timer = setInterval(() => {
       setRoleIndex((prev) => (prev + 1) % PROFILE_DATA.rotatingRoles.length);
     }, 2800);
     return () => clearInterval(timer);
   }, []);
+  return (
+    /* initial={false}: the first role renders visible in the server HTML (no-JS / slow hydration) */
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={roleIndex}
+        initial={{ y: 24, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: -24, opacity: 0 }}
+        transition={swapTransition}
+        className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 rounded-xl surface-card text-ink font-mono text-xs sm:text-sm md:text-base font-semibold tracking-tight max-w-full truncate"
+      >
+        <Terminal className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
+        <span className="truncate">{PROFILE_DATA.rotatingRoles[roleIndex]}</span>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+export function HeroSection() {
+  const { spatial3D } = useSettings();
 
   return (
     <section
@@ -51,7 +64,8 @@ export function HeroSection() {
         </div>
       )}
 
-      <motion.div style={parallax} className="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 short-landscape:grid-cols-12 gap-5 short-portrait:gap-3 sm:gap-8 items-center">
+      {/* Scroll exit is CSS-only (cine-exit-* scroll timelines on the two columns): no per-frame JS. */}
+      <div className="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 short-landscape:grid-cols-12 gap-5 short-portrait:gap-3 sm:gap-8 items-center">
         {/* Left Column: Typography & Dynamic Identity */}
         <div className="cine-exit-slow lg:col-span-7 short-landscape:col-span-7 flex flex-col order-2 lg:order-1 short-landscape:order-1 items-center lg:items-start short-landscape:items-start text-center lg:text-left short-landscape:text-left space-y-3.5 short-portrait:space-y-2.5 md:space-y-6 short-landscape:space-y-3">
           {/* Status Badge */}
@@ -92,31 +106,13 @@ export function HeroSection() {
 
           {/* Dynamic Rotating Role Headline */}
           <div className="h-10 short-portrait:h-8 sm:h-12 flex items-center justify-center lg:justify-start overflow-hidden max-w-full">
-            {/* initial={false}: the first role renders visible in the server HTML (no-JS / slow hydration) */}
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={roleIndex}
-                initial={{ y: 24, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -24, opacity: 0 }}
-                transition={swapTransition}
-                className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 rounded-xl surface-card text-ink font-mono text-xs sm:text-sm md:text-base font-semibold tracking-tight max-w-full truncate"
-              >
-                <Terminal className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
-                <span className="truncate">{PROFILE_DATA.rotatingRoles[roleIndex]}</span>
-              </motion.div>
-            </AnimatePresence>
+            <RotatingRole />
           </div>
 
           {/* Hero Narrative Statement */}
-          <motion.p
-            initial={{ opacity: 1 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-sm sm:text-lg text-ink-2 max-w-xl font-normal leading-relaxed text-pretty"
-          >
+          <p className="text-sm sm:text-lg text-ink-2 max-w-xl font-normal leading-relaxed text-pretty">
             {PROFILE_DATA.heroStatement}
-          </motion.p>
+          </p>
 
           {/* Micro-Telemetry Pills */}
           <div
@@ -154,7 +150,7 @@ export function HeroSection() {
           <BauhausField className="absolute -z-10 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[270px] xs:w-[300px] sm:w-[112%] sm:max-w-[560px] short-landscape:w-[270px] short-portrait:w-[210px] aspect-square opacity-55 sm:opacity-70 dark:opacity-50 sm:dark:opacity-60" />
           <SpatialCore />
         </div>
-      </motion.div>
+      </div>
 
       {/* Next-chapter cue: a real link to the first Home chapter (static, no looping animation) */}
       <Link

@@ -899,26 +899,26 @@ p {
 /* Gold art-deco rays, top right */
 .amb-rays { top: 0; right: 0; width: min(46vmin, 420px); height: min(46vmin, 420px); stroke-width: 0.6; opacity: 0.55; }
 
-/* Equaliser bars, bottom left */
-.amb-bars { position: absolute; left: 4vw; bottom: 9vh; display: flex; align-items: flex-end; gap: 5px; height: clamp(54px, 10vh, 96px); }
-.amb-bars span {
-  width: 5px; height: 100%; border-radius: 3px; transform-origin: bottom;
-  background: linear-gradient(to top, rgb(var(--gold-bright) / 0.9), rgb(var(--brand) / 0.35));
-  animation: amb-eq 3.6s ease-in-out infinite;
-}
-@keyframes amb-eq { 0%, 100% { transform: scaleY(0.25); } 50% { transform: scaleY(1); } }
+/* Equaliser, bottom left: a scrolling waveform (see Meter in AmbientBackdrop) */
+.amb-bars { position: absolute; left: 4vw; bottom: 9vh; width: calc(9 * 10px); height: clamp(54px, 10vh, 96px); overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, black 18%, black 82%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, black 18%, black 82%, transparent); }
+.amb-meter { display: flex; align-items: flex-end; gap: 5px; height: 100%; width: max-content; animation: amb-meter 6s linear infinite; }
+.amb-meter > span { flex: none; width: 5px; height: 100%; border-radius: 3px; transform-origin: bottom;
+  background: linear-gradient(to top, rgb(var(--gold-bright) / 0.9), rgb(var(--brand) / 0.35)); }
+@keyframes amb-meter { to { transform: translate3d(-50%, 0, 0); } }
 
 /* Line graph that "draws" itself */
 .amb-graph { left: 3vw; top: 34vh; width: clamp(140px, 30vmin, 300px); height: clamp(48px, 10vmin, 100px); stroke-width: 1.6; stroke-linejoin: round; }
-.amb-graph polyline { stroke-dasharray: 420; animation: amb-draw 9s ease-in-out infinite; }
-.amb-graph .amb-graph-ghost { stroke-width: 0.8; opacity: 0.45; animation-delay: -4.5s; }
-@keyframes amb-draw { 0% { stroke-dashoffset: 420; } 55%, 80% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -420; } }
+.amb-graph { transform-origin: left center; animation: amb-draw 9s ease-in-out infinite; }
+.amb-graph .amb-graph-ghost { stroke-width: 0.8; opacity: 0.45; }
+/* The line "draws" by growing its box from the left (transform/opacity: compositor-only). */
+@keyframes amb-draw { 0% { transform: scaleX(0); opacity: 0; } 10% { opacity: 1; } 55%, 80% { transform: scaleX(1); opacity: 1; } 100% { transform: scaleX(1); opacity: 0; } }
 
 /* Gold dust drifting up */
+.amb-dust-group { position: absolute; inset: 0; animation: amb-rise 14s linear infinite; }
 .amb-dust i {
   position: absolute; width: 3px; height: 3px; border-radius: 50%;
   background: rgb(var(--gold-bright)); box-shadow: 0 0 6px rgb(var(--gold-bright) / 0.8);
-  animation: amb-rise 14s linear infinite;
 }
 @keyframes amb-rise { 0% { transform: translate3d(0, 30px, 0); opacity: 0; } 15%, 80% { opacity: 0.9; } 100% { transform: translate3d(12px, -140px, 0); opacity: 0; } }
 
@@ -963,10 +963,16 @@ p {
 @keyframes amb-float { 0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); } 50% { transform: translate3d(0, -22px, 0) rotate(8deg); } }
 
 /* Blue: circuits + perspective grid floor */
-.amb-circuit { width: clamp(180px, 40vmin, 380px); color: rgb(var(--signal)); stroke-width: 1.2; opacity: 0.7; }
-.amb-circuit path { stroke-dasharray: 6 10; animation: amb-flow 2.4s linear infinite; }
+.amb-circuit { width: clamp(180px, 40vmin, 380px); aspect-ratio: 3 / 2; color: rgb(var(--signal)); opacity: 0.7; }
+.amb-circuit svg, .amb-net svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.amb-circuit svg { stroke-width: 1.2; stroke-dasharray: 6 10; }
 .amb-circuit circle { fill: rgb(var(--signal)); stroke: none; }
-@keyframes amb-flow { to { stroke-dashoffset: -32; } }
+/* Packets on straight runs (see Trace in AmbientBackdrop): the inner element is as wide as the
+   run and slides its own width, carrying a glowing dot from start to end. */
+.amb-trace { position: absolute; height: 0; transform-origin: 0 0; overflow: visible; }
+.amb-trace > i { position: absolute; left: 0; top: 0; width: 100%; height: 0; animation: amb-trace 2.4s linear infinite; }
+.amb-trace > i::before { content: ""; position: absolute; left: -4px; top: -2.5px; width: 9px; height: 5px; border-radius: 3px; background: rgb(var(--gold-bright)); box-shadow: 0 0 8px rgb(var(--gold-bright)); }
+@keyframes amb-trace { 0% { transform: translateX(0); opacity: 0; } 12%, 85% { opacity: 1; } 100% { transform: translateX(100%); opacity: 0; } }
 .amb-floor {
   position: absolute; left: -20vw; right: -20vw; bottom: -8vh; height: 40vh;
   transform: rotateX(72deg); transform-origin: bottom;
@@ -1006,6 +1012,22 @@ p {
   .scroll-thread { animation: thread-grow linear both; animation-timeline: scroll(root); }
 }
 @keyframes thread-grow { to { transform: scaleX(1); } }
+/* Home chapter rail progress line (desktop): same zero-JS scroll timeline, vertical. */
+.rail-progress { transform: scaleY(0); }
+@supports (animation-timeline: scroll()) {
+  .rail-progress { animation: rail-grow linear both; animation-timeline: scroll(root); }
+}
+@keyframes rail-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+/* /about timeline progress: a view timeline whose scrollport is collapsed to the line 60% down
+   the viewport (inset 60% top / 40% bottom), so `cover` runs from "timeline top reaches 60%" to
+   "timeline bottom reaches 60%". Browsers without scroll timelines show the bars full. */
+@supports (animation-timeline: view()) {
+  .journey-timeline { view-timeline: --journey block; view-timeline-inset: 60% 40%; }
+  .journey-progress-y, .journey-progress-x { animation-duration: auto; animation-timing-function: linear; animation-fill-mode: both; animation-timeline: --journey; animation-range: cover; }
+  .journey-progress-y { animation-name: rail-grow; }
+  .journey-progress-x { animation-name: journey-x; }
+}
+@keyframes journey-x { from { transform: scaleX(0); } }
 
 /* Gold sheen that sweeps across the hero wordmark once after load */
 .gold-sheen { position: relative; }
@@ -1028,6 +1050,9 @@ p {
   html:not([data-motion="reduced"]) .amb-drift { animation: amb-drift linear both; animation-timeline: scroll(root); }
 }
 @keyframes amb-drift { to { transform: translate3d(0, -180vh, 0); } }
+/* Off-screen culling (AnimationCulling): looping animations pause while their object is out of
+   view, so the main thread only ticks what is on screen. Scroll-driven animations are untouched. */
+[data-paused], [data-paused] * { animation-play-state: paused !important; }
 
 .amb-gyro-sm { width: clamp(52px, 9vmin, 90px); }
 .amb-coin {
@@ -1062,16 +1087,14 @@ p {
 .amb-radar .b2 { left: 30%; top: 64%; animation-delay: -1.6s; }
 @keyframes amb-sweep { to { transform: rotate(360deg); } }
 @keyframes amb-blip { 0%, 60% { opacity: 0; transform: scale(0.4); } 70% { opacity: 1; transform: scale(1.2); } 100% { opacity: 0; transform: scale(1); } }
-.amb-net { width: clamp(150px, 30vmin, 280px); color: rgb(var(--signal)); stroke-width: 1.2; }
+.amb-net { width: clamp(150px, 30vmin, 280px); aspect-ratio: 220 / 140; color: rgb(var(--signal)); stroke-width: 1.2; }
+.amb-net .amb-trace > i { animation-duration: 1.9s; }
 .amb-net circle { fill: rgb(var(--paper)); stroke: rgb(var(--signal)); stroke-width: 1.5; }
-.amb-net .pkt { stroke: rgb(var(--gold-bright)); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 6 400; animation: amb-pkt 2.8s linear infinite; }
-.amb-net .pkt-2 { animation-duration: 2.1s; animation-delay: -1s; }
-@keyframes amb-pkt { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -406; } }
 .amb-dash { width: clamp(120px, 22vmin, 200px); padding: 10px; border-radius: 12px; border: 1px solid rgb(var(--signal) / 0.45); background: rgb(var(--surface) / 0.35); }
-.amb-dash-bars { display: flex; align-items: flex-end; gap: 4px; height: 48px; }
-.amb-dash-bars span { flex: 1; height: 100%; transform-origin: bottom; background: linear-gradient(to top, rgb(var(--signal)), rgb(var(--gold-bright) / 0.8)); border-radius: 2px; animation: amb-eq 2.6s ease-in-out infinite; }
-.amb-dash svg { position: static; width: 100%; height: 22px; margin-top: 6px; color: rgb(var(--gold-bright)); stroke-width: 1.5; }
-.amb-dash polyline { stroke-dasharray: 160; animation: amb-draw 6s ease-in-out infinite; }
+.amb-dash-bars { height: 48px; overflow: hidden; }
+.amb-dash-bars .amb-meter { gap: 4px; animation-duration: 4s; }
+.amb-dash-bars .amb-meter > span { width: 9px; background: linear-gradient(to top, rgb(var(--signal)), rgb(var(--gold-bright) / 0.8)); border-radius: 2px; }
+.amb-dash svg { position: static; width: 100%; height: 22px; margin-top: 6px; color: rgb(var(--gold-bright)); stroke-width: 1.5; transform-origin: left center; animation: amb-draw 6s ease-in-out infinite; }
 .amb-globe { width: clamp(70px, 13vmin, 130px); aspect-ratio: 1; animation: amb-spin3d 18s linear infinite; }
 .amb-globe .ring { position: absolute; inset: 0; border-radius: 50%; border: 1.2px solid rgb(var(--signal) / 0.8); }
 .amb-globe .g2 { transform: rotateY(60deg); }

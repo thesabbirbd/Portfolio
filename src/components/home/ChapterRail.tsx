@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { motion, useScroll } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 const CHAPTERS = [
@@ -19,12 +18,11 @@ const CHAPTERS = [
 /**
  * Home's chapter marker — the "motion reel" timeline of the page, without scroll-jacking.
  * Desktop (xl+): a fixed rail of real anchor links with the current chapter highlighted.
- * Smaller screens: a 2px reading-progress bar along the top edge.
- * Progress is a MotionValue bound to transform (no React render per scroll frame); the active
- * chapter comes from one IntersectionObserver and only re-renders when the chapter changes.
+ * Smaller screens use the site-wide gold scroll thread (layout) for reading progress.
+ * The rail's progress line is a CSS scroll timeline (no JS per scroll frame); the active chapter
+ * comes from IntersectionObservers and only re-renders when the chapter changes.
  */
 export function ChapterRail() {
-  const { scrollYProgress } = useScroll();
   const [active, setActive] = useState<string | null>(null);
 
   useEffect(() => {
@@ -37,25 +35,23 @@ export function ChapterRail() {
       { rootMargin: "-40% 0px -55% 0px", threshold: [0, 0.2, 0.5] }
     );
     els.forEach((el) => observer.observe(el));
-    // Back above the first chapter (hero): hide the rail.
-    const onScroll = () => {
-      const first = els[0];
-      if (first && first.getBoundingClientRect().top > window.innerHeight * 0.6) setActive(null);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
+    // Back above the first chapter (hero): hide the rail. The first chapter leaving the top 60% of
+    // the viewport downwards means the reader is back in the hero (no scroll listener, no layout reads).
+    const top = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting && e.boundingClientRect.top > 0) setActive(null);
+      },
+      { rootMargin: "0px 0px -40% 0px" }
+    );
+    if (els[0]) top.observe(els[0]);
     return () => {
       observer.disconnect();
-      window.removeEventListener("scroll", onScroll);
+      top.disconnect();
     };
   }, []);
 
   return (
     <>
-      <motion.div
-        aria-hidden="true"
-        className="xl:hidden fixed top-0 inset-x-0 z-[60] h-0.5 origin-left bg-gradient-to-r from-brand via-brand-2 to-signal print:hidden"
-        style={{ scaleX: scrollYProgress }}
-      />
       <nav
         aria-label="Page chapters"
         className={cn(
@@ -65,11 +61,7 @@ export function ChapterRail() {
       >
         <div className="relative flex flex-col gap-0.5 pl-4">
           <span aria-hidden="true" className="absolute left-0 top-1 bottom-1 w-px bg-line-strong" />
-          <motion.span
-            aria-hidden="true"
-            className="absolute left-0 top-1 bottom-1 w-px origin-top bg-gradient-to-b from-brand to-brand-2"
-            style={{ scaleY: scrollYProgress }}
-          />
+          <span aria-hidden="true" className="rail-progress absolute left-0 top-1 bottom-1 w-px origin-top bg-gradient-to-b from-brand to-brand-2" />
           {CHAPTERS.map((c) => {
             const isActive = active === c.id;
             return (

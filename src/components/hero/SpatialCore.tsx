@@ -71,6 +71,7 @@ export function SpatialCore() {
 
       <motion.div
         style={tiltEnabled ? { rotateX, rotateY, transformStyle: "preserve-3d" } : undefined}
+        data-cull
         className="relative w-full h-full flex items-center justify-center"
       >
         {/* ================= 3D GYROSCOPIC GIMBAL RINGS ================= */}

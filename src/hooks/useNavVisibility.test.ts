@@ -2,14 +2,16 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useNavVisibility, useScrolledPastTop } from './useNavVisibility';
 
+// The store reads scroll position once per animation frame, so each step flushes one frame.
 function scrollTo(y: number) {
   Object.defineProperty(window, 'scrollY', { value: y, configurable: true, writable: true });
   window.dispatchEvent(new Event('scroll'));
+  vi.advanceTimersToNextFrame();
 }
 
 describe('useNavVisibility', () => {
   beforeEach(() => {
-    vi.useFakeTimers();
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'requestAnimationFrame', 'cancelAnimationFrame'] });
     scrollTo(0);
   });
 

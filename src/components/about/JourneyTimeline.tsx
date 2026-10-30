@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { motion, useScroll } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { JOURNEY_STEPS } from "@/data/journey";
 import { cn } from "@/lib/utils";
@@ -23,7 +22,6 @@ export function JourneyTimeline() {
   const containerRef = useRef<HTMLDivElement>(null);
   const chipsRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(JOURNEY_STEPS[0].id);
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start 60%", "end 60%"] });
 
   useEffect(() => {
     // A deep link (#journey-<id>) selects its phase immediately.
@@ -46,8 +44,9 @@ export function JourneyTimeline() {
 
   const announcedRef = useRef(false);
   // Keep the active chip visible inside its own horizontal scroller (never scrolls the page).
+  // The chip row exists below md only; elsewhere skip it, since measuring it forces a layout mid-scroll.
   useEffect(() => {
-    const scroller = chipsRef.current;
+    const scroller = window.matchMedia("(max-width: 767px)").matches ? chipsRef.current : null;
     const chip = scroller?.querySelector<HTMLElement>(`[data-chip="${active}"]`);
     if (scroller && chip) scroller.scrollTo({ left: chip.offsetLeft - scroller.clientWidth / 2 + chip.clientWidth / 2, behavior: "smooth" });
     // Announce phase changes (optional sound cue); the initial phase on mount is not a change.
@@ -59,7 +58,7 @@ export function JourneyTimeline() {
   const current = JOURNEY_STEPS[activeIndex];
 
   return (
-    <div id="timeline" ref={containerRef} data-sound-zone="timeline" className="relative w-full max-w-6xl mx-auto py-8 sm:py-16 scroll-mt-20">
+    <div id="timeline" ref={containerRef} data-sound-zone="timeline" className="journey-timeline relative w-full max-w-6xl mx-auto py-8 sm:py-16 scroll-mt-20">
       <div className="reveal text-center mb-6 sm:mb-14">
         <h2 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tighter text-ink mb-2 sm:mb-4">
           THE ENGINEERING <span className="text-display-gradient">EVOLUTION</span>
@@ -82,10 +81,9 @@ export function JourneyTimeline() {
 
             <nav className="relative mt-8 pl-5" aria-label="Jump to phase">
               <span aria-hidden="true" className="absolute left-[5px] top-2 bottom-2 w-0.5 rounded-full bg-line-strong" />
-              <motion.span
+              <span
                 aria-hidden="true"
-                className="absolute left-[5px] top-2 bottom-2 w-0.5 rounded-full origin-top bg-gradient-to-b from-brand via-brand-2 to-signal"
-                style={{ scaleY: scrollYProgress }}
+                className="journey-progress-y absolute left-[5px] top-2 bottom-2 w-0.5 rounded-full origin-top bg-gradient-to-b from-brand via-brand-2 to-signal"
               />
               <ol className="space-y-2.5">
                 {JOURNEY_STEPS.map((step, i) => {
@@ -140,7 +138,7 @@ export function JourneyTimeline() {
                 );
               })}
             </div>
-            <motion.div aria-hidden="true" className="mt-2 h-0.5 rounded-full origin-left bg-gradient-to-r from-brand via-brand-2 to-signal" style={{ scaleX: scrollYProgress }} />
+            <div aria-hidden="true" className="journey-progress-x mt-2 h-0.5 rounded-full origin-left bg-gradient-to-r from-brand via-brand-2 to-signal" />
           </div>
 
           <ol className="space-y-3 md:space-y-6 pt-3 md:pt-0">

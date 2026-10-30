@@ -22,6 +22,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
 import { SoundScape } from "@/components/system/SoundScape";
+import { AnimationCulling } from "@/components/system/AnimationCulling";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -189,6 +190,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {/* Google Analytics + Microsoft Clarity, loaded once the page has settled. */}
           <DeferredThirdParty />
           <SoundScape />
+          <AnimationCulling />
         </ToastProvider>
           </MotionPreferences>
         </ThemeProvider>

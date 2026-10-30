@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { sound } from "@/lib/sound";
+import { subscribeScrollFrame } from "@/lib/scroll-frame";
 
 /**
  * Site-wide sound layer (v4.0.1):
@@ -49,17 +50,28 @@ export function SoundScape() {
     return () => window.removeEventListener("click", onClick);
   }, []);
 
-  // 2 + 3. Scroll ticks and bottom-boundary detection (one rAF-batched listener).
+  // 2 + 3. Scroll ticks and bottom-boundary detection, on the shared once-per-frame scroll reader.
   useEffect(() => {
     let lastY = window.scrollY;
     let lastT = performance.now();
     let travel = 0;
-    let frame = 0;
     let wasAtBottom = false;
+    // Layout reads are cached outside the scroll path: page height from a ResizeObserver, and the
+    // timeline zones from an IntersectionObserver, so a scroll frame only measures a zone that is
+    // actually on screen (each layout read can force a style recalc mid-scroll).
+    let docHeight = document.documentElement.scrollHeight;
+    const ro = new ResizeObserver(() => (docHeight = document.documentElement.scrollHeight));
+    ro.observe(document.body);
+    const visibleZones = new Set<HTMLElement>();
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) visibleZones.add(e.target as HTMLElement);
+        else visibleZones.delete(e.target as HTMLElement);
+      }
+    });
+    document.querySelectorAll<HTMLElement>('[data-sound-zone="timeline"]').forEach((el) => io.observe(el));
 
-    const step = () => {
-      frame = 0;
-      const y = window.scrollY;
+    const step = (y: number) => {
       const t = performance.now();
       const dy = Math.abs(y - lastY);
       const speed = dy / Math.max(1, t - lastT);
@@ -69,7 +81,6 @@ export function SoundScape() {
       if (!sound.isEnabled()) return;
 
       const vh = window.innerHeight;
-      const docHeight = document.documentElement.scrollHeight;
 
       // Reaching bottom boundary cue
       const atBottom = y + vh >= docHeight - 40;
@@ -84,7 +95,7 @@ export function SoundScape() {
       travel += dy;
 
       let zone: { progress: number } | null = null;
-      for (const el of document.querySelectorAll<HTMLElement>('[data-sound-zone="timeline"]')) {
+      for (const el of visibleZones) {
         const r = el.getBoundingClientRect();
         if (r.top < vh * 0.65 && r.bottom > vh * 0.35) {
           zone = { progress: Math.min(1, Math.max(0, (vh * 0.5 - r.top) / Math.max(1, r.height))) };
@@ -98,15 +109,13 @@ export function SoundScape() {
         else sound.scrollTick(speed);
       }
     };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(step);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
+    const unsubscribe = subscribeScrollFrame(step);
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (frame) cancelAnimationFrame(frame);
+      unsubscribe();
+      ro.disconnect();
+      io.disconnect();
     };
-  }, []);
+  }, [pathname]); // re-collect this route's timeline zones
 
   // 4. Chapter cuts for this route's top-level sections (skips those visible on load).
   useEffect(() => {

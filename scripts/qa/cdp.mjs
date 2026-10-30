@@ -12,7 +12,7 @@ export async function launch() {
   const dir = mkdtempSync(path.join(os.homedir(), ".cache", "sabbir-qa-"));
   const { TMPDIR, ...env } = process.env; // a long TMPDIR breaks Chrome's singleton socket path
   const port = 9300 + Math.floor(Math.random() * 600);
-  const chrome = spawn(CHROME, ["--headless=new", `--remote-debugging-port=${port}`, `--user-data-dir=${dir}`, "--no-first-run", "--no-default-browser-check", "--disable-extensions", "--mute-audio", "--hide-scrollbars", "about:blank"], { stdio: "ignore", env });
+  const chrome = spawn(CHROME, ["--headless=new", `--remote-debugging-port=${port}`, `--user-data-dir=${dir}`, "--no-first-run", "--no-default-browser-check", "--disable-extensions", "--mute-audio", "--hide-scrollbars", "about:blank"], { stdio: "ignore", env, detached: true }); // own process group: close() kills renderers too
   let targets;
   for (let i = 0; i < 150; i++) {
     try { targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json(); if (targets.length) break; } catch {}
@@ -42,7 +42,9 @@ export async function launch() {
     process.env.TOAST ? "" : "sessionStorage.setItem('sabbir_theme_toast_seen','1')",
   ].filter(Boolean).map((x) => `try{${x}}catch(e){}`).join(";");
   if (init) await send("Page.addScriptToEvaluateOnNewDocument", { source: init });
-  const close = () => { try { ws.close(); } catch {} chrome.kill("SIGKILL"); setTimeout(() => rmSync(dir, { recursive: true, force: true }), 500); };
+  // Remove the throwaway profile synchronously: callers exit right after close(), so a deferred
+  // delete never ran and profiles piled up in ~/.cache.
+  const close = () => { try { ws.close(); } catch {} try { process.kill(-chrome.pid, "SIGKILL"); } catch { chrome.kill("SIGKILL"); } try { rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 }); } catch {} };
   return { send, once, on, evaluate, close, errors, sleep };
 }
 

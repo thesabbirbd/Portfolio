@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { subscribeScrollFrame } from "@/lib/scroll-frame";
 
 /**
  * useNavVisibility - single shared source of truth for "is the main nav hidden?".
@@ -13,8 +14,8 @@ import { useSyncExternalStore } from "react";
  *  - notifies subscribers only when the boolean actually changes
  *
  * It also owns "has the page left the top?" (PAST_TOP_Y) for the desktop nav's glass surface,
- * so the whole app reads `window.scrollY` from one passive listener (each extra listener that
- * reads scroll position can force a style recalc while scroll-driven animations are running).
+ * and takes the scroll position from the shared once-per-frame reader (lib/scroll-frame), so
+ * nothing here reads layout inside a scroll event.
  */
 
 const HIDE_AFTER_Y = 160;
@@ -28,6 +29,7 @@ let pastTop = false;
 let lastY = 0;
 let travel = 0; // signed distance accumulated in the current direction
 let settleTimer: ReturnType<typeof setTimeout> | null = null;
+let unsubscribeScroll: (() => void) | null = null;
 const listeners = new Set<() => void>();
 
 function setHidden(next: boolean) {
@@ -42,8 +44,7 @@ function setPastTop(next: boolean) {
   listeners.forEach((l) => l());
 }
 
-function onScroll() {
-  const y = window.scrollY;
+function onScroll(y: number) {
   const delta = y - lastY;
   lastY = y;
   if (delta === 0) return;
@@ -74,13 +75,14 @@ function subscribe(listener: () => void) {
     travel = 0;
     lastY = window.scrollY;
     pastTop = lastY > PAST_TOP_Y;
-    window.addEventListener("scroll", onScroll, { passive: true });
+    unsubscribeScroll = subscribeScrollFrame(onScroll);
   }
   listeners.add(listener);
   return () => {
     listeners.delete(listener);
     if (listeners.size === 0) {
-      window.removeEventListener("scroll", onScroll);
+      unsubscribeScroll?.();
+      unsubscribeScroll = null;
       if (settleTimer) clearTimeout(settleTimer);
     }
   };
