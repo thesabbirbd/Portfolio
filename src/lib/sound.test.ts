@@ -253,8 +253,8 @@ describe('SoundSystem Policy Block Feature', () => {
     expect(s.getLevel()).toBe('low');
   });
 
-  test('gain: High is twice the previous maximum (1.0), levels are ordered', () => {
-    expect(LEVEL_GAIN.high).toBe(2);
+  test('gain: High is boosted 2x to 4.0, levels are ordered', () => {
+    expect(LEVEL_GAIN.high).toBe(4);
     expect(LEVEL_GAIN.low).toBeLessThan(LEVEL_GAIN.medium);
     expect(LEVEL_GAIN.medium).toBeLessThan(LEVEL_GAIN.high);
   });

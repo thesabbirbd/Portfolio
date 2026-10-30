@@ -15,15 +15,15 @@
 //  - muting is immediate: nothing is scheduled and the context is suspended
 //
 // Signal chain: oscillator → per-note envelope → master level → soft-clip limiter → speakers.
-// Peaks: per-note 0.07–0.26 × master (Low 0.6 · Medium 1.2 · High 2.0). High is twice the
-// previous maximum; the limiter is linear up to ±0.6 and bends anything above smoothly below
-// ±0.95, so overlaps can never clip.
+// Peaks: per-note 0.07–0.24 × master (Low 1.2 · Medium 2.4 · High 4.0). High is twice the
+// previous maximum (2.0 → 4.0, 2x master volume boost); the limiter is linear up to ±0.6 and bends
+// anything above smoothly below ±0.95, so overlaps can never clip.
 
 type Note = [freq: number, duration: number, type: OscillatorType, peak: number, delay?: number, glideTo?: number];
 
 export type SoundLevel = "low" | "medium" | "high";
 export const SOUND_LEVELS: SoundLevel[] = ["low", "medium", "high"];
-export const LEVEL_GAIN: Record<SoundLevel, number> = { low: 0.6, medium: 1.2, high: 2 };
+export const LEVEL_GAIN: Record<SoundLevel, number> = { low: 1.2, medium: 2.4, high: 4 };
 export const DEFAULT_LEVEL: SoundLevel = "high";
 
 const STORAGE_KEY = "sabbir_portfolio_sound"; // "true" | "false"; absent → on (default)
@@ -208,7 +208,7 @@ export class SoundSystem {
 
   /** The "Test sound" cue: a clear two-note confirmation at the current level. */
   public preview() {
-    this.play("preview", [[659.25, 0.09, "triangle", 0.26], [987.77, 0.14, "triangle", 0.24, 80]], { minGap: 200 });
+    this.play("preview", [[659.25, 0.09, "triangle", 0.24], [987.77, 0.14, "triangle", 0.22, 80]], { minGap: 200 });
   }
 
   /**
@@ -240,7 +240,7 @@ export class SoundSystem {
 
   /** Route / section change: a short upward glide. */
   public navigate() {
-    this.play("navigate", [[620, 0.11, "sine", 0.26, 0, 930]], { minGap: 150 });
+    this.play("navigate", [[620, 0.11, "sine", 0.24, 0, 930]], { minGap: 150 });
   }
 
   /** Swipe / drag / horizontal pan between items. */
