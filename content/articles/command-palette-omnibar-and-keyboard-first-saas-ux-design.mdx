@@ -1,0 +1,101 @@
+---
+title: "Architecting a Keyboard-First Raycast Omnibar and Command Palette in Next.js"
+slug: "command-palette-omnibar-and-keyboard-first-saas-ux-design"
+description: "How to engineer a zero-latency Command Palette 2.0 with instant arithmetic evaluation, authentic Bengali Taka-in-words, and cross-studio fuzzy navigation."
+date: "2026-11-15"
+type: "article"
+category: "Architecture & Software Design"
+difficulty: "Intermediate"
+tags: ["Command Palette", "Raycast Omnibar", "Next.js", "UX Design", "Keyboard First", "THESABBiR"]
+seoKeywords: ["command palette ux design", "nextjs cmdk omnibar", "instant arithmetic omnibar", "keyboard first saas", "the sabbir"]
+hashtags: ["#Nextjs", "#UIUX", "#Raycast", "#CommandPalette", "#THESABBiR"]
+coverImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80"
+status: "published"
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## Why Modern SaaS Products Need a Command Palette
+
+In desktop-class software applications like Raycast, Linear, Figma, and Superhuman, power users navigate interfaces using the keyboard rather than dragging a mouse through multi-level nested menus. 
+
+The standard keyboard shortcut **`Ctrl+K` (or `⌘K` on macOS)** has emerged as the universal entry point for:
+- Navigating to any page or tool in under 200 milliseconds.
+- Executing instant inline computations (math, unit conversions, currency).
+- Triggering contextual actions without breaking mental flow.
+
+When we upgraded **THE SABBiR OS (`sabbir.nav.bd`)** to version **`5.2.12`**, we completely redesigned our command palette into a full **Raycast-Style Omnibar 2.0**, integrating an instant mathematical and unit conversion evaluation engine directly into the search prompt.
+
+---
+
+## 1. Zero-Dependency Instant Arithmetic Evaluation
+
+Most command menu components treat the input solely as a string filter for search results. However, when a user types `1450 * 1.15` or `(5000 - 350) / 12`, opening a new browser tab for a calculator is disruptive.
+
+To evaluate math securely in the browser without dangerous `eval()` calls:
+1. **Input Sanitization**: Strip all non-math characters, allowing only numbers, basic arithmetic operators (`+`, `-`, `*`, `/`, `%`, `^`), and parentheses.
+2. **Safe Tokenization & Evaluation**: Use `Function("return " + sanitized)()` inside a guarded try/catch block with finite number checks:
+
+```typescript
+export function evaluateInstantMath(query: string): { expression: string; value: number } | null {
+  const trimmed = query.trim();
+  // Match only if it looks like arithmetic with at least one operator
+  if (!/^[\d\s()+\-*/%.^]+$/.test(trimmed)) return null;
+  if (!/[+\-*/%.^]/.test(trimmed)) return null;
+
+  try {
+    const sanitized = trimmed.replace(/\^/g, "**");
+    const result = new Function(`"use strict"; return (${sanitized});`)();
+    if (typeof result === "number" && Number.isFinite(result)) {
+      return { expression: trimmed, value: result };
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+```
+
+---
+
+## 2. Context-Aware Natural Language Queries
+
+An Omnibar becomes truly delightful when it understands localized and domain-specific intent:
+
+### A. Taka-in-Words (`125000 tk`)
+Detecting amounts followed by currency triggers like `tk`, `taka`, or `টাকা`:
+```typescript
+if (/^\d+(\.\d+)?\s*(tk|taka|টাকা)$/i.test(query)) {
+  const val = parseFloat(query);
+  return {
+    type: "currency",
+    primary: takaInBanglaWords(val),
+    secondary: takaInEnglishWords(val),
+  };
+}
+```
+
+### B. Freelancer Remittance (`$1000` or `500 usd`)
+Typing `$1000` immediately parses the gross USD payout, applies the current Bangladesh Bank rate (~121.00 BDT/USD) plus the **2.5% Government Cash Incentive**, and reveals the net expected Taka payout in real time!
+
+### C. Land & Gold Units (`10 decimal to katha` or `2 vori to gram`)
+Converting land measurements (Decimal, Katha, Bigha) and BAJUS gold weights (Vori, Ana, Ratti) directly inside the palette with zero clicks.
+
+---
+
+## 3. Keyboard Ergonomics & Sensory Feedback
+
+A keyboard-first interface is only as good as its micro-interactions:
+- **Audio Feedback**: Firing a subtle synthetic mechanical click (`sound.type()`) on navigation and a crisp confirmation chime (`sound.confirm()`) when copying an instant answer.
+- **Copy on Enter**: Pressing `Enter` while focused on an instant answer card copies the evaluated result to the clipboard and closes the palette automatically.
+- **Global Event Bus**: Emitting custom window events (`sabbir:open-command-menu`) prevents multiple overlays from opening simultaneously and handles focus trapping properly.
+
+---
+
+## 4. Try It Live on THE SABBiR OS
+
+You can test this architecture right now from anywhere on this website:
+- Press **`Ctrl+K`** (or **`⌘K`** on Mac) or click the search icon in the top navigation bar.
+- Type `2500 * 1.15` to see instant arithmetic.
+- Type `125000 tk` to get authentic Bengali banking words.
+- Type `$1500` to see the complete 2.5% remittance incentive breakdown!

@@ -4,6 +4,9 @@ import { useState, useMemo } from 'react';
 import { ContentItem } from '@/lib/content';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { UniversalFilterSortBar } from "@/components/system/UniversalFilterSortBar";
+import { sortItems, type SortOption } from "@/lib/popularity-ranker";
+import { PROJECT_SANDBOXES } from "@/data/project-sandboxes";
 
 const STATUS_STYLE: Record<string, string> = {
   active: 'text-ok bg-ok/10 border-ok/25',
@@ -13,64 +16,70 @@ const STATUS_STYLE: Record<string, string> = {
 };
 
 /**
- * /projects list: a single-row, horizontally scrollable filter on phones (wraps on larger
- * screens) and level-1 cards whose title link covers the whole card for an easy touch target.
+ * /projects list with UniversalFilterSortBar: search, category pills, and sort switcher.
+ * Default sort is ALWAYS 'popular'.
  */
 export function ProjectBrowser({ projects }: { projects: ContentItem[] }) {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("All projects");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<SortOption>("popular");
 
   const categories = useMemo(() => {
     const cats = new Set<string>();
     projects.forEach(p => {
       if (p.meta.category) cats.add(p.meta.category);
     });
-    return Array.from(cats).sort();
+    return ["All projects", ...Array.from(cats).sort()];
   }, [projects]);
 
-  const filteredProjects = useMemo(() => {
-    return projects.filter(p => {
-      if (selectedCategory) return p.meta.category === selectedCategory;
+  const filteredAndSortedProjects = useMemo(() => {
+    let list = projects.filter(p => {
+      if (selectedCategory !== "All projects" && p.meta.category !== selectedCategory) {
+        return false;
+      }
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchTitle = p.meta.title.toLowerCase().includes(q);
+        const matchDesc = p.meta.description.toLowerCase().includes(q);
+        const matchTech = p.meta.technologies?.some(t => t.toLowerCase().includes(q));
+        if (!matchTitle && !matchDesc && !matchTech) return false;
+      }
       return true;
     });
-  }, [projects, selectedCategory]);
 
-  const filters: { value: string | null; label: string }[] = [{ value: null, label: 'All projects' }, ...categories.map(c => ({ value: c, label: c }))];
+    return sortItems(list, sortBy, {
+      getPopularity: (p) => (p.meta.featured ? 99 : 80) + (p.meta.technologies?.length || 0) * 2,
+      getImpact: (p) => (p.meta.projectStatus === "completed" ? 95 : 85),
+      getDate: (p) => p.meta.date,
+      getTitle: (p) => p.meta.title,
+    });
+  }, [projects, selectedCategory, searchQuery, sortBy]);
 
   return (
-    <div className="w-full">
-      <div
-        role="group"
-        aria-label="Filter projects by category"
-        className="-mx-4 px-4 sm:mx-0 sm:px-0 flex sm:flex-wrap gap-2 mb-6 sm:mb-10 overflow-x-auto sm:overflow-visible snap-x hide-scrollbar"
-      >
-        {filters.map(({ value, label }) => {
-          const active = selectedCategory === value;
-          return (
-            <button
-              key={label}
-              type="button"
-              aria-pressed={active}
-              onClick={() => setSelectedCategory(value)}
-              className={cn(
-                'shrink-0 snap-start px-3.5 py-2 min-h-10 text-sm rounded-full border transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
-                active ? 'bg-primary border-primary text-on-primary font-semibold' : 'border-line text-ink-2 hover:text-ink hover:border-line-strong'
-              )}
-            >
-              {label}
-            </button>
-          );
-        })}
-      </div>
+    <div className="w-full space-y-6">
+      {/* Universal Search, Filter & Sort Bar */}
+      <UniversalFilterSortBar
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Search projects by name, stack, or problem..."
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+        totalCount={projects.length}
+        filteredCount={filteredAndSortedProjects.length}
+      />
 
-      <p className="sr-only" aria-live="polite">{filteredProjects.length} projects shown</p>
+      <p className="sr-only" aria-live="polite">{filteredAndSortedProjects.length} projects shown</p>
 
-      {filteredProjects.length === 0 ? (
+      {filteredAndSortedProjects.length === 0 ? (
         <div className="py-12 text-center text-ink-3 rounded-card surface-card">
-          No projects found in this category.
+          No projects found matching &quot;{searchQuery}&quot; in this category.
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:gap-5">
-          {filteredProjects.map(project => {
+          {filteredAndSortedProjects.map(project => {
             const status = project.meta.projectStatus;
             return (
               <article key={project.meta.slug} className="reveal group relative flex flex-col gap-3 p-4 sm:p-6 rounded-card surface-card surface-interactive">
@@ -81,6 +90,11 @@ export function ProjectBrowser({ projects }: { projects: ContentItem[] }) {
                     </span>
                   )}
                   {project.meta.category && <span className="text-xs font-mono text-ink-3">{project.meta.category}</span>}
+                  {PROJECT_SANDBOXES[project.meta.slug] && (
+                    <span className="px-2 py-0.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-[10px] font-mono font-semibold">
+                      ⚡ Live Sandbox
+                    </span>
+                  )}
                 </div>
                 <h3 className="text-lg sm:text-2xl font-bold tracking-tight text-ink group-hover:text-primary transition-colors">
                   <Link href={`/projects/${project.meta.slug}`} className="after:absolute after:inset-0 after:rounded-card focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-primary/50">

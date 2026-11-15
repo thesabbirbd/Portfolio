@@ -1,0 +1,50 @@
+---
+title: "BD Biz Normalizer — Phone, Geo District & SME Data Sanitizer"
+slug: "bd-biz-normalizer"
+description: "Ultra-fast Bangladeshi Phone Number, Geo District, and SME Customer Normalizer with E.164 standardization and Bengali numeral support."
+date: "2026-10-25"
+type: "projects"
+category: "Backend"
+tags: ["Backend", "Python", "Data Sanitization", "E.164", "Bengali NLP", "SME"]
+status: "published"
+featured: true
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+projectStatus: "active"
+projectRole: "Lead Backend Architect"
+technologies: ["Python", "FastAPI", "Regex", "E.164", "Pydantic", "TypeScript"]
+githubUrl: "https://github.com/thesabbir/bd-biz-normalizer"
+dateStarted: "2026-09-15"
+architecture:
+  nodes:
+    - Raw Input Ingestion Layer
+    - Bengali Numeral Normalizer
+    - E.164 Telco Operator Classifier
+    - Geo District & Thana Resolver
+    - Clean JSON & CSV Exporter
+  edges:
+    - Raw Input Ingestion Layer -> Bengali Numeral Normalizer
+    - Bengali Numeral Normalizer -> E.164 Telco Operator Classifier
+    - E.164 Telco Operator Classifier -> Geo District & Thana Resolver
+    - Geo District & Thana Resolver -> Clean JSON & CSV Exporter
+changelog:
+  - date: "2026-09-15"
+    title: "Initial Normalization Engine"
+    summary: "Engineered deterministic phone and numeral transformer supporting all Bangladeshi telcos."
+  - date: "2026-10-25"
+    title: "District & Thana Fuzzy Matching"
+    summary: "Added 64-district and 495-upazila spelling variance normalization."
+---
+
+## Overview
+
+Bangladeshi retail and e-commerce platforms routinely ingest customer contact data filled with inconsistent notations: mixed Bengali numerals (`০১৭১...`), varied prefixes (`+880`, `880`, `0`, or omitted), and regional district colloquialisms (`ctg`, `dhk`, `cumilla`).
+
+**BD Biz Normalizer** provides deterministic, high-throughput parsing and sanitation of customer phone numbers, administrative districts, and currency formats with zero cloud dependencies.
+
+## Key Capabilities
+
+- **Strict E.164 Telecom Formatting:** Converts any valid Bangladeshi mobile string into standard `+8801XXXXXXXXX` while detecting the underlying carrier (Grameenphone, Banglalink, Robi, Airtel, Teletalk).
+- **Bengali Numeral Transliteration:** Automatically converts Bengali digits (`০-৯`) to standard ASCII numerals before running regex validation.
+- **Administrative District Harmonization:** Standardizes informal abbreviations and legacy British spellings into modern Bangladesh Bureau of Statistics (BBS) recognized districts and divisions.
+- **Microsecond In-Memory Execution:** Written with zero heavy machine learning overhead, capable of sanitizing 50,000 customer rows per second on single-core CPU instances.

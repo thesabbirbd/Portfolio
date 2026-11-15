@@ -13,15 +13,22 @@ import {
   Search,
   Zap,
   ZapOff,
-  Compass
+  Compass,
+  Wrench,
+  Bot,
+  Trophy,
+  Sparkles
 } from "lucide-react";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 import { useSettings } from "@/contexts/SettingsContext";
+import { useWorkplaceAuth } from "@/contexts/WorkplaceAuthContext";
 import { useNavVisibility, useScrolledPastTop } from "@/hooks/useNavVisibility";
 import { sound } from "@/lib/sound";
 import { cn } from "@/lib/utils";
 import { GlassButton } from "@/components/ui/glass/GlassButton";
 import { goToSection, openCommandMenu } from "@/lib/ui-events";
+import { useOSStore } from "@/lib/os-store";
+import { OSAppLauncherDrawer } from "@/components/navigation/OSAppLauncherDrawer";
 
 type NavItem = {
   name: string;
@@ -32,14 +39,17 @@ type NavItem = {
   route: string;
   icon: React.ComponentType<{ className?: string }>;
   mobile: boolean;
+  badge?: string;
 };
 
 const NAV_ITEMS: NavItem[] = [
   { name: "About", href: "/#about", section: "about", route: "/about", icon: User, mobile: true },
   { name: "Work", href: "/#projects", section: "projects", route: "/projects", icon: FolderGit2, mobile: true },
-  { name: "Lab", href: "/#lab", section: "lab", route: "/engineering-lab", icon: FlaskConical, mobile: true },
+  { name: "Tools", href: "/tools", route: "/tools", icon: Wrench, mobile: true, badge: "56" },
+  { name: "Hacks", href: "/hacks", route: "/hacks", icon: Sparkles, mobile: false, badge: "40" },
+  { name: "Agents", href: "/agents", route: "/agents", icon: Bot, mobile: false, badge: "24" },
   { name: "Notes", href: "/notes", route: "/notes", icon: NotebookPen, mobile: true },
-  { name: "Explore", href: "/explore", route: "/explore", icon: Compass, mobile: false },
+  { name: "Explore", href: "/explore", route: "/explore", icon: Compass, mobile: true },
   { name: "Resume", href: "/resume", route: "/resume", icon: FileText, mobile: false },
 ];
 
@@ -74,9 +84,12 @@ export function MorphingNav() {
   const scrolled = useScrolledPastTop();
   const { isNavHidden: hidden } = useNavVisibility();
   const { spatial3D, toggle3D } = useSettings();
+  const { user } = useWorkplaceAuth();
   const pathname = usePathname();
   const router = useRouter();
   const activeSection = useActiveSection(pathname === "/");
+  const profile = useOSStore();
+  const liveXp = Math.max(user?.totalXp || 0, profile.totalXp);
 
   const isActive = (item: NavItem) =>
     pathname === "/" ? item.section !== undefined && activeSection === item.section : pathname.startsWith(item.route);
@@ -140,14 +153,35 @@ export function MorphingNav() {
                       active ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  <span className="relative">{item.name}</span>
+                  <span className="relative inline-flex items-center gap-1.5">
+                    {item.name}
+                    {item.badge && (
+                      <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full bg-[var(--color-primary)]/15 text-primary border border-[var(--color-primary)]/20 leading-none">
+                        {item.badge}
+                      </span>
+                    )}
+                  </span>
                 </Link>
               );
             })}
           </div>
 
           {/* Actions */}
-          <div className="relative flex items-center gap-2">
+          <div className="relative flex items-center gap-1.5 sm:gap-2">
+            {/* Workplace Live XP & Leaderboard Pill */}
+            <Link
+              href="/leaderboard"
+              onClick={() => sound.click()}
+              className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-1 text-xs font-semibold text-amber-300 hover:bg-amber-500/20 transition-all shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+              title={user ? `${user.displayName} (${user.role}) · Click to open Global Leaderboard` : "Click to view Global Leaderboard"}
+            >
+              <Trophy className="w-3.5 h-3.5 text-amber-400" />
+              <span>{liveXp > 0 ? `${liveXp} XP` : "Rank"}</span>
+            </Link>
+
+            {/* All OS Apps Drawer */}
+            <OSAppLauncherDrawer />
+
             <button
               onClick={openCmdk}
               className="flex items-center gap-1.5 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-foreground/80 hover:text-foreground"
@@ -209,9 +243,13 @@ export function MorphingNav() {
                 )}
               >
                 <item.icon className={cn("w-[18px] h-[18px] transition-colors", active ? "text-primary" : "text-ink-2")} />
+                {item.badge && (
+                  <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-primary" />
+                )}
               </Link>
             );
           })}
+          <OSAppLauncherDrawer />
         </div>
         <button onClick={openCmdk} className="p-2 rounded-full text-foreground/80 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10" aria-label="Open command menu">
           <Search className="w-[18px] h-[18px] text-ink-2" />

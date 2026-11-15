@@ -1,6 +1,31 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
+/* Direct @font-face fallback for Kalpurush and SolaimanLipi (Zero-delay offline local fonts) */
+@font-face {
+  font-family: 'Kalpurush';
+  src: url('/fonts/Kalpurush.ttf') format('truetype');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SolaimanLipi';
+  src: url('/fonts/SolaimanLipi.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SolaimanLipi';
+  src: url('/fonts/SolaimanLipi-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 /* Phones held sideways: wide enough for desktop breakpoints, too short for stacked layouts. */
 @custom-variant short-landscape (@media (orientation: landscape) and (max-height: 520px));
@@ -9,8 +34,9 @@
 
 @theme {
   --breakpoint-xs: 400px;
-  /* Typography: Geist is loaded by next/font in app/layout.tsx and was previously never applied. */
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Typography: Geist for Latin + Kalpurush & SolaimanLipi & Anek Bangla for beloved standard Bengali typography */
+  --font-sans: var(--font-geist-sans), var(--font-kalpurush), var(--font-solaiman-lipi), var(--font-anek-bangla), "Kalpurush", "SolaimanLipi", "Anek Bangla", "Noto Sans Bengali", sans-serif;
+  --font-bangla: var(--font-kalpurush), var(--font-solaiman-lipi), var(--font-anek-bangla), "Kalpurush", "SolaimanLipi", "Anek Bangla", "Noto Sans Bengali", sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --color-background: rgb(var(--background));
   --color-foreground: rgb(var(--foreground));
@@ -63,6 +89,7 @@
   --color-ink-2: rgb(var(--ink-2));
   --color-ink-3: rgb(var(--ink-3));
   --color-surface: rgb(var(--surface) / var(--surface-alpha));
+  --color-surface-well: rgb(var(--surface-well));
   --color-line: rgb(var(--line) / var(--line-alpha));
   --color-line-strong: rgb(var(--line) / calc(var(--line-alpha) * 2));
   --color-brand: rgb(var(--brand));
@@ -103,6 +130,7 @@
   --ink-3: 87 80 72;
   --surface: 255 255 255;
   --surface-alpha: 0.72;
+  --surface-well: 243 239 234;
   --muted: 241 234 222;        /* solid tint so bg-muted/30-style modifiers stay visible */
   --line: 28 24 20;
   --line-alpha: 0.09;
@@ -153,6 +181,7 @@
   --ink-3: 173 163 151;
   --surface: 31 27 24;
   --surface-alpha: 0.66;
+  --surface-well: 20 17 15;
   --muted: 38 33 29;
   --line: 255 248 240;
   --line-alpha: 0.08;
@@ -248,6 +277,64 @@ body {
     background: rgb(var(--surface) / calc(var(--surface-alpha) + 0.16));
     border: 1px solid rgb(var(--line) / var(--line-alpha));
     box-shadow: var(--elev-2);
+  }
+  .surface-well {
+    background-color: rgb(var(--surface-well));
+    border: 1px solid rgb(var(--line) / calc(var(--line-alpha) * 1.6));
+  }
+  .surface-terminal {
+    background-color: #0d1117 !important;
+    color: #f1f5f9 !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  }
+  .surface-terminal * {
+    color-scheme: dark;
+  }
+  .badge-brand {
+    background-color: rgb(var(--primary) / 0.12);
+    color: rgb(var(--primary));
+    border: 1px solid rgb(var(--primary) / 0.28);
+    font-weight: 600;
+  }
+  .badge-ok {
+    background-color: rgb(var(--ok) / 0.12);
+    color: rgb(var(--ok));
+    border: 1px solid rgb(var(--ok) / 0.28);
+    font-weight: 600;
+  }
+  .badge-signal {
+    background-color: rgb(var(--signal) / 0.12);
+    color: rgb(var(--signal));
+    border: 1px solid rgb(var(--signal) / 0.28);
+    font-weight: 600;
+  }
+  .badge-warn {
+    background-color: rgba(234, 88, 12, 0.12);
+    color: #ea580c;
+    border: 1px solid rgba(234, 88, 12, 0.28);
+    font-weight: 600;
+  }
+  .pro-input, .pro-select, .pro-textarea {
+    background-color: rgb(var(--surface-well));
+    border: 1px solid rgb(var(--line) / calc(var(--line-alpha) * 1.8));
+    color: rgb(var(--ink));
+    border-radius: 0.75rem;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    transition: border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
+  }
+  .pro-input:focus, .pro-select:focus, .pro-textarea:focus {
+    outline: none;
+    border-color: rgb(var(--primary));
+    box-shadow: 0 0 0 2px rgb(var(--primary) / 0.2);
+  }
+  .pro-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgb(var(--ink-2));
+    margin-bottom: 0.375rem;
   }
   /* Interactive cards change paint only; movement (if any) is owned by the component. */
   .surface-interactive,
@@ -597,6 +684,7 @@ html[data-motion="reduced"] ::after {
   --ink-3: 76 86 79;
   --surface: 255 255 252;
   --surface-alpha: 0.74;
+  --surface-well: 238 237 228;
   --muted: 237 236 224;
   --line: 20 28 23;
   --line-alpha: 0.09;
@@ -617,6 +705,7 @@ html[data-motion="reduced"] ::after {
   --ink-3: 156 173 163;
   --surface: 21 30 25;
   --surface-alpha: 0.68;
+  --surface-well: 14 20 17;
   --muted: 27 37 31;
   --line: 236 255 244;
   --line-alpha: 0.08;
@@ -635,6 +724,7 @@ html[data-motion="reduced"] ::after {
   --ink-3: 71 85 105;
   --surface: 255 255 255;
   --surface-alpha: 0.74;
+  --surface-well: 236 241 248;
   --muted: 233 238 245;
   --line: 15 23 42;
   --line-alpha: 0.09;
@@ -655,6 +745,7 @@ html[data-motion="reduced"] ::after {
   --ink-3: 148 163 184;
   --surface: 17 24 38;
   --surface-alpha: 0.68;
+  --surface-well: 11 16 26;
   --muted: 23 31 48;
   --line: 226 236 255;
   --line-alpha: 0.08;
@@ -1105,3 +1196,17 @@ p {
   .amb-stream-r, .amb-net { display: none; }
   .amb-stream { width: 0.85rem; font-size: 9px; }
 }
+
+/* Studio Focus Mode & Mobile Viewport Cleanliness */
+html.studio-zen-mode header:not(.studio-header),
+html.studio-zen-mode nav:not(.studio-nav),
+html.studio-zen-mode footer {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  html.studio-workspace-active .hide-on-studio-mobile {
+    display: none !important;
+  }
+}
+

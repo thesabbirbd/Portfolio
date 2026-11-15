@@ -72,6 +72,7 @@ describe("social links", () => {
     const byId = Object.fromEntries(SOCIAL_LINKS.map((l) => [l.id, l.url]));
     expect(byId.github).toBe("https://github.com/thesabbirbd");
     expect(byId.linkedin).toBe("https://www.linkedin.com/in/thesabbirbd/");
+    expect(byId.youtube).toBe("https://www.youtube.com/@thesabbirbd");
     expect(byId.facebook).toBe("https://facebook.com/iamthesabbir");
     expect(byId.instagram).toBe("https://www.instagram.com/iam_thesabbir");
     expect(byId.x).toBe("https://x.com/thesabbirbd");

@@ -9,6 +9,9 @@ import { AIYAAR, AIYAAR_FEATURES, AIYAAR_BUSINESS_TYPES, AIYAAR_KEYWORDS } from 
 import { LINKEDIN_URL } from "@/data/experience";
 import { pageMetadata } from "@/lib/seo";
 import { AiyaarName, withAiyaarLinks } from "@/components/system/AiyaarName";
+import { AiyaarDecisionLog } from "@/components/aiyaar/AiyaarDecisionLog";
+import { IndustryInteractiveSimulator } from "@/components/aiyaar/IndustryInteractiveSimulator";
+import { BanglaGuideModal } from "@/components/ui/BanglaGuideModal";
 
 const TITLE = "Aiyaar — POS, Online Store, Inventory & Digital Khata SaaS | THE SABBiR";
 const SOCIAL_TITLE = `Aiyaar — ${AIYAAR.roleTitle} | THE SABBiR`;
@@ -70,6 +73,9 @@ export default function AiyaarPage() {
           <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 px-5 rounded-full surface-card surface-interactive font-semibold text-ink">
             <LinkedinIcon className="w-4 h-4" /> My LinkedIn
           </a>
+          <div className="flex items-center">
+            <BanglaGuideModal topic="aiyaar" />
+          </div>
         </div>
       </PageHeader>
 
@@ -122,6 +128,15 @@ export default function AiyaarPage() {
           ))}
           <li className="px-3 py-1.5 rounded-full border border-dashed border-line-strong text-sm text-ink-3">…and more</li>
         </ul>
+      </section>
+
+      {/* Interactive 22-Industry Business Simulator */}
+      <section className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 mb-12 md:mb-16">
+        <IndustryInteractiveSimulator />
+      </section>
+
+      <section className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 mb-12 md:mb-16">
+        <AiyaarDecisionLog />
       </section>
 
       <section className="max-w-5xl mx-auto w-full px-4 sm:px-6 mb-16">

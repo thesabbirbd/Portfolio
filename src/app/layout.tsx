@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
+import { Geist, Geist_Mono, Anek_Bangla } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { ToastProvider } from "@/contexts/ToastContext";
+import { WorkplaceAuthProvider } from "@/contexts/WorkplaceAuthContext";
 import { ThemeToast } from "@/components/ui/ThemeToast";
 import { THEME_INIT_SCRIPT } from "@/lib/theme-color";
 import { DeferredThirdParty } from "@/components/system/DeferredThirdParty";
@@ -26,6 +28,37 @@ import { AnimationCulling } from "@/components/system/AnimationCulling";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+
+// Standard beloved Bengali fonts (100% Free & Open Source)
+const kalpurush = localFont({
+  src: "../../public/fonts/Kalpurush.ttf",
+  variable: "--font-kalpurush",
+  display: "swap",
+});
+
+const solaimanLipi = localFont({
+  src: [
+    {
+      path: "../../public/fonts/SolaimanLipi.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/SolaimanLipi-Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-solaiman-lipi",
+  display: "swap",
+});
+
+const anekBangla = Anek_Bangla({
+  weight: ["300", "400", "500", "600", "700", "800"],
+  subsets: ["bengali", "latin"],
+  variable: "--font-anek-bangla",
+  display: "swap",
+});
 
 // METADATA (Restored dynamically from previous)
 // METADATA
@@ -143,7 +176,7 @@ const jsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} ${kalpurush.variable} ${solaimanLipi.variable} ${anekBangla.variable} antialiased`}>
       <head>
         <Script id="service-worker" strategy="afterInteractive">
           {/* Production only: dev chunks are not content-hashed, so a caching SW would serve stale JS
@@ -170,6 +203,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <MotionPreferences>
           <ToastProvider>
+          <WorkplaceAuthProvider>
           <ThemeToast />
           <LiquidBackground />
           <FloatingGlassBackground />
@@ -191,6 +225,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <DeferredThirdParty />
           <SoundScape />
           <AnimationCulling />
+          </WorkplaceAuthProvider>
         </ToastProvider>
           </MotionPreferences>
         </ThemeProvider>

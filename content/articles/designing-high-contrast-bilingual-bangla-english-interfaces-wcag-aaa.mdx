@@ -1,0 +1,69 @@
+---
+title: "Designing High-Contrast Bilingual Bangla-English Interfaces for WCAG AAA"
+slug: "designing-high-contrast-bilingual-bangla-english-interfaces-wcag-aaa"
+description: "Architectural principles for engineering high-contrast bilingual interfaces supporting Bangla and English typography across light and dark modes with WCAG AAA conformance."
+date: "2026-11-15"
+type: "article"
+category: "Frontend Architecture & Web APIs"
+difficulty: "Intermediate"
+tags: ["Design Systems", "WCAG AAA", "Bangla Typography", "Color Contrast", "Tailwind CSS", "THESABBiR"]
+seoKeywords: ["bangla web typography line height", "wcag aaa contrast ratio tailwind", "bilingual ui design bangla english", "accessible color tokens nextjs", "the sabbir"]
+hashtags: ["#UIUX", "#Accessibility", "#WebDev", "#BanglaTypography", "#THESABBiR"]
+coverImage: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1200&q=80"
+status: "published"
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## The Dual-Script Challenge: Why Bilingual Interfaces Break Contrast
+
+Designing digital products in Bangladesh presents a unique typography challenge: interfaces frequently mix **Latin script (English)** and **Eastern Indic script (Bangla)** within the same card, table, or navigation bar.
+
+Bangla script possesses distinct vertical ascenders (উ-কার, ঋ-কার, ও-কার) and descenders (হ্রস্ব-উ কার, দীর্ঘ-উ কার, র-ফলা, য-ফলা, হসন্ত). When developers apply standard Latin typography rules (`leading-none` or `leading-tight` with `1.2` line-height), Bangla glyphs frequently suffer from:
+1. **Vertical Clipping**: Vowel signs get sliced off at container boundaries.
+2. **Reduced Optical Contrast**: Dense conjuncts (যুক্তবর্ণ such as ক্ষ, ঙ্ক, ঙ্গ, ঞ্চ) appear clogged and illegible on low-contrast gray backgrounds.
+3. **Mismatched Baseline Alignment**: English and Bangla fonts loaded from different font families shift vertically when placed inline.
+
+---
+
+## 1. Mathematical WCAG Contrast Ratios across Light and Dark Themes
+
+Web Content Accessibility Guidelines (WCAG 2.2) define three conformance levels:
+- **Level A**: Minimum baseline
+- **Level AA**: 4.5:1 for normal body text, 3.0:1 for large headings (18pt+)
+- **Level AAA**: 7.0:1 for normal body text, 4.5:1 for large text and captions
+
+### Measuring Luminance and Contrast
+Relative luminance ($L$) calculates perceived brightness from linearized sRGB color coordinates:
+
+```text
+L = 0.2126 * R + 0.7152 * G + 0.0722 * B
+Contrast Ratio = (L1 + 0.05) / (L2 + 0.05)
+```
+
+In THE SABBiR OS (`globals.css`), tokens are engineered to exceed WCAG AAA:
+
+| Token Role | Light Mode (Warm Ivory) | Dark Mode (Deep Obsidian) | Contrast Ratio |
+| :--- | :--- | :--- | :--- |
+| **Primary Ink (`--ink`)** | rgb(28, 24, 20) on #FAF8F5 | rgb(245, 240, 232) on #110E0C | **> 14.5 : 1 (AAA)** |
+| **Secondary Ink (`--ink-2`)** | rgb(66, 60, 54) on #FAF8F5 | rgb(219, 211, 201) on #110E0C | **> 8.8 : 1 (AAA)** |
+| **Muted Ink (`--ink-3`)** | rgb(87, 80, 72) on #FAF8F5 | rgb(173, 163, 151) on #110E0C | **> 5.4 : 1 (AA+)** |
+
+---
+
+## 2. Universal Principles for Bangla Web Typography
+
+To ensure flawless readability across all screen sizes:
+
+1. **Enforce `leading-relaxed` (1.65 line-height)**: Never use `leading-tight` on Bangla text blocks. The extra vertical headroom prevents complex conjuncts from overlapping lines.
+2. **Apply `font-variant-numeric: tabular-nums`**: Essential for financial calculators, dates, and CGPA tables. Ensures that Bengali numerals (১, ২, ৩) and Arabic numerals (1, 2, 3) align in uniform column widths.
+3. **Avoid Low-Contrast Subtle Grays**: Gray text below 4.5:1 contrast on mobile screens in bright outdoor daylight becomes completely unreadable.
+4. **Use Explicit Terminal/Code Locks**: Always wrap code snippets and transport controls inside a dedicated surface (`.surface-terminal`) that locks background to `#0D1117` and foreground to `#F1F5F9`, preventing dark-on-dark bleed in light mode.
+
+---
+
+## 3. Experience It in the Lab
+
+Test live color harmonies, colorblind simulation, and WCAG AAA matrix scoring inside the **Color Design Lab Studio**:
+- **Studio Route**: `/tools/color-design-lab`
+- **Features**: Live Tailwind 50-950 scale generator, WCAG contrast meter, and glassmorphism CSS generator.

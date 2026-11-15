@@ -1,0 +1,103 @@
+---
+title: "Preventing SQL Injection and DDoS Attacks in Next.js Serverless Edge Applications"
+slug: "preventing-sql-injection-and-ddos-in-nextjs-edge-apps"
+description: "An in-depth security architecture guide to defending serverless Next.js edge applications: Token-Bucket and Sliding-Window DDoS throttling, AST SQLi payload inspectors, and Drizzle ORM parameterized prepared statements."
+date: "2026-11-15"
+type: "article"
+category: "DevOps, Linux & Docker"
+difficulty: "Advanced"
+tags: ["Security", "WAF", "Next.js", "PostgreSQL", "DDoS", "DevOps"]
+seoKeywords: ["preventing sql injection nextjs", "nextjs edge ddos protection", "token bucket rate limiting typescript", "drizzle orm parameterized query", "the sabbir"]
+hashtags: ["#Security", "#WAF", "#Nextjs", "#PostgreSQL", "#THESABBiR"]
+coverImage: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80"
+status: "published"
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## The Serverless Security Illusion
+
+In modern web development, many engineering teams assume that deploying full-stack applications to serverless edge platforms automatically eliminates distributed denial of service (DDoS) and injection risks. While edge gateways absorb raw layer-3 (L3) and layer-4 (L4) volumetric packet floods, **Layer-7 application attacks directly target downstream database connections and CPU budgets**.
+
+In a serverless architecture running PostgreSQL, an unthrottled API endpoint allows an attacker to exhaust the database connection pool in seconds or trigger expensive Cartesian joins, resulting in database lockouts, astronomical bills, or severe downtime.
+
+This guide explores the multi-layer security architecture implemented in THE SABBiR OS to protect client-side studios and database routes.
+
+---
+
+## 1. Dual-Algorithm Layer-7 DDoS Throttling
+
+To mitigate aggressive scraping and bot bursts without degrading performance for real human users, an effective Web Application Firewall (WAF) must combine **Token Bucket burst smoothing** with **Sliding-Window rate limiting**.
+
+### Token-Bucket vs Sliding-Window
+
+- **Token Bucket**: Allows short bursts of legitimate activity (such as rapid multi-file uploads or batch image processing) while enforcing a strict steady-state consumption rate. Each visitor IP receives a bucket filled with tokens that replenish at a constant refill rate.
+- **Sliding Window**: Prevents edge-case burst exploitation that occurs at window boundaries in naive fixed-window limiters.
+
+```typescript
+export interface RateLimitResult {
+  allowed: boolean;
+  remainingTokens: number;
+  retryAfterSec?: number;
+}
+
+export function checkRateLimit(ip: string, routeCategory: string): RateLimitResult {
+  const now = Date.now();
+  const bucket = getOrInitBucket(ip, routeCategory);
+
+  // Calculate elapsed time and replenish tokens
+  const elapsedSec = (now - bucket.lastRefill) / 1000;
+  bucket.tokens = Math.min(bucket.capacity, bucket.tokens + elapsedSec * bucket.refillRate);
+  bucket.lastRefill = now;
+
+  if (bucket.tokens >= 1) {
+    bucket.tokens -= 1;
+    return { allowed: true, remainingTokens: Math.floor(bucket.tokens) };
+  }
+
+  const retryAfterSec = Math.ceil((1 - bucket.tokens) / bucket.refillRate);
+  return { allowed: false, remainingTokens: 0, retryAfterSec };
+}
+```
+
+When throttled, the edge middleware terminates the connection immediately with `HTTP 429 Too Many Requests` and a standard `Retry-After` header, preventing unnecessary serverless function execution or database queries.
+
+---
+
+## 2. Preventing SQL Injection (SQLi) at the AST and Driver Level
+
+SQL Injection remains #3 in the OWASP Top 10 vulnerabilities. To achieve zero database vulnerabilities, two complementary layers must be enforced:
+
+### Layer A: 100% Parameterized Prepared Statements
+
+Never concatenate user inputs into raw SQL query strings. Using modern type-safe ORMs such as **Drizzle ORM** ensures all parameters are transmitted out-of-band via protocol-level binary parameters:
+
+```typescript
+// ❌ VULNERABLE: Direct string interpolation
+const badQuery = await db.execute(`SELECT * FROM users WHERE email = '${userInput}'`);
+
+// ✅ SECURE: Parameterized prepared statement
+const safeUser = await db
+  .select()
+  .from(workspaceUsers)
+  .where(eq(workspaceUsers.email, userInput))
+  .limit(1);
+```
+
+In the secure example, the database engine compiles the query structure before substituting `userInput`. Even if `userInput` contains `' OR '1'='1`, the database engine treats it strictly as a literal text value rather than executable SQL syntax.
+
+### Layer B: Edge AST Payload Inspection
+
+To prevent malicious payloads from reaching database drivers and to log attacker IPs in real time, edge middleware inspects incoming JSON and form payloads for dangerous SQLi signatures:
+
+1. **Boolean Tautologies**: Patterns matching `OR '1'='1'` or `AND 2=2`.
+2. **UNION and Stacked Injections**: Payloads containing `UNION ALL SELECT` or command chaining with semicolons (`; DROP TABLE`).
+3. **Database Fingerprinting & Comment Truncation**: Strings ending with SQL comment delimiters (`--`, `/*`, `#`).
+
+---
+
+## 3. Operational Security Checklist for 2026
+
+1. **Database Least Privilege**: Configure application database credentials with the minimum required permissions (`SELECT`, `INSERT`, `UPDATE`). Never grant `SUPERUSER` or `DROP` permissions to application connection strings.
+2. **Automated Ephemeral TTL**: For applications supporting public shares, automatically purge records after their retention period (e.g., 24 hours) to prevent unbounded table growth on serverless tiers.
+3. **Audit Ring-Buffers**: Maintain an in-memory threat log of blocked attempts to identify coordinated botnets and enable 1-click IP bans via the SuperAdmin console.

@@ -32,6 +32,8 @@ const LABEL = "text-xs font-bold uppercase tracking-widest text-ink-3 mb-1.5 blo
 export function ContactSection() {
   const [intent, setIntent] = useState<Intent | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [directSuccess, setDirectSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
@@ -39,6 +41,7 @@ export function ContactSection() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phoneOrTg: "",
     message: "",
     _honey: "" // Honeypot field
   });
@@ -59,19 +62,61 @@ export function ContactSection() {
   };
 
   const subjectText = `Inquiry: ${current?.title ?? "General"}`;
-  const bodyText = `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`;
+  const bodyText = `Name: ${formData.name}\nEmail: ${formData.email}${formData.phoneOrTg ? `\nPhone/TG: ${formData.phoneOrTg}` : ""}\n\nMessage:\n${formData.message}`;
   const mailtoHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(bodyText)}`;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleDirectSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    sound.click();
+    sound.launch();
 
-    // Anti-spam: If honeypot is filled, ignore silently
+    // Anti-spam honeypot
     if (formData._honey) {
+      setIsSuccess(true);
+      setDirectSuccess(true);
       return;
     }
 
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phoneOrTg: formData.phoneOrTg,
+          intent: intent || "general",
+          message: formData.message,
+          sourcePage: "/contact",
+          _honey: formData._honey,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.ok) {
+        sound.success();
+        setDirectSuccess(true);
+        setIsSuccess(true);
+      } else {
+        // Fallback to client mail app
+        window.location.href = mailtoHref;
+        setDirectSuccess(false);
+        setIsSuccess(true);
+      }
+    } catch {
+      // Offline or network error: fallback to client mail app
+      window.location.href = mailtoHref;
+      setDirectSuccess(false);
+      setIsSuccess(true);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleMailtoOnly = () => {
+    sound.click();
     window.location.href = mailtoHref;
+    setDirectSuccess(false);
     setIsSuccess(true);
   };
 
@@ -123,20 +168,34 @@ export function ContactSection() {
                 role="status"
                 className="flex flex-col items-center justify-center text-center p-6 md:p-8 md:min-h-[380px] rounded-card border border-primary/25 bg-primary/5"
               >
-                <Mail aria-hidden="true" className="w-12 h-12 text-primary mb-4" />
-                <h3 className="text-xl sm:text-2xl font-bold text-ink mb-2">Draft opened in your email app</h3>
+                {directSuccess ? (
+                  <Check aria-hidden="true" className="w-12 h-12 text-ok mb-4" />
+                ) : (
+                  <Mail aria-hidden="true" className="w-12 h-12 text-primary mb-4" />
+                )}
+                <h3 className="text-xl sm:text-2xl font-bold text-ink mb-2">
+                  {directSuccess ? "Message Delivered Directly" : "Draft opened in your email app"}
+                </h3>
                 <p className="text-sm sm:text-base text-ink-2 max-w-sm mb-6">
-                  Nothing has been sent yet — press <strong>Send</strong> in your email app to deliver it.
-                  If no email app opened, copy the draft and send it to <span className="font-mono text-ink break-all">{CONTACT_EMAIL}</span>.
+                  {directSuccess ? (
+                    <>Your message has been captured into our PostgreSQL lead database and dispatched directly to THE SABBiR.</>
+                  ) : (
+                    <>
+                      Nothing has been sent yet — press <strong>Send</strong> in your email app to deliver it.
+                      If no email app opened, copy the draft and send it to <span className="font-mono text-ink break-all">{CONTACT_EMAIL}</span>.
+                    </>
+                  )}
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3">
                   <GlassButton onClick={copyDraft} variant="primary" magnetic={false}>
                     {copied ? <><Check aria-hidden="true" className="w-4 h-4" /> Copied</> : "Copy draft"}
                   </GlassButton>
                   <GlassButton onClick={() => setIsSuccess(false)} variant="secondary" magnetic={false}>
-                    Edit message
+                    Send another message
                   </GlassButton>
-                  <a href={mailtoHref} className="inline-flex min-h-10 items-center text-sm font-medium text-primary hover:underline underline-offset-4">Open email app again</a>
+                  <a href={mailtoHref} className="inline-flex min-h-10 items-center text-sm font-medium text-primary hover:underline underline-offset-4">
+                    Open in email app
+                  </a>
                 </div>
               </motion.div>
             ) : (
@@ -147,7 +206,7 @@ export function ContactSection() {
                   <span>{current.hint}</span>
                 </p>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleDirectSubmit} className="space-y-4">
                   {/* Honeypot */}
                   <input
                     type="text"
@@ -190,6 +249,19 @@ export function ContactSection() {
                   </div>
 
                   <div>
+                    <label htmlFor="contact-phone" className={LABEL}>
+                      Phone / Telegram <span className="text-[10px] font-normal lowercase tracking-normal">(optional)</span>
+                    </label>
+                    <GlassInput
+                      id="contact-phone"
+                      name="phoneOrTg"
+                      placeholder="+8801... or @username"
+                      value={formData.phoneOrTg}
+                      onChange={(e) => setFormData({...formData, phoneOrTg: e.target.value})}
+                    />
+                  </div>
+
+                  <div>
                     <label htmlFor="contact-message" className={LABEL}>Message</label>
                     <textarea
                       id="contact-message"
@@ -203,14 +275,25 @@ export function ContactSection() {
                     />
                   </div>
 
-                  <button
-                    type="submit"
-                    className="w-full min-h-12 py-3 px-4 bg-primary text-on-primary font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
-                  >
-                    <Send aria-hidden="true" className="w-4 h-4" /> Compose in email app
-                  </button>
+                  <div className="space-y-2 pt-1">
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full min-h-12 py-3 px-4 bg-primary text-on-primary font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:opacity-50"
+                    >
+                      <Send aria-hidden="true" className="w-4 h-4" />
+                      {isSubmitting ? "Delivering message..." : "Send Message (Instant Delivery)"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleMailtoOnly}
+                      className="w-full min-h-10 py-2 px-3 surface-card surface-interactive text-xs font-semibold text-ink-2 rounded-xl flex items-center justify-center gap-2 hover:text-ink"
+                    >
+                      <Mail aria-hidden="true" className="w-3.5 h-3.5" /> Compose in email app instead
+                    </button>
+                  </div>
                   <p className="text-xs text-ink-3 text-center">
-                    Opens a pre-filled draft in your email app — or write directly to{" "}
+                    Direct delivery saves to our database — or write directly to{" "}
                     <a href={`mailto:${CONTACT_EMAIL}`} className="font-mono text-ink hover:text-primary break-all">{CONTACT_EMAIL}</a>
                   </p>
                 </form>

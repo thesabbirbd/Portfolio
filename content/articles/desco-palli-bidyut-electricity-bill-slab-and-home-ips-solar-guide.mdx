@@ -1,0 +1,86 @@
+---
+title: "DESCO, DPDC & Palli Bidyut Electricity Bill Slabs and Home IPS Solar Sizing Guide"
+slug: "desco-palli-bidyut-electricity-bill-slab-and-home-ips-solar-guide"
+description: "Master BERC residential LT-A electricity bill step tariffs, VAT and demand charges, and size Home IPS inverters and tubular battery capacities."
+date: "2026-11-15"
+type: "article"
+category: "Open-Source Tools & Setup"
+difficulty: "Intermediate"
+tags: ["Electricity Bill", "DESCO", "Palli Bidyut", "IPS Battery", "Solar Sizer", "THESABBiR"]
+seoKeywords: ["berc electricity tariff slabs bd", "desco bill calculator", "home ips battery calculation", "solar panel watt sizing", "the sabbir"]
+hashtags: ["#ElectricityBillBD", "#IPSBattery", "#SolarPower", "#DESCO", "#THESABBiR"]
+coverImage: "https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=1200&q=80"
+status: "published"
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## Understanding Electricity Bills and Load Shedding in Bangladesh
+
+Electricity consumers in Bangladesh—whether served by DESCO, DPDC, WZPDCL, NESCO, or Bangladesh Rural Electrification Board (BREB / Palli Bidyut)—often observe non-linear jumps in monthly utility statements. 
+
+Understanding the mathematical structure of **Bangladesh Energy Regulatory Commission (BERC) step tariffs** and sizing an efficient **Home IPS (Instant Power Supply)** or **Rooftop Solar PV installation** can save significant household capital.
+
+---
+
+## 1. BERC Residential (LT-A) Tariff Step Slabs
+
+Residential electricity billing in Bangladesh is structured into tiered progressive step slabs:
+
+| Step Tariff Tier | Monthly Consumption (kWh / Units) | Energy Rate (BDT / Unit) |
+| :--- | :--- | :--- |
+| **Life Line** | 0 – 50 Units | ৳ 4.63 |
+| **Step 1** | 0 – 75 Units | ৳ 5.26 |
+| **Step 2** | 76 – 200 Units | ৳ 7.20 |
+| **Step 3** | 201 – 300 Units | ৳ 7.59 |
+| **Step 4** | 301 – 400 Units | ৳ 8.02 |
+| **Step 5** | 401 – 600 Units | ৳ 12.67 |
+| **Step 6** | Above 600 Units | ৳ 14.61 |
+
+### Ancillary Charges
+In addition to the base energy charges calculated across the slabs:
+1. **Demand Charge**: Fixed monthly charge per sanctioned kilowatt (typically ৳ 42 / kW).
+2. **Meter Rent**: Standard single-phase digital or smart prepaid meter rent (typically ৳ 40 / month).
+3. **Value Added Tax (VAT)**: Strictly **5%** applied to the sum of energy charges and demand charges.
+
+---
+
+## 2. How to Accurately Size a Home IPS and Battery
+
+When power interruptions occur, an IPS converts DC energy stored in lead-acid tubular batteries into 220V AC household electricity.
+
+### Step 1: Calculate Total Running Wattage
+Sum the active operating wattage of devices required during an outage:
+- Ceiling Fan (BLDC): ~35W each (Standard AC Fan: ~75W each)
+- LED Tube / Bulb: ~15W to 20W each
+- Wi-Fi Router + ONU: ~15W
+- Laptop / PC: ~65W to 120W
+
+```
+Total Running Load = Σ (Device Wattage × Count)
+```
+
+### Step 2: Determine IPS Inverter Capacity (VA)
+Inverters are rated in Volt-Amperes (VA). Assuming a typical domestic power factor (PF) of **0.80**:
+
+```
+Required Inverter VA = Total Running Watts / 0.80
+```
+
+For a 400W running load, an inverter of at least `400 / 0.80 = 500 VA` (or standard 800 VA to 1000 VA) is recommended.
+
+### Step 3: Size Deep Cycle Tubular Battery (Ah)
+To support a load for T hours using a 12V DC battery with an inverter efficiency (85%) and depth-of-discharge limit (80%):
+
+```
+Battery Capacity (Ah) = (Running Watts × Desired Backup Hours) / (12V × 0.85 × 0.80)
+```
+
+For example, supporting 300W for 4 hours requires:
+
+```
+Capacity = (300 × 4) / (12 × 0.85 × 0.80) = 1200 / 8.16 ≈ 147 Ah
+```
+A standard **150 Ah or 200 Ah tall tubular battery** ensures reliable service life exceeding 4 to 5 years.
+
+Calculate appliance power consumption and bill forecasts with [THE SABBiR Electricity Bill & Solar Sizer Studio](/tools/electricity-solar-calculator).

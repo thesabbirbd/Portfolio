@@ -5,6 +5,7 @@ import { Accent } from "@/components/system/SectionHeader";
 import { PageHeader } from "@/components/system/PageHeader";
 import { AsciiRule } from "@/components/system/Signal";
 import { pageMetadata } from "@/lib/seo";
+import { TelemetryStrip } from "@/components/telemetry/TelemetryStrip";
 
 export const metadata = pageMetadata({
   title: "Engineering Lab & Experiments | THE SABBiR",
@@ -25,6 +26,10 @@ export default function EngineeringLabPage() {
         lede="Hypotheses tested, boundaries pushed, and architectures broken. This is where I document raw technical experiments before they become projects — things tested, measured, compared, broken and investigated across local AI, Linux, networking and backend systems."
         className="mb-0 md:mb-0"
       />
+
+      <div className="container mx-auto px-4 max-w-5xl my-4">
+        <TelemetryStrip />
+      </div>
 
       {/* Bench log: interactive terminal + every experiment (moved here from the Home page) */}
       <EngineeringLabSection

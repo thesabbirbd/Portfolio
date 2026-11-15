@@ -1,0 +1,112 @@
+---
+title: "Building 24-Hour Ephemeral Content Sharing and Multi-Tier RBAC with PostgreSQL and Drizzle ORM"
+slug: "building-ephemeral-24h-sharing-and-saas-rbac-in-postgresql"
+description: "How to architect zero-cost ephemeral data sharing with automatic TTL expiration, PIN authorization, and multi-tier SaaS role-based access control (RBAC) in serverless PostgreSQL."
+date: "2026-11-15"
+type: "article"
+category: "Database & Backend Engineering"
+difficulty: "Advanced"
+tags: ["PostgreSQL", "Drizzle ORM", "RBAC", "SaaS", "Security", "Backend"]
+seoKeywords: ["ephemeral 24h link sharing postgresql", "drizzle orm rbac schema", "neon serverless ttl purge", "saas permission matrix", "the sabbir"]
+hashtags: ["#PostgreSQL", "#DrizzleORM", "#SaaS", "#RBAC", "#THESABBiR"]
+coverImage: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=1200&q=80"
+status: "published"
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## The Challenge of Ephemeral Data on Serverless Free Tiers
+
+When building modern SaaS workspaces that allow users to share creative outputs (such as edited photos, social stories, audio mixes, or financial ledgers) via temporary URLs, engineering teams face a storage dilemma:
+
+1. **Unbounded Storage Growth**: If every shared link lives indefinitely in the database, free database tiers (such as Neon's 500 MB quota) will quickly fill up with stale screenshots and temporary payloads.
+2. **Infrastructure Cost of Scheduled Workers**: Running continuous external cron jobs (e.g. AWS Lambda or Celery workers) to delete expired rows adds cloud subscription costs and architectural complexity.
+3. **Data Privacy and Retention**: Many business users require that shared links expire after 24 hours so sensitive invoices, phone numbers, or drafts do not linger indefinitely on the public internet.
+
+In THE SABBiR OS, this problem is solved using **lazy self-purging TTL queries** combined with an **in-memory Dual-Engine fallback**, ensuring that expired shares are automatically cleaned up without requiring dedicated background worker fleets.
+
+---
+
+## 1. Drizzle ORM Ephemeral Schema Design
+
+The `ephemeral_shares` table is designed to store compressed metadata, creator badges, optional cryptographic PIN hashes, and an exact timestamp expiration:
+
+```typescript
+import { pgTable, text, integer, timestamp, jsonb } from "drizzle-orm/pg-core";
+
+export const ephemeralShares = pgTable("ephemeral_shares", {
+  token: text("token").primaryKey(), // 10-char nano identifier, e.g. /s/k9x2m7p4q1
+  creatorName: text("creator_name").notNull(),
+  toolSlug: text("tool_slug").notNull(),
+  title: text("title").notNull(),
+  contentType: text("content_type").notNull().default("application/json"),
+  payloadJson: text("payload_json").notNull(),
+  previewDataUrl: text("preview_data_url"),
+  pinHash: text("pin_hash"), // Optional SHA-256 hash of 4-digit PIN
+  viewsCount: integer("views_count").notNull().default(0),
+  maxViews: integer("max_views"), // Optional auto-destruct view limit
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+```
+
+### Self-Purging Database Access Pattern
+
+Instead of relying on an asynchronous cron worker, every read or write query to the shares repository executes an integrated cleanup step:
+
+```typescript
+export async function getActiveShareByToken(token: string) {
+  const now = new Date();
+
+  // 1. Opportunistic purge of expired records
+  await db
+    .delete(ephemeralShares)
+    .where(lte(ephemeralShares.expiresAt, now));
+
+  // 2. Fetch target token only if not expired
+  const [record] = await db
+    .select()
+    .from(ephemeralShares)
+    .where(and(eq(ephemeralShares.token, token), gt(ephemeralShares.expiresAt, now)))
+    .limit(1);
+
+  if (!record) return null;
+
+  // 3. Atomically increment view count
+  await db
+    .update(ephemeralShares)
+    .set({ viewsCount: record.viewsCount + 1 })
+    .where(eq(ephemeralShares.token, token));
+
+  return record;
+}
+```
+
+This guarantees that:
+- Expired links immediately return `410 Gone` or `404 Not Found`.
+- Database storage remains bounded strictly to active shares within the 24-hour window.
+- Database storage stays well within free tier limits forever.
+
+---
+
+## 2. Multi-Tier SaaS Role-Based Access Control (RBAC)
+
+To support seamless transitions from anonymous visitors to registered members and system administrators, the user authentication engine enforces a 4-tier role hierarchy:
+
+| Role | Access Scope | Export XP | Cloud Storage | Admin Privileges |
+| :--- | :--- | :--- | :--- | :--- |
+| `guest` | Unrestricted client-side tools | +25 XP | In-Memory / LocalStorage | None |
+| `member` | Full workspace + 24h sharing | +50 XP (2x) | Cloud-synced profile | None |
+| `pro` | Advanced AI swarms & high-res exports | +100 XP | Extended 7-day share TTL | None |
+| `superadmin` | Global control plane (`/superadmin`) | +250 XP | Full DB access & backups | 100% RBAC Control |
+
+### The Dynamic Feature Flag Matrix
+
+Through the SuperAdmin console, administrators can dynamically toggle the access mode of any of the 35 tools in real time:
+
+- `open`: Direct instant export with zero modal prompts.
+- `guest_or_signup`: Displays the conversion gate modal with choice of Guest (+25 XP) or Full Account (+50 XP).
+- `members_only`: Requires an active authenticated session.
+- `maintenance`: Temporarily locks the studio for updates while preserving state.
+
+By decoupling business permission logic into declarative database tables, changes propagate instantly across the platform without requiring code redeployments.

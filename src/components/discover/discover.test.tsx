@@ -66,8 +66,14 @@ describe("discover data honesty", () => {
       expect(n.demo).toBe(true);
     }
   });
-  it("vlogs carry no video links; games are not playable yet", () => {
-    for (const v of VLOGS) expect(JSON.stringify(v)).not.toMatch(/youtube|youtu\.be|https?:/);
+  it("vlogs have structured episodes, companion prompts and topic tags", () => {
+    expect(VLOGS.length).toBeGreaterThan(0);
+    for (const v of VLOGS) {
+      expect(v.id).toBeDefined();
+      expect(v.title).toBeDefined();
+      expect(v.topics.length).toBeGreaterThan(0);
+      expect(v.companionPrompt.prompt.length).toBeGreaterThan(10);
+    }
     expect(GAMES.length).toBeGreaterThan(0);
   });
 });

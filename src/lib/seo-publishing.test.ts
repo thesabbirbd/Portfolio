@@ -83,7 +83,8 @@ describe("sitemap", () => {
       const segs = p.split("/").filter(Boolean);
       const staticPage = path.join(ROOT, "src/app", ...segs, "page.tsx");
       const dynamicPage = path.join(ROOT, "src/app", ...segs.slice(0, -1), "[slug]", "page.tsx");
-      expect(fs.existsSync(staticPage) || fs.existsSync(dynamicPage), p).toBe(true);
+      const dynamicToolPage = path.join(ROOT, "src/app", ...segs.slice(0, -1), "[tool]", "page.tsx");
+      expect(fs.existsSync(staticPage) || fs.existsSync(dynamicPage) || fs.existsSync(dynamicToolPage), p).toBe(true);
     }
     for (const type of Object.keys(SECTION) as ("notes" | "journal" | "projects" | "lab" | "articles")[]) {
       for (const item of getAllContent(type)) {

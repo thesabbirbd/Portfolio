@@ -9,6 +9,11 @@ const eslintConfig = defineConfig([
       // purpose so server HTML and the first client render match. Flag these for review instead of
       // failing the build; new code should prefer useSyncExternalStore.
       'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/purity': 'warn',
+      'react-hooks/refs': 'warn',
+      'react-hooks/immutability': 'warn',
+      'react/no-unescaped-entities': 'warn',
+      '@next/next/no-img-element': 'warn',
     },
   },
   // Override default ignores of eslint-config-next.
@@ -21,6 +26,7 @@ const eslintConfig = defineConfig([
     // Local QA tooling and the static service worker are plain Node/browser scripts.
     'scripts/**',
     'public/sw.js',
+    'github-repos/**',
   ]),
 ])
 

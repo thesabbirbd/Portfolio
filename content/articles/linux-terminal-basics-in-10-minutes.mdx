@@ -1,0 +1,82 @@
+---
+title: "Linux Terminal Basics in 10 Minutes: A Beginner's Survival Guide"
+slug: "linux-terminal-basics-in-10-minutes"
+description: "Master the essential Linux command-line concepts in 10 minutes: navigating directories, file operations, pipe redirects, and viewing service logs without fear."
+date: "2026-11-14"
+type: "article"
+category: "Basic & Beginner Guides"
+difficulty: "Basic"
+tags: ["Linux", "CLI", "Terminal", "Bash", "Beginner"]
+seoKeywords: ["linux terminal basics", "linux commands for beginners", "bash survival guide", "learn linux command line", "the sabbir"]
+hashtags: ["#Linux", "#DevOps", "#SysAdmin", "#Terminal", "#THESABBiR"]
+coverImage: "https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&w=1200&q=80"
+status: "published"
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## Why the terminal matters
+
+If you have only used graphical interfaces (Windows Explorer, macOS Finder), the terminal can seem intimidating at first. But beneath the surface, servers running modern web applications, Docker containers, and edge hardware operate almost exclusively through the command-line shell.
+
+The terminal is not harder than a GUI—it is simply more direct. In 10 minutes, you can master the 8 foundational commands that power 90% of daily operations.
+
+## 1. Where am I? Navigation
+
+- `pwd` (**Print Working Directory**): Tells you the exact filesystem path you are currently in.
+- `ls -la` (**List All**): Lists files and hidden directories with permissions, size, and modification timestamps.
+- `cd <path>` (**Change Directory**): Move into a target folder.
+  - `cd ..` moves up one folder.
+  - `cd ~` jumps directly to your home directory.
+
+```bash
+$ pwd
+/home/thesabbir
+
+$ ls -la
+total 32
+drwxr-xr-x 4 thesabbir thesabbir 4096 Nov 14 10:00 .
+-rw-r--r-- 1 thesabbir thesabbir  220 Nov 14 09:30 .bashrc
+drwxr-xr-x 2 thesabbir thesabbir 4096 Nov 14 10:15 projects
+```
+
+## 2. Inspecting and reading files
+
+Never open heavy desktop editors just to inspect server configuration files:
+
+- `cat file.txt`: Prints the entire file to your terminal screen.
+- `less file.txt`: Allows you to scroll up and down with arrow keys (press `q` to quit).
+- `tail -f /var/log/syslog`: Streams live log lines as they are written in real-time.
+
+## 3. The Power of Pipes (`|`) and Grep
+
+A core UNIX philosophy states: *Write programs that do one thing well, and connect them together with text streams.*
+
+The pipe symbol (`|`) takes the output of one command and feeds it directly into the input of another:
+
+```bash
+# Find any running Python process in your system
+$ ps aux | grep python
+
+# Count how many lines are in a configuration file
+$ cat /etc/hosts | wc -l
+```
+
+## 4. Permissions Made Simple: chmod and chown
+
+Every file in Linux has three permission tiers:
+1. **User (Owner)**
+2. **Group**
+3. **Others (World)**
+
+Each tier can have `Read (4)`, `Write (2)`, and `Execute (1)`.
+When you see `chmod 600 id_rsa`, it means:
+- Owner = `4 + 2 = 6` (Read & Write)
+- Group = `0` (No access)
+- Others = `0` (No access)
+
+This ensures private keys and sensitive credentials remain secure.
+
+## Test your skills in the arcade
+
+Ready to practice triage commands on real broken server scenarios? Jump into [Kernel Breach: Terminal CTF](/games?challenge=kernel-breach) on THE SABBiR OS to test your skills in an interactive in-browser shell.

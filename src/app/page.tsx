@@ -1,4 +1,5 @@
 import { HeroSection } from "@/components/hero/HeroSection";
+import { EverydayToolsAndNewsDirectory } from "@/components/home/EverydayToolsAndNewsDirectory";
 import { AboutSection } from "@/components/about/AboutSection";
 import { ProjectsSection } from "@/components/projects/ProjectsSection";
 import { OmnideskSection } from "@/components/omnidesk/OmnideskSection";
@@ -36,6 +37,9 @@ export default function Home() {
     <div className="flex flex-col w-full">
       <ChapterRail />
       <HeroSection />
+
+      {/* Newly Launched Everyday Tools & News Directory (Clean Clickable Lists) */}
+      <EverydayToolsAndNewsDirectory />
 
       {/* Featured current role, first thing after the hero */}
       <AiyaarFeature />

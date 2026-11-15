@@ -11,35 +11,37 @@
 //  - games are "coming soon" only
 
 import type { LucideIcon } from "lucide-react";
-import { BookOpenText, Clapperboard, Newspaper, Wrench, FlaskRound, Gamepad2 } from "lucide-react";
+import { BookOpenText, Clapperboard, Newspaper, Wrench, FlaskRound, Gamepad2, Sparkles, Cpu } from "lucide-react";
+
+import { VLOG_EPISODES, type VlogEpisode } from "./vlogs";
 
 export type DiscoverSection = {
-  id: "articles" | "vlogs" | "news" | "tools" | "playground" | "games";
+  id: "articles" | "vlogs" | "news" | "tools" | "playground" | "games" | "hacks" | "os-brain";
   href: string;
   title: string;
   label: string;
   blurb: string;
   Icon: LucideIcon;
   role: "brand" | "accent" | "signal" | "ok";
+  popularityScore?: number;
+  addedAt?: string;
+  isNew?: boolean;
 };
 
 export const DISCOVER_SECTIONS: DiscoverSection[] = [
-  { id: "articles", href: "/articles", title: "Technical articles", label: "Read", blurb: "Long-form write-ups on Linux, containers, networking and local AI.", Icon: BookOpenText, role: "brand" },
-  { id: "vlogs", href: "/vlogs", title: "Vlogs", label: "Watch", blurb: "Screen-recorded lab sessions: setups, failures and fixes.", Icon: Clapperboard, role: "accent" },
-  { id: "news", href: "/news", title: "News commentary", label: "Sourced", blurb: "Short takes on platform releases — always linked to the primary source.", Icon: Newspaper, role: "signal" },
-  { id: "tools", href: "/tools", title: "Interactive tools", label: "Use", blurb: "Subnet, chmod, Base64, JSON and timestamp tools that run in your browser.", Icon: Wrench, role: "ok" },
-  { id: "playground", href: "/playground", title: "Engineering playground", label: "Play", blurb: "Live simulations of rate limiting, load balancing and caching.", Icon: FlaskRound, role: "signal" },
-  { id: "games", href: "/games", title: "Browser games", label: "Soon", blurb: "Small engineering games — coming soon, stay tuned.", Icon: Gamepad2, role: "brand" },
+  { id: "tools", href: "/tools", title: "55 Interactive Tools", label: "Use", blurb: "Bangla Bijoy, Medicine, CGPA, Electricity, Zakat, BCS Photo & Dev Studios.", Icon: Wrench, role: "ok", popularityScore: 98, isNew: true, addedAt: "2026-11-15" },
+  { id: "hacks", href: "/hacks", title: "Everyday Hacks Hub", label: "Shortcuts", blurb: "36+ field-tested AI prompts, GitHub tricks, Linux one-liners and BD life hacks.", Icon: Sparkles, role: "accent", popularityScore: 95, isNew: true, addedAt: "2026-11-15" },
+  { id: "os-brain", href: "/os-brain", title: "Autonomous OS Brain", label: "Autonomous", blurb: "Self-evolving technical intelligence center with automated discovery pipeline.", Icon: Cpu, role: "signal", popularityScore: 92, isNew: true, addedAt: "2026-11-15" },
+  { id: "articles", href: "/articles", title: "Technical articles", label: "Read", blurb: "Long-form write-ups on Linux, containers, networking and local AI.", Icon: BookOpenText, role: "brand", popularityScore: 88, isNew: false },
+  { id: "vlogs", href: "/vlogs", title: "Vlogs", label: "Watch", blurb: "Screen-recorded lab sessions: setups, failures and fixes.", Icon: Clapperboard, role: "accent", popularityScore: 82, isNew: false },
+  { id: "news", href: "/news", title: "News commentary", label: "Sourced", blurb: "Short takes on platform releases — always linked to the primary source.", Icon: Newspaper, role: "signal", popularityScore: 80, isNew: false },
+  { id: "playground", href: "/playground", title: "Engineering playground", label: "Play", blurb: "Live simulations of rate limiting, load balancing and caching.", Icon: FlaskRound, role: "signal", popularityScore: 78, isNew: false },
+  { id: "games", href: "/games", title: "Browser games", label: "Play", blurb: "Terminal & SQL CTF engineering challenges running in your browser.", Icon: Gamepad2, role: "brand", popularityScore: 85, isNew: false },
 ];
 
-export type Vlog = { id: string; title: string; summary: string; topics: string[]; demo: true };
+export type Vlog = VlogEpisode;
 
-export const VLOGS: Vlog[] = [
-  { id: "ubuntu-from-zero", title: "Ubuntu dev box from zero", summary: "Fresh install to a repeatable backend workstation: users, SSH keys, firewall, Docker and a bootstrap script.", topics: ["Ubuntu", "SSH", "Docker"], demo: true },
-  { id: "ollama-vram", title: "Running local LLMs on limited VRAM", summary: "Quantisation levels, context length and what actually fits on a consumer GPU with Ollama.", topics: ["Ollama", "GPU", "Local AI"], demo: true },
-  { id: "mikrotik-lab", title: "A home NOC lab with MikroTik", summary: "VLANs, firewall rules and basic monitoring on a small routing bench.", topics: ["MikroTik", "VLAN", "Monitoring"], demo: true },
-  { id: "fastapi-postgres", title: "FastAPI + PostgreSQL, step by step", summary: "Models, migrations and connection pooling for a small API — the Omnidesk BD way.", topics: ["FastAPI", "PostgreSQL", "Backend"], demo: true },
-];
+export const VLOGS: Vlog[] = VLOG_EPISODES;
 
 export type NewsItem = {
   id: string;
@@ -109,15 +111,26 @@ export const NEWS: NewsItem[] = [
 export type Game = { id: string; title: string; pitch: string; skills: string[] };
 
 export const GAMES: Game[] = [
-  { id: "terminal-ctf", title: "Terminal CTF", pitch: "Fix a broken server from a fake shell: find the failing service, read the logs, restart it.", skills: ["Linux", "systemd", "logs"] },
-  { id: "subnet-sprint", title: "Subnet Sprint", pitch: "Race the clock: split networks, find broadcast addresses, size the subnet.", skills: ["CIDR", "Networking"] },
-  { id: "packet-runner", title: "Packet Runner", pitch: "Guide a packet through routers and firewalls without getting dropped.", skills: ["Routing", "Firewalls"] },
-  { id: "command-quiz", title: "Linux Command Quiz", pitch: "Which command does what? Quick rounds from beginner to sysadmin.", skills: ["Shell", "CLI"] },
+  { id: "sql-detective", title: "SQL Detective: The Rajshahi Server Heist", pitch: "Investigate a 03:15 AM database heist across VPN and audit logs to catch the culprit.", skills: ["SQL", "Forensics", "JOINs"] },
+  { id: "kernel-breach", title: "Kernel Breach: Bandit Terminal CTF", pitch: "Fix broken systemd daemons, subnet sizes, and SQL indices in a terminal shell.", skills: ["Linux", "systemd", "CLI"] },
+  { id: "packet-defender", title: "Packet Defender: MikroTik DDoS Firewall", pitch: "3-lane real-time network routing: allow clean traffic and drop botnet floods.", skills: ["NOC", "Firewall", "MikroTik"] },
+  { id: "container-grid", title: "Container Grid: Docker & K8s Puzzle", pitch: "Wire Nginx, FastAPI, Redis, and Postgres replicas without 502 or OOM errors.", skills: ["Docker", "Kubernetes", "SRE"] },
+  { id: "subnet-sprint", title: "Subnet & Regex Blitz: 60s Overclock", pitch: "Toggle 8-bit switches (128..1) and answer rapid CIDR & regex patterns under 60s.", skills: ["CIDR", "Regex", "Binary"] },
+  { id: "uptime-architect", title: "Uptime Tycoon: 99.99% Chaos Simulator", pitch: "Balance RAM, FastAPI workers, and DC-UPS battery to hold 99.99% uptime.", skills: ["SRE", "High Availability", "Chaos"] },
+  { id: "query-optimizer", title: "Query Optimizer: Slow-Log Rescue", pitch: "PostgreSQL CPU is 96°C! Inspect EXPLAIN plans and apply B-tree indices.", skills: ["PostgreSQL", "B-tree", "EXPLAIN"] },
 ];
 
-/** Ideas the Explore hub lists as planned (no page yet). */
-export const PLANNED_FEATURES = [
-  { title: "/now page", desc: "What I'm learning and building this month, dated." },
-  { title: "Uses & setup", desc: "Hardware, OS, editor and homelab — the real list." },
-  { title: "Newsletter", desc: "A monthly email of new articles and lab notes." },
+export type PlannedFeature = {
+  title: string;
+  desc: string;
+  href?: string;
+  status: "live" | "planned";
+};
+
+/** Ideas the Explore hub lists as planned or newly published. */
+export const PLANNED_FEATURES: PlannedFeature[] = [
+  { title: "/now page", desc: "What I'm actively building, testing in the lab, and shipping this quarter.", href: "/now", status: "live" },
+  { title: "Uses & setup", desc: "Hardware, homelab, developer tooling, and production stack.", href: "/uses", status: "live" },
+  { title: "Architecture & APIs", desc: "Interactive API explorer, SQL query execution flows, and edge telemetry.", href: "/architecture", status: "live" },
+  { title: "Newsletter", desc: "A monthly dispatch of new articles, lab notes, and SQL architectures.", status: "planned" },
 ];

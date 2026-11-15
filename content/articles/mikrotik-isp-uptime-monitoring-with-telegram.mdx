@@ -1,0 +1,67 @@
+---
+title: "MikroTik & ISP Uptime Monitoring with Telegram Outage Alerts"
+slug: "mikrotik-isp-uptime-monitoring-with-telegram"
+description: "How to set up sub-second latency and jitter monitoring for MikroTik RouterOS gateways, with automated Telegram alerts during ISP link degradation or fiber cuts."
+date: "2026-11-15"
+type: "article"
+category: "NOC, MikroTik & Hardware"
+difficulty: "Intermediate"
+tags: ["MikroTik", "NOC", "Networking", "Telegram", "Monitoring"]
+seoKeywords: ["mikrotik uptime monitoring", "isp jitter detection", "telegram outage alerts", "routeros network monitoring", "the sabbir"]
+hashtags: ["#MikroTik", "#Networking", "#NOC", "#DevOps", "#THESABBiR"]
+coverImage: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80"
+status: "published"
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## The Reality of Multi-WAN Operations
+
+In office environments and server colocation racks across Bangladesh, internet connectivity typically relies on dual-WAN setups (e.g. primary fiber uplink and a secondary radio or backup fiber line).
+
+However, traditional monitoring systems often only detect complete catastrophic link death. In reality, **network degradation**—characterized by sudden latency spikes (from 15ms to 240ms) or 20% packet loss—cripples real-time VoIP, video meetings, and database replication long before an interface physically goes down.
+
+---
+
+## 1. Monitoring Latency Jitter vs. Simple Ping
+
+A simple ping every 5 minutes will miss transient packet dropouts. A high-fidelity watchdog measures **statistical jitter**:
+
+```
+Jitter = [1 / (N - 1)] × Σ |L_(i+1) - L_i|
+```
+
+Where $L_i$ represents the latency sample in milliseconds. If consecutive ping samples vary wildly, the upstream route is saturated or experiencing queueing delays, even if total packet loss remains below 5%.
+
+---
+
+## 2. Architecture of an Automated Watchdog
+
+An efficient lightweight watchdog operates as follows:
+
+```
+[ MikroTik Router ] ──ICMP Probe──▶ [ Upstream Gateway ]
+         │                                   │
+         ▼                                   ▼
+ [ Jitter Calculation ]               [ Route Health ]
+         │
+         ▼ (Threshold Exceeded)
+[ Telegram Bot Dispatcher ] ──▶ [ Operations Team Channel ]
+```
+
+When latency exceeds 80ms or packet loss climbs above 15% across a 10-second window, the monitoring service dispatches a structured Markdown alert to an administrative Telegram group.
+
+---
+
+## 3. Open-Source Implementation
+
+You can deploy the open-source [netpulse-tg](https://github.com/thesabbir/netpulse-tg) watchdog on a low-power single-board computer or container host on your LAN:
+
+```bash
+git clone https://github.com/thesabbir/netpulse-tg.git
+cd netpulse-tg
+pip install -e .
+netpulse --target 8.8.8.8 --isp "Primary Fiber"
+```
+
+The service runs continuously in the background, consuming less than 15MB of RAM while providing sub-second link visibility and instant notifications.

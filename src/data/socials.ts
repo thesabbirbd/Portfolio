@@ -3,7 +3,7 @@ export interface SocialLink {
   name: string;
   url: string;
   handle: string;
-  icon: "github" | "linkedin" | "facebook" | "gmail" | "instagram" | "x" | "maps";
+  icon: "github" | "linkedin" | "facebook" | "gmail" | "instagram" | "x" | "maps" | "youtube";
   category: "primary" | "social" | "community";
   highlight?: boolean;
 }
@@ -24,6 +24,15 @@ export const SOCIAL_LINKS: SocialLink[] = [
     url: "https://github.com/thesabbirbd",
     handle: "github/thesabbirbd",
     icon: "github",
+    category: "primary",
+    highlight: true,
+  },
+  {
+    id: "youtube",
+    name: "YouTube",
+    url: "https://www.youtube.com/@thesabbirbd",
+    handle: "@thesabbirbd",
+    icon: "youtube",
     category: "primary",
     highlight: true,
   },

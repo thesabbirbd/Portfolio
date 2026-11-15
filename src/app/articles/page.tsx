@@ -1,35 +1,65 @@
 import { getAllContent } from "@/lib/content";
-import { ContentCard } from "@/components/content/ContentCard";
 import { PageHeader } from "@/components/system/PageHeader";
 import { Accent } from "@/components/system/SectionHeader";
 import { pageMetadata } from "@/lib/seo";
+import { CategorizedArticlesHub } from "@/components/content/CategorizedArticlesHub";
+import { BanglaGuideModal } from "@/components/ui/BanglaGuideModal";
+
+export const dynamic = "force-static";
 
 const articles = getAllContent("articles");
 
 export const metadata = pageMetadata({
-  title: "Technical Articles | THE SABBiR",
-  description: "Long-form technical articles on Linux, Docker, networking and local AI by Md Sabbirul Islam Khan, known as THE SABBiR.",
+  title: "Categorized Technical Articles & Open-Source Hub | THE SABBiR",
+  description: "Field-tested technical guides on Linux sysadmin, PostgreSQL indexing, CIDR subnetting, local LLMs, and curated open-source tools by Md Sabbirul Islam Khan, known as THE SABBiR.",
   path: "/articles",
-  // Indexed once at least one real (non-demo) article exists.
-  noindex: articles.every((a) => a.meta.demo),
+  noindex: articles.length === 0,
 });
 
 export default function ArticlesPage() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "THE SABBiR Technical Guides & Open-Source Arsenal",
+    itemListElement: articles.map((art, idx) => ({
+      "@type": "ListItem",
+      position: idx + 1,
+      item: {
+        "@type": "TechArticle",
+        headline: art.meta.title,
+        description: art.meta.description,
+        url: `https://sabbir.nav.bd/articles/${art.meta.slug}`,
+        datePublished: art.meta.date,
+        author: {
+          "@type": "Person",
+          name: "Md Sabbirul Islam Khan",
+          alternateName: "THE SABBiR",
+        },
+      },
+    })),
+  };
+
   return (
     <div className="flex flex-col w-full pt-6 md:pt-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <PageHeader
         crumbs={[{ label: "Explore", href: "/explore" }, { label: "Articles" }]}
-        eyebrow="Technical articles"
-        title={<>Long-form <Accent>write-ups</Accent></>}
-        lede="Linux, containers, networking and local AI — explained step by step. Entries marked Demo are samples while the section fills up."
+        eyebrow="Knowledge Base"
+        title={<>Technical guides &amp; <Accent>open-source hub</Accent></>}
+        lede="Practical, field-tested guides spanning beginner Linux navigation to production PostgreSQL indexing, local Ollama LLMs, and open-source infrastructure."
       />
+
+      <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 mb-6 flex justify-end">
+        <BanglaGuideModal topic="articles" />
+      </div>
+
       <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 mb-16">
-        <h2 className="sr-only">Latest articles</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
-          {articles.map((item) => (
-            <ContentCard key={item.meta.slug} item={item} baseUrl="/articles" />
-          ))}
-        </div>
+        <h2 className="sr-only">Categorized Technical Articles</h2>
+        <CategorizedArticlesHub initialArticles={articles} />
       </div>
     </div>
   );

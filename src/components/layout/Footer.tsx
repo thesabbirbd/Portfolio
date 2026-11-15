@@ -5,19 +5,34 @@ import Link from "next/link";
 import { SOCIAL_LINKS } from "@/data/socials";
 import { AIYAAR } from "@/data/aiyaar";
 import { APP_VERSION } from "@/lib/version";
-import { Mail, ArrowUp, MapPin, Terminal, FileText, Command, Compass, Sparkles } from "lucide-react";
+import {
+  Mail,
+  ArrowUp,
+  MapPin,
+  Terminal,
+  FileText,
+  Command,
+  Compass,
+  Sparkles,
+  Wrench,
+  Landmark,
+  Bot,
+  ShieldCheck,
+} from "lucide-react";
 import {
   GithubIcon,
   LinkedinIcon,
   FacebookIcon,
   InstagramIcon,
-  TwitterIcon
+  TwitterIcon,
+  YoutubeIcon,
 } from "@/components/ui/BrandIcons";
 import { sound } from "@/lib/sound";
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   github: GithubIcon,
   linkedin: LinkedinIcon,
+  youtube: YoutubeIcon,
   facebook: FacebookIcon,
   instagram: InstagramIcon,
   x: TwitterIcon,
@@ -27,47 +42,60 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
 
 const COLUMNS = [
   {
-    title: "Explore",
-    icon: Compass,
+    title: "Everyday Studios",
+    icon: Wrench,
     links: [
-      { href: "/", label: "Home" },
-      { href: "/about", label: "About" },
-      { href: "/aiyaar", label: `Aiyaar role · ${AIYAAR.roleShort}` },
-      { href: AIYAAR.url, label: "Aiyaar website ↗", external: true },
-      { href: "/resume", label: "Resume" },
-      { href: "/contact", label: "Contact" },
+      { href: "/tools/id-card-stitcher", label: "NID & Dual ID A4 Stitcher" },
+      { href: "/tools/bangla-converter", label: "Bijoy ↔ Unicode Bangla" },
+      { href: "/tools/medicine-scheduler", label: "Prescription Dose & Refill" },
+      { href: "/tools/electricity-solar-calculator", label: "Electricity Bill & Solar Sizer" },
+      { href: "/tools/family-budget-zakat", label: "Family Hisab & BAJUS Zakat" },
+      { href: "/tools/house-rent-studio", label: "House Rent Receipt & To-Let" },
+      { href: "/tools/gov-photo-sizer", label: "BCS & Visa Photo Sizer" },
+      { href: "/tools/document-scanner", label: "Doc Scanner & Photocopy" },
+      { href: "/tools", label: "All 56 Tools Catalog →" },
     ],
   },
   {
-    title: "Engineering",
-    icon: Terminal,
+    title: "BD Business & Finance",
+    icon: Landmark,
     links: [
-      { href: "/projects", label: "Projects" },
-      { href: "/engineering-lab", label: "Engineering Lab" },
+      { href: "/tools/tax-sanchaypatra-emi", label: "BD Tax, Sanchaypatra & EMI" },
+      { href: "/tools/cgpa-calculator", label: "SSC/HSC & UGC CGPA Studio" },
+      { href: "/tools/age-health-card", label: "Job Age & Emergency Health Card" },
+      { href: "/tools/event-dawat-planner", label: "Dawat Catering & Chanda Split" },
+      { href: "/tools/remittance-calculator", label: "2.5% Remittance Calculator" },
+      { href: "/tools/unit-land-converter", label: "Land & BAJUS Gold Converter" },
+      { href: "/tools/invoice-maker", label: "BD SME Invoice & Thermal POS" },
+      { href: "/tools/social-text-styler", label: "Social Bold Unicode Styler" },
+    ],
+  },
+  {
+    title: "Autonomous AI & Hubs",
+    icon: Bot,
+    links: [
+      { href: "/os-brain", label: "Autonomous OS Brain Center" },
+      { href: "/hacks", label: "40 Everyday Life & AI Hacks" },
+      { href: "/agents", label: "24 Autonomous Domain Agents" },
+      { href: "/agents#swarms", label: "8 Multi-Agent Swarms" },
+      { href: "/tools/embed-widget-studio", label: "Embeddable Web Widgets" },
+      { href: "/tools/password-vault-hash", label: "AES-GCM Password Vault" },
+      { href: "/games", label: "6 DevOps CTF Games" },
+      { href: "/open-source", label: "28+ Open-Source Repos" },
+    ],
+  },
+  {
+    title: "Identity & SuperAdmin",
+    icon: ShieldCheck,
+    links: [
+      { href: "/about", label: "About Md Sabbirul Islam Khan" },
+      { href: "/aiyaar", label: `Aiyaar · ${AIYAAR.roleShort}` },
       { href: "/experience", label: "Experience & Skills" },
-    ],
-  },
-  {
-    title: "Discover",
-    icon: Sparkles,
-    links: [
-      { href: "/explore", label: "Explore hub" },
-      { href: "/articles", label: "Technical articles" },
-      { href: "/vlogs", label: "Vlogs" },
-      { href: "/news", label: "News commentary" },
-      { href: "/tools", label: "Interactive tools" },
-      { href: "/playground", label: "Engineering playground" },
-      { href: "/games", label: "Browser games" },
-    ],
-  },
-  {
-    title: "Knowledge",
-    icon: FileText,
-    links: [
-      { href: "/notes", label: "Engineering Notes" },
-      { href: "/journal", label: "Journal" },
-      { href: "/exploration", label: "Exploration" },
-      { href: "/search", label: "Search" },
+      { href: "/resume", label: "Professional Résumé" },
+      { href: "/articles", label: "Technical Articles" },
+      { href: "/architecture", label: "System Architecture" },
+      { href: "/superadmin", label: "SuperAdmin Console" },
+      { href: "/explore", label: "Platform Directory" },
     ],
   },
 ];

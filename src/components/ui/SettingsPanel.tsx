@@ -19,7 +19,21 @@ export function SettingsPanel() {
   const { theme, setTheme } = useTheme();
   const colorTheme = useThemeColor();
   const themeSource = useThemeSource();
-  const { spatial3D, toggle3D, reducedMotion, toggleMotion, soundEnabled, toggleSound, soundLevel, setSoundLevel, isHydrated } = useSettings();
+  const {
+    spatial3D,
+    toggle3D,
+    reducedMotion,
+    toggleMotion,
+    soundEnabled,
+    toggleSound,
+    soundLevel,
+    setSoundLevel,
+    fontScale,
+    setFontScale,
+    highContrast,
+    toggleHighContrast,
+    isHydrated,
+  } = useSettings();
 
   const { isNavHidden } = useNavVisibility();
   const isDesktop = useMediaQuery('(min-width: 768px)', true);
@@ -154,6 +168,32 @@ export function SettingsPanel() {
                       {themeSource === "saved" ? "saved on this device" : "picked at random for this visit"}
                     </p>
                   )}
+                </section>
+
+                <section className="space-y-2">
+                  <h3 className="font-mono text-eyebrow uppercase text-ink-3">Accessibility & Readability</h3>
+                  <div className="rounded-card surface-card p-3.5 space-y-3">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <div className="font-medium text-ink">High-Contrast Mode</div>
+                        <div className="text-xs text-ink-3">Boosts border definitions and text darkness to WCAG AAA</div>
+                      </div>
+                      <Switch checked={highContrast} onChange={toggleHighContrast} label="High-Contrast Mode" />
+                    </div>
+                    <div className="pt-2 border-t border-line">
+                      <div className="text-xs font-medium text-ink mb-1.5">Reading Font Scale</div>
+                      <Segmented<"100%" | "110%" | "120%">
+                        label="Font scale"
+                        value={fontScale}
+                        onChange={setFontScale}
+                        options={[
+                          { value: "100%", label: "Default (100%)" },
+                          { value: "110%", label: "Comfort (110%)" },
+                          { value: "120%", label: "Large (120%)" },
+                        ]}
+                      />
+                    </div>
+                  </div>
                 </section>
 
                 <section className="space-y-2">

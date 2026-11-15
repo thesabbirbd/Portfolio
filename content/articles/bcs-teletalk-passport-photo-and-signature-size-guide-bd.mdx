@@ -1,0 +1,107 @@
+---
+title: "BCS, Teletalk & Passport Photo and Signature Size Guide in Bangladesh"
+slug: "bcs-teletalk-passport-photo-and-signature-size-guide-bd"
+description: "Complete technical guide to resizing, cropping, and compressing BCS 300x300px photos (<100KB) and 300x80px signatures (<60KB) for Teletalk job portals and E-Passports."
+date: "2026-11-15"
+type: "article"
+category: "Open-Source Tools & Setup"
+difficulty: "Basic"
+tags: ["BCS Photo", "Teletalk", "Signature Crop", "Passport Photo", "Gov Job BD", "THESABBiR"]
+seoKeywords: ["bcs photo 300x300 size", "teletalk signature 300x80", "bcs application photo resize", "bangladesh passport photo size", "the sabbir"]
+hashtags: ["#BCS", "#GovtJobBD", "#Teletalk", "#PhotoSizer", "#THESABBiR"]
+coverImage: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=1200&q=80"
+status: "published"
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## The Strict Dimension Challenge in Bangladeshi Government Portals
+
+Every year, hundreds of thousands of applicants submit online job forms across Bangladesh government recruitment portals powered by Teletalk (including the Bangladesh Civil Service - BCS, Primary Teacher Recruitment, Non-Cadre, and Ministry Circulars). 
+
+Yet, one of the most common reasons an application is rejected or fails to upload is **mismatched photo and signature file specifications**.
+
+The Teletalk server enforces rigid binary validation rules:
+1. **Applicant Photograph**: Strictly **300 × 300 pixels** (aspect ratio 1:1), with a file size strictly between **4 KB and 100 KB**.
+2. **Applicant Signature**: Strictly **300 × 80 pixels** (aspect ratio 3.75:1), with a file size strictly between **3 KB and 60 KB**.
+3. **File Format**: Must be standard baseline JPEG (`.jpg` / `.jpeg`). PNG or WebP formats are immediately rejected by legacy servers.
+
+---
+
+## 1. BCS & Teletalk Photo Specification Breakdown
+
+| Parameter | Photo Specification | Signature Specification |
+| :--- | :--- | :--- |
+| **Dimensions** | 300 × 300 px | 300 × 80 px |
+| **Aspect Ratio** | 1:1 (Square) | 3.75:1 (Horizontal Strip) |
+| **File Format** | JPEG / JPG | JPEG / JPG |
+| **Max File Size** | 100 KB | 60 KB |
+| **Ideal Target Size**| ~40 KB – 75 KB | ~20 KB – 40 KB |
+| **Background** | Clean White / Off-White | Clean White (No shadow) |
+| **Ink Color** | Natural Skin Tones | Dark Black or Navy Blue |
+
+---
+
+## 2. Common Pitfalls & Why Smartphone Photos Fail
+
+When taking a portrait photo or signing on paper with a smartphone:
+- **Phone Photos Are Too Large**: Modern phone cameras produce 12MP to 50MP images ranging from 3 MB to 15 MB in size.
+- **Aspect Ratio Distortion**: Resizing a 4:3 or 16:9 photo directly to 300 × 300 pixels without cropping stretches or squashes the applicant's face, leading to disqualification during oral viva verification.
+- **Shadows on White Paper**: Signatures photographed on desk surfaces suffer from uneven shadows and yellowish indoor lighting, preventing clean binarization.
+
+---
+
+## 3. How Client-Side Binary Search Compression Works
+
+To guarantee that an image is both crisp and strictly under 100 KB without uploading sensitive portraits to a remote server, **THE SABBiR OS Gov Photo Sizer Studio** implements an in-browser binary search JPEG quality compressor:
+
+```typescript
+// Client-side iterative binary search quality compressor
+async function compressToTargetKb(
+  canvas: HTMLCanvasElement,
+  maxKb: number = 100
+): Promise<Blob> {
+  let minQuality = 0.4;
+  let maxQuality = 0.98;
+  let bestBlob: Blob | null = null;
+
+  for (let i = 0; i < 6; i++) {
+    const midQuality = (minQuality + maxQuality) / 2;
+    const blob = await new Promise<Blob>((resolve) =>
+      canvas.toBlob((b) => resolve(b!), "image/jpeg", midQuality)
+    );
+
+    const sizeKb = blob.size / 1024;
+    if (sizeKb <= maxKb) {
+      bestBlob = blob;
+      minQuality = midQuality; // Try higher quality
+    } else {
+      maxQuality = midQuality; // Reduce quality
+    }
+  }
+
+  return bestBlob || canvas.toBlob(...);
+}
+```
+
+---
+
+## 4. International Visa & Passport Variations
+
+For candidates applying for foreign scholarships, work permits, or tourism visas, different embassies enforce distinct parameters:
+- **Bangladesh E-Passport**: 45 × 55 mm (~531 × 650 px at 300 DPI) with white or sky-blue background.
+- **US Visa (DS-160)**: Exactly 2 × 2 inches (600 × 600 px), head height between 50% and 69% of the frame.
+- **Schengen Visa**: 35 × 45 mm, light gray or light blue backdrop with neutral facial expression.
+
+---
+
+## 5. Free 1-Click Studio on THE SABBiR OS
+
+Rather than visiting local computer shops or paying photo editing charges, you can use the free, zero-upload tool on this platform:
+👉 **[Open Gov & BCS Job Photo Sizer Studio](/tools/gov-photo-sizer)**
+
+Features:
+- Instant 1-click presets for BCS Photo (300×300), BCS Signature (300×80), and E-Passport.
+- Face alignment oval guide for correct chin and eye positioning.
+- Printable **4R 8-Photo Sheet generator** ready for home or studio printing.
+- 100% private in-browser canvas execution — your identity documents never touch any server.

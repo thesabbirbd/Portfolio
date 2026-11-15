@@ -1,0 +1,54 @@
+---
+title: "Khata2Sheet AI: Local OCR & Bengali Ledger Digitizer"
+slug: "khata2sheet-ai"
+description: "A local-first document processing pipeline that extracts handwritten and printed Bengali khata ledger entries into structured Excel and Google Sheets without cloud API costs."
+date: "2026-10-15"
+type: "projects"
+category: "AI"
+tags: ["Computer Vision", "OCR", "Bengali NLP", "Python", "Automation"]
+status: "published"
+featured: true
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+projectStatus: "active"
+projectRole: "Solo Developer"
+technologies: ["Python", "OpenCV", "Tesseract", "FastAPI", "Pandas"]
+githubUrl: "https://github.com/thesabbirbd/khata2sheet-ai"
+dateStarted: "2026-09-01"
+architecture:
+  nodes:
+    - Ledger Camera Capture
+    - Image Preprocessing (Bilateral Filter / Perspective Warp)
+    - Bengali OCR & Bounding Box Extractor
+    - Tabular Structure Reconstruction Engine
+    - XLSX & Sheets Exporter
+  edges:
+    - Ledger Camera Capture -> Image Preprocessing (Bilateral Filter / Perspective Warp)
+    - Image Preprocessing (Bilateral Filter / Perspective Warp) -> Bengali OCR & Bounding Box Extractor
+    - Bengali OCR & Bounding Box Extractor -> Tabular Structure Reconstruction Engine
+    - Tabular Structure Reconstruction Engine -> XLSX & Sheets Exporter
+changelog:
+  - date: "2026-09-01"
+    title: "Pipeline Conception"
+    summary: "Built the initial perspective correction engine using OpenCV contour detection."
+  - date: "2026-10-15"
+    title: "Bengali Numerals & Ledger Parsing"
+    summary: "Integrated custom dictionary heuristics for Bengali ledger headers and currency amounts."
+---
+
+## Overview
+
+In Bangladesh, millions of retail pharmacies, grocery shops, and small businesses still maintain their primary credit ledger (*baki khata*) on physical paper notebooks. Manual transcription into accounting software or spreadsheets takes hours each week and frequently introduces calculation errors.
+
+**Khata2Sheet AI** is an open-source, local-first document processing engine that takes a mobile photo or scan of a traditional Bengali ledger page, rectifies lighting and perspective skew, extracts row-level transaction records, and exports clean, validated tabular data into CSV, Excel, or Google Sheets.
+
+## Architecture & Processing Pipeline
+
+1. **Perspective Rectification:** Scanned pages are rarely flat. The pipeline uses OpenCV to detect document boundaries, compute the homography matrix, and warp the image into an orthogonal 300 DPI flat plane.
+2. **Adaptive Binarization:** Traditional retail notebooks use varied ink colors (blue ballpoint, red ink, pencil) on low-grade paper. Adaptive thresholding separates ink strokes from paper fiber noise.
+3. **Column Segmentation:** Spatial clustering groups text tokens into Date, Customer Name, Description, Debit, Credit, and Balance columns.
+4. **Bengali Numeral Normalization:** Converts Bengali digits (০-৯) to standard numeric types, computes running balances, and verifies arithmetic consistency across rows.
+
+## Why Local-First Matters
+
+Small business financial data is sensitive. Uploading unredacted customer debt lists to public cloud vision APIs compromises merchant privacy and incurs per-page billing costs. Running the pipeline entirely on local hardware guarantees zero data leakage and $0 ongoing software costs.

@@ -14,6 +14,7 @@ import { SectionHeader, Accent } from "@/components/system/SectionHeader";
 import { Card, RoleIcon } from "@/components/system/Card";
 import { MoreLink, MoreLinks } from "@/components/system/MoreLink";
 import { AiyaarName } from "@/components/system/AiyaarName";
+import { PlatformScaleTelemetryCard } from "@/components/system/PlatformScaleTelemetryCard";
 
 type PhotoMode = "glass" | "spatial" | "editorial" | "clean";
 
@@ -256,6 +257,11 @@ function AboutFull() {
               </Card>
             ))}
           </ul>
+        </div>
+
+        {/* Platform Scale & Engineering Telemetry */}
+        <div className="mt-8 sm:mt-12">
+          <PlatformScaleTelemetryCard />
         </div>
 
         {/* Engineering Evolution — the full scroll-told timeline (#timeline, #journey-<id>) */}

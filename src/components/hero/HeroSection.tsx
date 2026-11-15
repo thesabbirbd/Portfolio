@@ -13,6 +13,7 @@ import { MotionLoopVideo } from "@/components/ui/MotionLoopVideo";
 import { BauhausField } from "@/components/system/BauhausField";
 // Server-rendered so the portrait (the LCP image) paints with the HTML and reserves its box (no layout shift).
 import { SpatialCore } from "@/components/hero/SpatialCore";
+import { HeroQuickExploreBar } from "@/components/hero/HeroQuickExploreBar";
 
 /** The rotating role line. Its own component so the 2.8 s swap re-renders only this line, not the hero. */
 function RotatingRole() {
@@ -151,6 +152,9 @@ export function HeroSection() {
           <SpatialCore />
         </div>
       </div>
+
+      {/* Top Quick-Explore Launcher Strip */}
+      <HeroQuickExploreBar />
 
       {/* Next-chapter cue: a real link to the first Home chapter (static, no looping animation) */}
       <Link

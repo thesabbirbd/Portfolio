@@ -1,0 +1,50 @@
+---
+title: "S.A.R.A. Task Control Plane & Telegram Relay"
+slug: "sara-control-plane"
+description: "A resilient background orchestration plane managing asynchronous local tasks, health checks, cron triggers, and bidirectional Telegram alerts."
+date: "2026-10-22"
+type: "projects"
+category: "Systems"
+tags: ["Systems", "Python", "Telegram Bot API", "SQLite", "DevOps"]
+status: "published"
+featured: true
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+projectStatus: "active"
+projectRole: "Solo Developer"
+technologies: ["Python", "FastAPI", "SQLite", "Telegram Bot API", "systemd", "Linux"]
+githubUrl: "https://github.com/thesabbirbd/sara-control-plane"
+dateStarted: "2026-08-15"
+architecture:
+  nodes:
+    - Telegram Long-Polling Listener
+    - State Machine & Auth Guard
+    - SQLite Priority Job Queue
+    - Local Worker Pool (Subprocess Sandbox)
+    - Health Monitor & Telemetry Heartbeat
+  edges:
+    - Telegram Long-Polling Listener -> State Machine & Auth Guard
+    - State Machine & Auth Guard -> SQLite Priority Job Queue
+    - SQLite Priority Job Queue -> Local Worker Pool (Subprocess Sandbox)
+    - Local Worker Pool (Subprocess Sandbox) -> Health Monitor & Telemetry Heartbeat
+changelog:
+  - date: "2026-08-15"
+    title: "Core Architecture"
+    summary: "Engineered single-process event loop handling Telegram webhooks and job queuing."
+  - date: "2026-10-22"
+    title: "Sandboxed Execution"
+    summary: "Added permission tiers and resource limits to shell execution tasks."
+---
+
+## Overview
+
+Managing homelab infrastructure, video rendering pipelines, and background database backups often requires immediate remote intervention without exposing SSH ports to the public internet.
+
+**S.A.R.A. (System Automation & Remote Agent) Control Plane** is a self-hosted orchestration service. It turns an authenticated private Telegram chat into a secure, responsive remote command center for developer workstations and local servers.
+
+## Key Capabilities
+
+- **Secure Telegram Remote Terminal:** Authenticated via user ID cryptographic hash checking. Execute pre-approved operational runbooks (e.g., restart service, inspect journalctl logs, trigger database snapshot) without opening WAN ports.
+- **Persistent Job Queue:** If the host loses connectivity or reboots, in-flight jobs remain queued in an atomic SQLite database with WAL (Write-Ahead Logging) enabled.
+- **Proactive Health Telemetry:** Automatically notifies the administrator when disk space drops below 15%, memory exceeds 90%, or the local UPS switches to battery power during load shedding.
+- **Resource Sandboxing:** Shell scripts run under an unprivileged system user with strict timeout thresholds (max 120s) and cgroup memory limits.

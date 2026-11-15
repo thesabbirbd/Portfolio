@@ -1,0 +1,50 @@
+---
+title: "NetPulse TG — ISP Watchdog & Telegram Incident Relay"
+slug: "netpulse-tg"
+description: "MikroTik RouterOS & ISP Uptime Watchdog with Sub-Second Jitter Detection and Telegram Outage Alerts."
+date: "2026-10-24"
+type: "projects"
+category: "Systems"
+tags: ["Systems", "Python", "Docker", "MikroTik", "Telegram Bot API", "DevOps"]
+status: "published"
+featured: true
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+projectStatus: "active"
+projectRole: "Solo Systems Architect"
+technologies: ["Python", "FastAPI", "Docker", "Telegram Bot API", "MikroTik RouterOS", "Prometheus"]
+githubUrl: "https://github.com/thesabbir/netpulse-tg"
+dateStarted: "2026-09-01"
+architecture:
+  nodes:
+    - Gateway ICMP & TCP Probe
+    - Jitter & Packet Loss Evaluator
+    - Incident State Machine
+    - Telegram Alert Dispatcher
+    - Prometheus Metrics Exporter
+  edges:
+    - Gateway ICMP & TCP Probe -> Jitter & Packet Loss Evaluator
+    - Jitter & Packet Loss Evaluator -> Incident State Machine
+    - Incident State Machine -> Telegram Alert Dispatcher
+    - Jitter & Packet Loss Evaluator -> Prometheus Metrics Exporter
+changelog:
+  - date: "2026-09-01"
+    title: "Engineered Sub-Second Prober"
+    summary: "Built multi-target ICMP probe with exponential smoothing for round-trip latency."
+  - date: "2026-10-24"
+    title: "Dual WAN Failover Triggers"
+    summary: "Integrated direct MikroTik RouterOS API hooks to automate gateway failover."
+---
+
+## Overview
+
+In mission-critical retail and edge computing environments across Bangladesh, intermittent fiber breaks and upstream ISP packet degradation can quietly paralyze POS terminals and cloud sync daemons.
+
+**NetPulse TG** is a containerized infrastructure watchdog engineered to continuously probe upstream gateway health, evaluate round-trip jitter, and instantly notify network administrators via Telegram long before end users experience outages.
+
+## Key Capabilities
+
+- **High-Frequency Gateway Probing:** Executes configurable sub-second ICMP and TCP ping sweeps against multiple reference DNS servers and local ISP BDIX gateways.
+- **Jitter & Degraded State Machine:** Detects soft degradation (packet loss exceeding 8% or latency variance >50ms) before a total link drop occurs, suppressing false-positive notification storms.
+- **Instant Telegram Incident Dispatch:** Sends structured Markdown incident alerts detailing packet loss percentages, hops affected, and estimated recovery times.
+- **Zero-Cloud Architecture:** Operates entirely within local Docker containers or lightweight edge devices with Prometheus metrics exposed on a local port.

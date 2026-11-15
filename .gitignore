@@ -24,6 +24,15 @@
 .DS_Store
 *.pem
 
+# QA screenshots and temporary artifacts
+scripts/qa/*.png
+*.png.bak
+gemini_raw_markdown.html
+github-repos/
+the_sabbir_*.md
+MASTER_BLUEPRINT_*.md
+THE_SABBIR_MASTER_BLUEPRINT_*.md
+
 # debug
 npm-debug.log*
 yarn-debug.log*

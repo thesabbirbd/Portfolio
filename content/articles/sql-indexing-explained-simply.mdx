@@ -1,0 +1,71 @@
+---
+title: "SQL Indexing Explained Simply: From Sequential Scans to 0ms Queries"
+slug: "sql-indexing-explained-simply"
+description: "Why does your PostgreSQL query take 3 seconds instead of 3 milliseconds? An intuitive, visual explanation of B-tree database indexing, composite keys, and EXPLAIN plans."
+date: "2026-11-14"
+type: "article"
+category: "Basic & Beginner Guides"
+difficulty: "Basic"
+tags: ["SQL", "PostgreSQL", "Database", "Performance", "Indexing", "Beginner"]
+seoKeywords: ["sql indexing explained simply", "how b tree index works postgres", "database indexing for beginners", "fix slow sql queries", "the sabbir"]
+hashtags: ["#SQL", "#Postgres", "#DatabaseEngineering", "#Backend", "#THESABBiR"]
+coverImage: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=1200&q=80"
+status: "published"
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## The Book Index Analogy
+
+Imagine opening a 1,000-page dictionary looking for the definition of the word **"Subnet"**.
+
+Without an alphabetical index, you would have to start on page 1 and read every single word sequentially until page 780. In relational database engines, this is called a **Sequential Scan** (or Table Scan). If your table has 500,000 rows, scanning every row consumes high disk I/O and pegs CPU cores at 99%.
+
+With an index, you look at the letter **S**, jump directly to section **Su-**, and arrive at the definition in two seconds. That is what a **B-tree Index** does for your SQL database.
+
+## What is a B-tree index?
+
+When you run:
+
+```sql
+CREATE INDEX idx_orders_customer_id ON orders(customer_id);
+```
+
+PostgreSQL creates a balanced search tree (B-tree) on disk containing ordered copies of `customer_id` alongside pointers to the exact disk page (ctid) where each row lives.
+
+Instead of scanning all $N$ rows in $O(N)$ time, the database engine traverses the tree in $O(\log N)$ steps. For a table of 1,000,000 rows, a B-tree search takes around 3 to 4 page lookups—dropping execution time from 2,500ms to under 1ms.
+
+## How to verify: EXPLAIN ANALYZE
+
+Never guess whether an index is being used. Always ask PostgreSQL:
+
+```sql
+EXPLAIN ANALYZE 
+SELECT * FROM orders WHERE customer_id = 4501;
+```
+
+Look for two primary indicators:
+- **`Seq Scan on orders`**: The database scanned the entire table. Index is missing or not applicable.
+- **`Index Scan using idx_orders_customer_id`**: The database traversed the B-tree directly. Zero wasted scans.
+
+## The Composite Index Rule (Left-to-Right)
+
+Suppose you frequently query orders by shop and status:
+
+```sql
+SELECT * FROM orders WHERE shop_id = 42 AND status = 'COMPLETED';
+```
+
+A composite index on `(shop_id, status)` satisfies this query in a single traversal:
+
+```sql
+CREATE INDEX idx_orders_shop_status ON orders(shop_id, status);
+```
+
+**Crucial Rule:** The order of columns in a composite index matters!
+- Queries filtering on `shop_id` alone will use this index.
+- Queries filtering on `status` alone without `shop_id` will **not** use the B-tree efficiently, because the tree was partitioned on `shop_id` first. Always place equality columns on the left and range columns on the right.
+
+## Practice in the arcade
+
+Want to try optimizing queries with slow logs and watch real server temperatures drop? Play [Query Optimizer: Slow-Log Rescue](/games?challenge=query-optimizer) on THE SABBiR OS to test your index tuning intuition against live EXPLAIN scenarios.

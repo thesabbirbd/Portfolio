@@ -3,6 +3,7 @@ import { ProjectBrowser } from "@/components/content/ProjectBrowser";
 import { PageHeader } from "@/components/system/PageHeader";
 import { Accent } from "@/components/system/SectionHeader";
 import { pageMetadata } from "@/lib/seo";
+import { TelemetryStrip } from "@/components/telemetry/TelemetryStrip";
 
 export const metadata = pageMetadata({
   title: "Projects | THE SABBiR",
@@ -21,6 +22,9 @@ export default function ProjectsPage() {
         title={<>Engineering <Accent>projects</Accent></>}
         lede="Case studies that document the problem, the decisions and trade-offs, and what actually got built — across backend, DevOps, hardware and local AI."
       />
+      <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 mb-8">
+        <TelemetryStrip />
+      </div>
       <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 mb-12">
         <h2 className="sr-only">All projects</h2>
         <ProjectBrowser projects={projects} />

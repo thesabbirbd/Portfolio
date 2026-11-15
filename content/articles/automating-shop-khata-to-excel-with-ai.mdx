@@ -1,0 +1,60 @@
+---
+title: "Automating Dokan Khata and Cash Memos to Excel with AI"
+slug: "automating-shop-khata-to-excel-with-ai"
+description: "How retail shop owners and SMEs in Bangladesh can parse handwritten or typed Bangla ledger notes directly into structured Excel spreadsheets with auto-totals."
+date: "2026-11-15"
+type: "article"
+category: "Open-Source Tools & Setup"
+difficulty: "Basic"
+tags: ["Khata", "Excel", "SME", "Automation", "Bangla OCR"]
+seoKeywords: ["dokan khata to excel", "bangla receipt ocr", "khata scanner ai", "baki khata accounting", "the sabbir"]
+hashtags: ["#Accounting", "#Khata", "#Automation", "#SME", "#THESABBiR"]
+coverImage: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80"
+status: "published"
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## The Paper Khata Dilemma in Local Retail
+
+Across Bangladesh, thousands of grocery stores, pharmacies, and wholesale businesses still rely on paper ledger notebooks (*Baki Khata*). While physical notebooks are fast for jotting down sales during busy store hours, they suffer from three critical bottlenecks:
+
+1. **Math Errors**: Manually calculating line-item totals and daily sums often leads to discrepancies.
+2. **Time Drain**: Spending 1 to 2 hours every evening retyping numbers into a spreadsheet or ledger book.
+3. **No Searchability**: Finding customer purchase history from three months ago requires flipping through hundreds of paper pages.
+
+---
+
+## 1. Bridging the Gap: Bangla Numeral Parsing
+
+The primary technical hurdle in digitizing local ledgers has been the mixed use of Bengali numerals (`০, ১, ২, ৩, ৪, ৫, ৬, ৭, ৮, ৯`) and English digits (`0-9`), combined with colloquial unit descriptions such as `কেজি`, `লিটার`, and `পিস`.
+
+A modern tokenization engine solves this by:
+- Normalizing all Bengali digit characters into standardized ASCII numerals.
+- Parsing line items using regex anchors that isolate the item description from quantity and price.
+- Calculating implicit unit prices when only total amount and quantity are provided.
+
+```python
+# Conceptual transformation pipeline
+raw_text = "মিনিকেট চাল ৫ কেজি ৩৭৫ টাকা"
+normalized = to_english_digits(raw_text)  # "মিনিকেট চাল 5 কেজি 375 টাকা"
+item = parse_line(normalized)
+# Result: {"name": "মিনিকেট চাল", "qty": 5, "unit": "কেজি", "unit_price": 75, "total": 375}
+```
+
+---
+
+## 2. Using the Free In-Browser Khata Scanner
+
+You do not need to install complex Python environments or configure paid API keys. On [THE SABBiR OS](https://sabbir.nav.bd), you can use the [Khata & Cash Memo to Excel Scanner](https://sabbir.nav.bd/tools/khata-scanner):
+
+1. **Paste or Upload**: Paste your daily transaction notes or drag in a photo of your memo.
+2. **Instant Line-Item Table**: The parser structures each line into an interactive editable table.
+3. **Audit Totals**: Verify customer Baki balances with automated subtotals and discount adjustments.
+4. **Export Excel / CSV**: Click **Export to Excel** to download a clean `.csv` or `.xls` spreadsheet ready for your accounting software or Google Sheets.
+
+---
+
+## Summary
+
+Digitizing your retail shop's paper records does not require expensive ERP software. By utilizing open-source parsing algorithms, shop owners can save hours of manual data entry every single day.

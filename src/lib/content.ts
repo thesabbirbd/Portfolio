@@ -18,13 +18,20 @@ export interface ContentMeta {
   date: string;
   updated?: string;
   category?: string;
+  difficulty?: "Basic" | "Intermediate" | "Advanced";
+  seoKeywords?: string[];
+  hashtags?: string[];
   tags?: string[];
+  coverImage?: string;
   status?: string;
   featured?: boolean;
   /** Placeholder content shown so a new section isn't empty: labelled in the UI, noindex, kept out of sitemap/feed. */
   demo?: boolean;
   author?: string;
   brand?: string;
+  banglaSummary?: string;
+  relatedToolHref?: string;
+  relatedToolLabel?: string;
   relatedProjects?: string[];
   relatedNotes?: string[];
   relatedLab?: string[];

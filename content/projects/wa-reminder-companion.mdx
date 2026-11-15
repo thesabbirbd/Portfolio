@@ -1,0 +1,49 @@
+---
+title: "WA Reminder Companion: Headless Due Notification Bridge"
+slug: "wa-reminder-companion"
+description: "A lightweight, headless automation daemon that sends scheduled due payment reminders and invoice receipts to retail pharmacy clients with zero paid API overhead."
+date: "2026-10-18"
+type: "projects"
+category: "Backend"
+tags: ["DevOps", "Python", "Automation", "Playwright", "FastAPI"]
+status: "published"
+featured: false
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+projectStatus: "active"
+projectRole: "Solo Developer"
+technologies: ["Python", "Playwright", "FastAPI", "SQLite", "systemd"]
+githubUrl: "https://github.com/thesabbirbd/wa-reminder-companion"
+dateStarted: "2026-09-10"
+architecture:
+  nodes:
+    - POS Due Ledger Webhook
+    - SQLite Transaction Queue
+    - Rate-Limiting & Jitter Scheduler
+    - Headless Browser Controller
+    - Telegram Audit Dispatcher
+  edges:
+    - POS Due Ledger Webhook -> SQLite Transaction Queue
+    - SQLite Transaction Queue -> Rate-Limiting & Jitter Scheduler
+    - Rate-Limiting & Jitter Scheduler -> Headless Browser Controller
+    - Headless Browser Controller -> Telegram Audit Dispatcher
+changelog:
+  - date: "2026-09-10"
+    title: "Queue Design"
+    summary: "Built the SQLite-backed task queue with exponential backoff and idempotency keys."
+  - date: "2026-10-18"
+    title: "Headless Session Persistence"
+    summary: "Implemented secure user-data-dir encryption and QR-reconnect alerting via Telegram."
+---
+
+## Overview
+
+Official business messaging APIs typically charge per-template conversation fees ($0.05–$0.08 per message), which quickly becomes prohibitive for small rural pharmacies and SME retailers who need to notify 400+ customers each month regarding overdue store balances.
+
+**WA Reminder Companion** is an automated microservice designed to act as an un-metered notification dispatcher. It runs as a resilient Linux systemd background service, listens for invoice due triggers from local POS systems, and dispatches courteous, formatted reminder messages with PDF receipts.
+
+## Key Design Principles
+
+- **Idempotency by Default:** Every reminder job carries a unique hash based on `(invoice_id, customer_id, due_month)`. Even if the POS sends duplicate webhook triggers, each customer receives at most one reminder per billing cycle.
+- **Human Jitter & Rate Limiting:** Rather than blasting bulk messages simultaneously, the dispatcher injects random jitter delays (18 to 45 seconds between messages) to ensure polite delivery.
+- **Fail-Safe Audit Logging:** Dispatched messages, delivery timestamps, and failure events are captured in an append-only SQLite database and mirrored to a private Telegram channel for instant operator visibility.

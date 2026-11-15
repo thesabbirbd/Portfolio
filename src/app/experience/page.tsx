@@ -2,6 +2,7 @@ import { SkillsBento } from "@/components/skills/SkillsBento";
 import { MissionSection } from "@/components/mission/MissionSection";
 import { WorkHistory } from "@/components/experience/WorkHistory";
 import { CommunitySection } from "@/components/community/CommunitySection";
+import { PlatformScaleTelemetryCard } from "@/components/system/PlatformScaleTelemetryCard";
 import Link from "next/link";
 import { PageHeader } from "@/components/system/PageHeader";
 import { AIYAAR } from "@/data/aiyaar";
@@ -26,6 +27,9 @@ export default function ExperiencePage() {
         className="mb-2 md:mb-4"
       />
       <WorkHistory />
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 mb-8 sm:mb-12">
+        <PlatformScaleTelemetryCard />
+      </div>
       <MissionSection />
       <SkillsBento />
       {/* Community, leadership & volunteering (moved here from the Home page) */}

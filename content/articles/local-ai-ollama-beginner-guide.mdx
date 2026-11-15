@@ -1,0 +1,79 @@
+---
+title: "How to Run Local AI with Ollama: A Zero-Subscription Beginner Guide"
+slug: "local-ai-ollama-beginner-guide"
+description: "Run powerful LLMs (Llama 3.2, Qwen 2.5, DeepSeek) 100% locally on your laptop without paying subscriptions or sending proprietary data to third-party cloud APIs."
+date: "2026-11-14"
+type: "article"
+category: "Basic & Beginner Guides"
+difficulty: "Basic"
+tags: ["Local AI", "Ollama", "LLM", "Open Source", "Privacy", "Beginner"]
+seoKeywords: ["run local ai ollama", "how to use ollama beginner guide", "run llm locally free", "private local ai setup", "the sabbir"]
+hashtags: ["#LocalAI", "#Ollama", "#OpenSource", "#Privacy", "#MachineLearning", "#THESABBiR"]
+coverImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80"
+status: "published"
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## Why run AI locally?
+
+Cloud AI providers charge recurring monthly fees, enforce strict rate limits, and transmit your queries, source code, and customer records across external networks.
+
+For privacy-sensitive business workflows, pharmacy inventories, offline homelabs, or cost-conscious students, **Local AI** changes the equation. By running open-source model weights directly on your computer's RAM and GPU, you get:
+1. **Zero Recurring API Bills**: Pay once for hardware; run trillions of tokens for free.
+2. **Total Privacy & Offline Operation**: No internet connection required. Zero data leaves your machine.
+3. **Low Latency & High Control**: Stream tokens locally without cloud server queue delays.
+
+## Step 1: Install Ollama (Single Command)
+
+On Linux or macOS, run:
+
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
+On Windows, download the official installer directly from `ollama.com`.
+
+Once installed, verify the service is running:
+
+```bash
+$ ollama --version
+ollama version 0.4.x
+```
+
+## Step 2: Pick the right model for your RAM
+
+Before pulling huge models, calculate your system memory constraints:
+
+- **16 GB RAM (Standard Laptop)**:
+  - `llama3.2:3b` (~2.0 GB VRAM/RAM): Lightning fast, great for formatting, summaries, and basic scripts.
+  - `qwen2.5:7b` (~4.7 GB VRAM/RAM): Exceptional coding, reasoning, and multi-language parsing.
+- **32 GB+ RAM (Homelab / Workstation)**:
+  - `qwen2.5-coder:14b` (~9.0 GB VRAM): High-tier autonomous code generation.
+
+Run your first model instantly:
+
+```bash
+ollama run llama3.2:3b
+```
+
+You will see an interactive prompt appear directly in your shell. Type any question, code request, or text to translate.
+
+## Step 3: Connect via Python & REST API
+
+Ollama exposes a local HTTP server at `http://localhost:11434`. You can query it from Python in just four lines:
+
+```python
+import requests
+
+response = requests.post(
+    "http://localhost:11434/api/generate",
+    json={"model": "llama3.2:3b", "prompt": "Explain DNS in one sentence.", "stream": False}
+)
+
+print(response.json()["response"])
+```
+
+## Explore curated open-source tools
+
+Looking for more local-first, self-hosted developer tools and automated scrapers? Browse the [Open-Source Arsenal & Directory](/articles?category=open-source) on THE SABBiR OS to discover verified local tools with 1-click install commands.

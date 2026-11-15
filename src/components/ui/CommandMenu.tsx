@@ -3,8 +3,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDebounce } from '@/hooks/use-debounce';
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Command, X, Home, Folder, Cpu, Terminal, Globe, MessageSquare, Palette, Box, Volume2, Activity, Mail, Briefcase, Compass } from "lucide-react";
-import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
+import { Search, Command, X, Home, Folder, Cpu, Terminal, Globe, MessageSquare, Palette, Box, Volume2, Activity, Mail, Briefcase, Compass, Gamepad2, Zap, ShieldCheck, Trophy, ShieldAlert } from "lucide-react";
+import { GithubIcon, LinkedinIcon, YoutubeIcon } from "@/components/ui/BrandIcons";
 import { useTheme } from "next-themes";
 import { useSettings } from "@/contexts/SettingsContext";
 import { PROJECTS_DATA } from "@/data/projects";
@@ -18,10 +18,22 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { projectHref } from "@/data/projects";
 import { OPEN_COMMAND_MENU, isTypingTarget, openTerminal } from "@/lib/ui-events";
+import { evaluateOmnibarExpression, OmnibarInstantResult } from "@/lib/command/omnibar-instant-engine";
 
 export function CommandMenu() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [copiedInstant, setCopiedInstant] = useState(false);
+  const instantResult = evaluateOmnibarExpression(search);
+
+  const handleCopyInstant = (text: string) => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      sound.confirm();
+      setCopiedInstant(true);
+      setTimeout(() => setCopiedInstant(false), 2000);
+    }
+  };
 
   // ⚡ Bolt: Debounce the search query to optimize performance
   // 💡 What: Apply 200ms debounce to the search input state
@@ -38,29 +50,78 @@ export function CommandMenu() {
   
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Global Ctrl/⌘+K and "/" listeners, plus the explicit open event used by nav buttons.
+  // Global Ctrl/⌘+K, "/" listeners, and G+... chord navigation (G+G=Games, G+T=Tools, G+A=Articles, G+N=News, G+O=Open Source).
   useEffect(() => {
+    let chordTimer: NodeJS.Timeout | null = null;
+    let pendingG = false;
+
     const down = (e: KeyboardEvent) => {
+      if (isTypingTarget(e.target)) return;
+
       if (e.key.toLowerCase() === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen((open) => !open);
         if (open) sound.modalClose(); else sound.launch();
-      } else if (e.key === "/" && !open && !isTypingTarget(e.target)) {
+        return;
+      }
+      if (e.key === "/" && !open) {
         e.preventDefault();
         setOpen(true);
         sound.launch();
-      } else if (e.key === "Escape" && open) {
+        return;
+      }
+      if (e.key === "Escape" && open) {
         setOpen(false);
+        return;
+      }
+
+      // Two-key G+... sequence
+      if (!open && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        const k = e.key.toLowerCase();
+        if (k === "g" && !pendingG) {
+          pendingG = true;
+          chordTimer = setTimeout(() => {
+            pendingG = false;
+          }, 1200);
+          return;
+        }
+
+        if (pendingG) {
+          pendingG = false;
+          if (chordTimer) clearTimeout(chordTimer);
+          if (k === "g") {
+            e.preventDefault();
+            sound.navigate();
+            router.push("/games");
+          } else if (k === "t") {
+            e.preventDefault();
+            sound.navigate();
+            router.push("/tools");
+          } else if (k === "a") {
+            e.preventDefault();
+            sound.navigate();
+            router.push("/articles");
+          } else if (k === "n") {
+            e.preventDefault();
+            sound.navigate();
+            router.push("/news");
+          } else if (k === "o") {
+            e.preventDefault();
+            sound.navigate();
+            router.push("/articles");
+          }
+        }
       }
     };
     const openMenu = () => setOpen(true);
     window.addEventListener("keydown", down);
     window.addEventListener(OPEN_COMMAND_MENU, openMenu);
     return () => {
+      if (chordTimer) clearTimeout(chordTimer);
       window.removeEventListener("keydown", down);
       window.removeEventListener(OPEN_COMMAND_MENU, openMenu);
     };
-  }, [open]);
+  }, [open, router]);
 
   useEffect(() => {
     if (open) {
@@ -78,6 +139,8 @@ export function CommandMenu() {
 
   const commands = [
     // NAVIGATION
+    { category: "NAVIGATION", name: "Global Leaderboard & XP Standings", icon: Trophy, action: () => runCommand(() => router.push('/leaderboard')) },
+    { category: "NAVIGATION", name: "Open SuperAdmin Control Plane (Root Operations)", icon: ShieldAlert, action: () => runCommand(() => router.push('/superadmin')) },
     { category: "NAVIGATION", name: "Search Knowledge Base", icon: Search, action: () => runCommand(() => router.push('/search')) },
     { category: "NAVIGATION", name: "Home", icon: Home, action: () => runCommand(() => router.push('/')) },
     { category: "NAVIGATION", name: `Aiyaar — ${AIYAAR.role}`, icon: Briefcase, action: () => runCommand(() => router.push('/aiyaar')) },
@@ -95,14 +158,57 @@ export function CommandMenu() {
     { category: "NAVIGATION", name: "Contact", icon: MessageSquare, action: () => runCommand(() => router.push('/contact')) },
     { category: "NAVIGATION", name: "Visit Aiyaar website (aiyaar.ltd)", icon: Globe, action: () => runCommand(() => { window.open(AIYAAR.url, "_blank", "noopener,noreferrer"); }) },
 
-    // DISCOVER
-    { category: "DISCOVER", name: "Explore hub", icon: Compass, action: () => runCommand(() => router.push('/explore')) },
-    { category: "DISCOVER", name: "Technical articles", icon: Box, action: () => runCommand(() => router.push('/articles')) },
-    { category: "DISCOVER", name: "Vlogs", icon: Box, action: () => runCommand(() => router.push('/vlogs')) },
-    { category: "DISCOVER", name: "News commentary", icon: Box, action: () => runCommand(() => router.push('/news')) },
-    { category: "DISCOVER", name: "Tools: subnet, chmod, Base64, JSON, Unix time", icon: Cpu, action: () => runCommand(() => router.push('/tools')) },
-    { category: "DISCOVER", name: "Engineering playground", icon: Activity, action: () => runCommand(() => router.push('/playground')) },
-    { category: "DISCOVER", name: "Browser games (coming soon)", icon: Box, action: () => runCommand(() => router.push('/games')) },
+    // DISCOVER & THE SABBiR OS
+    { category: "DISCOVER", name: "Explore Hub (App Launcher)", icon: Compass, action: () => runCommand(() => router.push('/explore')) },
+    { category: "DISCOVER", name: "Engineering Arcade (Top 5 Browser Games)", icon: Gamepad2, action: () => runCommand(() => router.push('/games')) },
+    { category: "DISCOVER", name: "Arcade: Kernel Breach (Terminal & SQL CTF)", icon: Terminal, action: () => runCommand(() => router.push('/games?challenge=kernel-breach')) },
+    { category: "DISCOVER", name: "Arcade: Packet Defender (NOC DDoS Firewall)", icon: ShieldCheck, action: () => runCommand(() => router.push('/games?challenge=packet-defender')) },
+    { category: "DISCOVER", name: "Arcade: Subnet Sprint (60s Binary Blitz)", icon: Zap, action: () => runCommand(() => router.push('/games?challenge=subnet-sprint')) },
+    { category: "DISCOVER", name: "Arcade: Query Optimizer (Slow-Log Rescue)", icon: Cpu, action: () => runCommand(() => router.push('/games?challenge=query-optimizer')) },
+    { category: "DISCOVER", name: "Arcade: Uptime Architect (Chaos Simulator)", icon: Activity, action: () => runCommand(() => router.push('/games?challenge=uptime-architect')) },
+    { category: "DISCOVER", name: "Technical Articles (7 Categories)", icon: Box, action: () => runCommand(() => router.push('/articles')) },
+    { category: "DISCOVER", name: "Open-Source Arsenal & Directory", icon: Folder, action: () => runCommand(() => router.push('/articles?category=open-source')) },
+    { category: "DISCOVER", name: "SaaS Tools: Thermal POS, JWT, Subnet, SQL Sandbox", icon: Cpu, action: () => runCommand(() => router.push('/tools')) },
+    { category: "DISCOVER", name: "Autonomous Tech Pulse (Daily Drops)", icon: Activity, action: () => runCommand(() => router.push('/news')) },
+    { category: "DISCOVER", name: "Screen-Recorded Vlogs", icon: Box, action: () => runCommand(() => router.push('/vlogs')) },
+    { category: "DISCOVER", name: "Engineering Playground", icon: Activity, action: () => runCommand(() => router.push('/playground')) },
+
+    // SUPER-TOOLS & STUDIOS (43 ENGINES)
+    { category: "SUPER-TOOLS", name: "Tool: BCS, Gov Job & Visa Photo Sizer (300x300, 4R)", icon: Cpu, action: () => runCommand(() => router.push('/tools/gov-photo-sizer')) },
+    { category: "SUPER-TOOLS", name: "Tool: Freelancer 2.5% Remittance & Payout Calculator", icon: Cpu, action: () => runCommand(() => router.push('/tools/remittance-calculator')) },
+    { category: "SUPER-TOOLS", name: "Tool: Clickable HTML Email Signature Maker (Gmail/Outlook)", icon: Cpu, action: () => runCommand(() => router.push('/tools/email-signature')) },
+    { category: "SUPER-TOOLS", name: "Tool: WhatsApp & F-Commerce Quick Reply Macro Hub", icon: Cpu, action: () => runCommand(() => router.push('/tools/quick-reply-hub')) },
+    { category: "SUPER-TOOLS", name: "Tool: BD Land (Katha/Decimal/Bigha) & Gold Vori Studio", icon: Cpu, action: () => runCommand(() => router.push('/tools/unit-land-converter')) },
+    { category: "SUPER-TOOLS", name: "Tool: Document Scanner & White-Paper Deskew Studio", icon: Cpu, action: () => runCommand(() => router.push('/tools/document-scanner')) },
+    { category: "SUPER-TOOLS", name: "Tool: Bangla & Code Typing Speed Arena (WPM)", icon: Cpu, action: () => runCommand(() => router.push('/tools/typing-speed-arena')) },
+    { category: "SUPER-TOOLS", name: "Tool: Color Design Lab, WCAG & Tailwind v4 Scale", icon: Cpu, action: () => runCommand(() => router.push('/tools/color-design-lab')) },
+    { category: "SUPER-TOOLS", name: "Tool: Pro Multi-Layer Canvas Image Editor", icon: Cpu, action: () => runCommand(() => router.push('/tools/image-editor')) },
+    { category: "SUPER-TOOLS", name: "Tool: Social Story & Reel Cover Maker (9:16, 4:5)", icon: Cpu, action: () => runCommand(() => router.push('/tools/story-maker')) },
+    { category: "SUPER-TOOLS", name: "Tool: WebAudio Waveform DAW & Audio Trimmer", icon: Cpu, action: () => runCommand(() => router.push('/tools/audio-editor')) },
+    { category: "SUPER-TOOLS", name: "Tool: Video Clipper & 1080p Frame Grabber", icon: Cpu, action: () => runCommand(() => router.push('/tools/video-clipper')) },
+    { category: "SUPER-TOOLS", name: "Tool: Smart Khata & Formula Spreadsheet Grid", icon: Cpu, action: () => runCommand(() => router.push('/tools/spreadsheet-grid')) },
+    { category: "SUPER-TOOLS", name: "Tool: Instant Presentation Slide Deck & Carousel", icon: Cpu, action: () => runCommand(() => router.push('/tools/slide-deck')) },
+    { category: "SUPER-TOOLS", name: "Tool: Screen Recorder & PiP Webcam Studio", icon: Cpu, action: () => runCommand(() => router.push('/tools/screen-recorder')) },
+    { category: "SUPER-TOOLS", name: "Tool: Digital Visiting Card & vCard QR Standee", icon: Cpu, action: () => runCommand(() => router.push('/tools/qr-link-bio')) },
+    { category: "SUPER-TOOLS", name: "Tool: Salient Cutout & Bg Remover", icon: Cpu, action: () => runCommand(() => router.push('/tools/bg-remover')) },
+    { category: "SUPER-TOOLS", name: "Tool: Scannable Barcode & QR Studio", icon: Cpu, action: () => runCommand(() => router.push('/tools/barcode-studio')) },
+    { category: "SUPER-TOOLS", name: "Tool: Khata & Memo OCR Scanner", icon: Cpu, action: () => runCommand(() => router.push('/tools/khata-scanner')) },
+    { category: "SUPER-TOOLS", name: "Tool: BD SME Invoice & Thermal Maker", icon: Cpu, action: () => runCommand(() => router.push('/tools/invoice-maker')) },
+    { category: "SUPER-TOOLS", name: "Tool: Daraz & F-Commerce Catalog Optimizer", icon: Cpu, action: () => runCommand(() => router.push('/tools/daraz-listing-ai')) },
+    { category: "SUPER-TOOLS", name: "Tool: Taka-in-Words & Cheque Guard", icon: Cpu, action: () => runCommand(() => router.push('/tools/cheque-audit')) },
+    { category: "SUPER-TOOLS", name: "Tool: SMS Campaign & Bangla GSM-7 Calculator", icon: Cpu, action: () => runCommand(() => router.push('/tools/sms-campaign-studio')) },
+    { category: "SUPER-TOOLS", name: "Tool: CV Privacy Cleaner & ATS Matcher", icon: Cpu, action: () => runCommand(() => router.push('/tools/cv-privacy-shield')) },
+    { category: "SUPER-TOOLS", name: "Tool: In-Browser PDF Suite & Stamp", icon: Cpu, action: () => runCommand(() => router.push('/tools/pdf-toolkit')) },
+    { category: "SUPER-TOOLS", name: "Tool: API Latency & Load Script Studio", icon: Cpu, action: () => runCommand(() => router.push('/tools/api-load-simulator')) },
+    { category: "SUPER-TOOLS", name: "Tool: 60s Reel Script & Live Teleprompter", icon: Cpu, action: () => runCommand(() => router.push('/tools/reel-script')) },
+    { category: "SUPER-TOOLS", name: "Tool: Image Compressor & WebP Zip Suite", icon: Cpu, action: () => runCommand(() => router.push('/tools/image-compressor')) },
+
+    // AGENTS & MULTI-AGENT SWARMS
+    { category: "AGENTS & SWARMS", name: "Swarm: E-Commerce Product Launch", icon: Zap, action: () => runCommand(() => router.push('/agents')) },
+    { category: "AGENTS & SWARMS", name: "Swarm: Daily Shop Closing & Audit", icon: Zap, action: () => runCommand(() => router.push('/agents')) },
+    { category: "AGENTS & SWARMS", name: "Swarm: Production DevOps Release", icon: Zap, action: () => runCommand(() => router.push('/agents')) },
+    { category: "AGENTS & SWARMS", name: "Swarm: Creator Viral Episode", icon: Zap, action: () => runCommand(() => router.push('/agents')) },
+    { category: "AGENTS & SWARMS", name: "Directory: 12 Autonomous Domain Agents", icon: Terminal, action: () => runCommand(() => router.push('/agents')) },
     
     // WORK / QUICK EXPLORE
     ...PROJECTS_DATA.map(p => ({
@@ -134,6 +240,7 @@ export function CommandMenu() {
     // CONNECT
     { category: "CONNECT", name: "LinkedIn", icon: LinkedinIcon, action: () => runCommand(() => window.open(SOCIAL_LINKS.find(l => l.id === "linkedin")?.url || "", '_blank', 'noopener,noreferrer')) },
     { category: "CONNECT", name: "GitHub", icon: GithubIcon, action: () => runCommand(() => window.open(SOCIAL_LINKS.find(l => l.id === "github")?.url || "", '_blank', 'noopener,noreferrer')) },
+    { category: "CONNECT", name: "YouTube", icon: YoutubeIcon, action: () => runCommand(() => window.open(SOCIAL_LINKS.find(l => l.id === "youtube")?.url || "", '_blank', 'noopener,noreferrer')) },
     { category: "CONNECT", name: "Email", icon: Mail, action: () => runCommand(() => { window.location.href = SOCIAL_LINKS.find(l => l.id === "gmail")?.url || "mailto:iamthesabbir@gmail.com"; }) },
     { category: "CONNECT", name: "Terminal", icon: Terminal, action: () => runCommand(openTerminal) },
   ];
@@ -163,6 +270,11 @@ export function CommandMenu() {
   }, [activeIndex]);
 
   const onInputKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && instantResult) {
+      e.preventDefault();
+      handleCopyInstant(instantResult.copyText);
+      return;
+    }
     if (flat.length === 0) return;
     if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -218,6 +330,35 @@ export function CommandMenu() {
                 <X className="w-5 h-5" />
               </button>
             </div>
+
+            {/* Instant Answer Card for Math / Taka / Remittance / Units */}
+            {instantResult && (
+              <div className="mx-3 mt-3 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between gap-3 shadow-lg">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                      ⚡ {instantResult.category}
+                    </span>
+                    <span className="text-xs text-neutral-400 truncate">{instantResult.title}</span>
+                  </div>
+                  <div className="text-base sm:text-lg font-bold text-white tracking-tight">
+                    {instantResult.value}
+                  </div>
+                  {instantResult.secondary && (
+                    <div className="text-xs text-neutral-300 font-mono mt-0.5">
+                      {instantResult.secondary}
+                    </div>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleCopyInstant(instantResult.copyText)}
+                  className="shrink-0 px-3 py-1.5 rounded-xl bg-amber-500 text-neutral-950 font-bold text-xs hover:bg-amber-400 transition-all flex items-center gap-1.5 shadow-sm shadow-amber-500/20"
+                >
+                  <span>{copiedInstant ? "Copied! ✓" : "Copy (↵)"}</span>
+                </button>
+              </div>
+            )}
 
             <div ref={listRef} id="command-menu-list" role="listbox" className="flex-1 overflow-y-auto overscroll-contain p-2">
               {Object.keys(grouped).length === 0 ? (

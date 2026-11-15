@@ -279,6 +279,46 @@ export class SoundSystem {
     this.play("error", [[392, 0.1, "square", 0.08], [311.13, 0.14, "square", 0.08, 110]], { minGap: 400 });
   }
 
+  // ---------------------------------------------------------------- OS & Arcade game cues
+
+  /** Rapid hit / combo streak multiplier in arcade games (1x, 2x, 3x, 5x, 10x). */
+  public combo(streak = 1) {
+    const s = Math.min(10, Math.max(1, streak));
+    const base = 523.25 * (1 + (s - 1) * 0.08);
+    this.play("combo", [
+      [base, 0.05, "sine", 0.22, 0, base * 1.25],
+      [base * 1.5, 0.07, "triangle", 0.18, 40],
+    ], { minGap: 60 });
+  }
+
+  /** Level up / rank tier progression or badge unlock fanfare. */
+  public levelUp() {
+    this.play("level-up", [
+      [523.25, 0.08, "triangle", 0.24],
+      [659.25, 0.08, "triangle", 0.24, 70],
+      [783.99, 0.10, "triangle", 0.26, 140],
+      [1046.50, 0.20, "sine", 0.28, 220, 1318.5],
+    ], { minGap: 600 });
+  }
+
+  /** End of arcade game or failed run. */
+  public gameOver() {
+    this.play("game-over", [
+      [440, 0.12, "sine", 0.20, 0, 392],
+      [349.23, 0.15, "triangle", 0.18, 110, 329.63],
+      [261.63, 0.25, "sine", 0.15, 230],
+    ], { minGap: 800 });
+  }
+
+  /** Shutter snap when saving, exporting or copying an OS scorecard canvas. */
+  public shutter() {
+    this.play("shutter", [
+      [2200, 0.02, "triangle", 0.22],
+      [3200, 0.03, "sine", 0.16, 25],
+      [1200, 0.05, "triangle", 0.18, 45],
+    ], { minGap: 180 });
+  }
+
   /** Kept for existing call sites: a positive outcome (form handed to the mail app, etc.). */
   public success() {
     this.confirm();

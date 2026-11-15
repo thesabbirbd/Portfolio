@@ -6,6 +6,8 @@ import { ConnectedKnowledge } from './ConnectedKnowledge';
 import { formatContentDate, isValidContentDate, lastModified } from '@/lib/content-date';
 import { articleJsonLd, breadcrumbJsonLd } from '@/lib/seo';
 import { JsonLd } from '@/components/system/JsonLd';
+import { BanglaArticleSummary } from './BanglaArticleSummary';
+import { Sparkles, Presentation, Smartphone } from 'lucide-react';
 
 export function ContentLayout({ item, baseUrl, breadcrumbLabel }: { item: ContentItem; baseUrl: string; breadcrumbLabel: string }) {
   const { meta, content } = item;
@@ -45,7 +47,7 @@ export function ContentLayout({ item, baseUrl, breadcrumbLabel }: { item: Conten
           </ol>
         </nav>
         
-        <header className="mb-10">
+        <header className="mb-8">
           <div className="flex items-center gap-3 mb-6">
             <span className="text-sm font-medium px-3 py-1 rounded-full bg-primary/10 text-primary">
               {meta.category || breadcrumbLabel}
@@ -57,6 +59,38 @@ export function ContentLayout({ item, baseUrl, breadcrumbLabel }: { item: Conten
           <h1 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight leading-tight">{meta.title}</h1>
           <p className="text-xl text-muted-foreground leading-relaxed">{meta.description}</p>
         </header>
+
+        {/* 1-Click Creative Remix Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-muted/20 border border-border/60 mb-8">
+          <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground font-semibold">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span>Remix into Workplace Studio:</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/tools/story-maker?headline=${encodeURIComponent(meta.title)}&category=${encodeURIComponent(meta.category || "Tech")}`}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-pink-500/30 bg-pink-500/10 hover:bg-pink-500/20 text-pink-500 dark:text-pink-400 text-xs font-mono font-medium transition"
+            >
+              <Smartphone className="w-3.5 h-3.5" />
+              <span>Story Poster (9:16)</span>
+            </Link>
+            <Link
+              href={`/tools/slide-deck?title=${encodeURIComponent(meta.title)}&notes=${encodeURIComponent(meta.description || "")}`}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 dark:text-blue-400 text-xs font-mono font-medium transition"
+            >
+              <Presentation className="w-3.5 h-3.5" />
+              <span>Slide Deck (16:9)</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* BANGLA SUMMARY ACCORDION */}
+        <BanglaArticleSummary
+          title={meta.title}
+          banglaSummary={meta.banglaSummary}
+          relatedToolHref={meta.relatedToolHref || "/tools"}
+          relatedToolLabel={meta.relatedToolLabel || "Launch Companion Tool on sabbir.nav.bd ↗"}
+        />
 
         <div className="min-h-[50vh]">
           <MDXContent source={content} />

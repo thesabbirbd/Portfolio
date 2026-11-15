@@ -1,0 +1,46 @@
+name: THE SABBiR OS Autonomous Daily Pulse & SEO Dispatch
+
+on:
+  schedule:
+    # Runs everyday at 06:00 AM BST (00:00 UTC)
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  autonomous-pulse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Execute Daily Autonomous Pulse Harvester
+        run: npm run pulse:update
+
+      - name: Verify Content Integrity & Build Gates
+        run: npm run content:check && npx tsc --noEmit
+
+      - name: Commit & Push Daily Autonomous Update
+        run: |
+          git config --global user.name "THE SABBiR Autonomous Engine"
+          git config --global user.email "bot@sabbir.nav.bd"
+          git add src/data/auto-pulse.json
+          if git diff --staged --quiet; then
+            echo "No changes in autonomous pulse."
+          else
+            git commit -m "chore(pulse): autonomous daily tech news & SEO update [skip ci]"
+            git push origin main
+          fi

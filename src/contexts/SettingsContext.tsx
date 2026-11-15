@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { sound, DEFAULT_LEVEL, type SoundLevel } from "@/lib/sound";
 
 export type VisitorLens = "general" | "engineer" | "professional" | "explorer";
+export type FontScale = "100%" | "110%" | "120%";
 
 type SettingsContextType = {
   themeMode: "light" | "dark" | "system";
@@ -18,6 +19,10 @@ type SettingsContextType = {
   setSoundLevel: (level: SoundLevel) => void;
   lens: VisitorLens;
   setLens: (lens: VisitorLens) => void;
+  fontScale: FontScale;
+  setFontScale: (scale: FontScale) => void;
+  highContrast: boolean;
+  toggleHighContrast: () => void;
   isHydrated: boolean;
 };
 
@@ -30,6 +35,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [soundLevel, setLocalSoundLevel] = useState<SoundLevel>(DEFAULT_LEVEL);
   const [lens, setLocalLens] = useState<VisitorLens>("general");
+  const [fontScale, setLocalFontScale] = useState<FontScale>("100%");
+  const [highContrast, setHighContrast] = useState<boolean>(false);
 
   useEffect(() => {
     // Load preferences
@@ -42,6 +49,19 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
     const savedLens = localStorage.getItem("sabbir_visitor_lens") as VisitorLens;
     if (savedLens) setLocalLens(savedLens);
+
+    const savedScale = localStorage.getItem("sabbir_font_scale") as FontScale;
+    if (savedScale) {
+      setLocalFontScale(savedScale);
+      document.documentElement.style.fontSize = savedScale === "120%" ? "19.2px" : savedScale === "110%" ? "17.6px" : "16px";
+    }
+
+    const savedContrast = localStorage.getItem("sabbir_high_contrast");
+    if (savedContrast !== null) {
+      const hc = savedContrast === "true";
+      setHighContrast(hc);
+      document.documentElement.dataset.contrast = hc ? "high" : "normal";
+    }
 
     // Colour theme (Orange / Green / Blue) is applied before paint by THEME_INIT_SCRIPT and
     // managed by src/lib/theme-color-store.ts — not here, so switching it re-renders nothing else.
@@ -92,6 +112,21 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("sabbir_visitor_lens", newLens);
   };
 
+  const setFontScale = (scale: FontScale) => {
+    setLocalFontScale(scale);
+    localStorage.setItem("sabbir_font_scale", scale);
+    document.documentElement.style.fontSize = scale === "120%" ? "19.2px" : scale === "110%" ? "17.6px" : "16px";
+  };
+
+  const toggleHighContrast = () => {
+    setHighContrast((prev) => {
+      const next = !prev;
+      localStorage.setItem("sabbir_high_contrast", String(next));
+      document.documentElement.dataset.contrast = next ? "high" : "normal";
+      return next;
+    });
+  };
+
   return (
     <SettingsContext.Provider 
       value={{ 
@@ -100,6 +135,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         soundEnabled, toggleSound,
         soundLevel, setSoundLevel,
         lens, setLens,
+        fontScale, setFontScale,
+        highContrast, toggleHighContrast,
         isHydrated,
         themeMode: "system" 
       }}
