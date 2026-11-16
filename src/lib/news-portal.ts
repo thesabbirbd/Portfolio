@@ -21,7 +21,10 @@ export interface NewsStory {
 }
 
 export function getAllNewsStories(): NewsStory[] {
-  return (autoPulseData as any[]).map((item) => ({
+  const rawList = Array.isArray(autoPulseData)
+    ? autoPulseData
+    : (autoPulseData as any)?.activeDiscoveries || [];
+  return (rawList as any[]).map((item) => ({
     ...item,
     slug: item.slug || item.id,
     banglaSummary: item.banglaSummary || `টেকনিক্যাল আপডেট: ${item.summary}`,

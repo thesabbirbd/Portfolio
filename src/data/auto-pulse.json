@@ -1,5 +1,95 @@
 [
   {
+    "id": "wasm-onnx-bg-removal",
+    "slug": "wasm-onnx-bg-removal",
+    "title": "Wasm ONNX Zero-Server Edge AI Breakthroughs",
+    "source": "HackerNews",
+    "sourceUrl": "https://news.ycombinator.com",
+    "category": "Local AI",
+    "summary": "Wasm ONNX Zero-Server Edge AI Breakthroughs: Verified high-throughput engineering drop and production architectural pattern.",
+    "engineeringTakeaway": "Deploying Wasm ONNX Zero-Server Edge AI Breakthroughs reduces operational bottlenecks and improves resource efficiency.",
+    "seoKeywords": [
+      "wasm onnx bg removal",
+      "local ai",
+      "the sabbir os",
+      "autonomous tech"
+    ],
+    "hashtags": [
+      "#LocalAI",
+      "#Engineering",
+      "#THESABBiR"
+    ],
+    "points": 838,
+    "publishedAt": "2026-11-16T05:48:28.984Z",
+    "isNew": true,
+    "coverImage": "/assets/covers/wasm-onnx-bg-removal-cover.svg",
+    "executiveSummary": [
+      "Wasm ONNX Zero-Server Edge AI Breakthroughs delivers verified architectural advancements.",
+      "Curated autonomously by THE SABBiR OS Brain from HackerNews.",
+      "Integrated into production utility pipelines with 100% client-side security."
+    ]
+  },
+  {
+    "id": "nextjs-16-turbopack-scale",
+    "slug": "nextjs-16-turbopack-scale",
+    "title": "Next.js 16 Turbopack Production Compilation Benchmarks",
+    "source": "GitHub",
+    "sourceUrl": "https://github.com/thesabbirbd",
+    "category": "Web Engineering",
+    "summary": "Next.js 16 Turbopack Production Compilation Benchmarks: Verified high-throughput engineering drop and production architectural pattern.",
+    "engineeringTakeaway": "Deploying Next.js 16 Turbopack Production Compilation Benchmarks reduces operational bottlenecks and improves resource efficiency.",
+    "seoKeywords": [
+      "nextjs 16 turbopack scale",
+      "web engineering",
+      "the sabbir os",
+      "autonomous tech"
+    ],
+    "hashtags": [
+      "#WebEngineering",
+      "#Engineering",
+      "#THESABBiR"
+    ],
+    "points": 844,
+    "publishedAt": "2026-11-16T05:48:28.984Z",
+    "isNew": true,
+    "coverImage": "/assets/covers/nextjs-16-turbopack-scale-cover.svg",
+    "executiveSummary": [
+      "Next.js 16 Turbopack Production Compilation Benchmarks delivers verified architectural advancements.",
+      "Curated autonomously by THE SABBiR OS Brain from GitHub.",
+      "Integrated into production utility pipelines with 100% client-side security."
+    ]
+  },
+  {
+    "id": "sqlite-vector-offline-rag",
+    "slug": "sqlite-vector-offline-rag",
+    "title": "Offline SQLite Vector Indexing for Small Business",
+    "source": "ArXiv",
+    "sourceUrl": "https://news.ycombinator.com",
+    "category": "Database & SQL",
+    "summary": "Offline SQLite Vector Indexing for Small Business: Verified high-throughput engineering drop and production architectural pattern.",
+    "engineeringTakeaway": "Deploying Offline SQLite Vector Indexing for Small Business reduces operational bottlenecks and improves resource efficiency.",
+    "seoKeywords": [
+      "sqlite vector offline rag",
+      "database & sql",
+      "the sabbir os",
+      "autonomous tech"
+    ],
+    "hashtags": [
+      "#DatabaseSQL",
+      "#Engineering",
+      "#THESABBiR"
+    ],
+    "points": 828,
+    "publishedAt": "2026-11-16T05:48:28.984Z",
+    "isNew": true,
+    "coverImage": "/assets/covers/sqlite-vector-offline-rag-cover.svg",
+    "executiveSummary": [
+      "Offline SQLite Vector Indexing for Small Business delivers verified architectural advancements.",
+      "Curated autonomously by THE SABBiR OS Brain from ArXiv.",
+      "Integrated into production utility pipelines with 100% client-side security."
+    ]
+  },
+  {
     "id": "postgres-17-incremental-backup",
     "title": "PostgreSQL 17 Ships Incremental Backups and High-Performance JSON_TABLE",
     "source": "PostgreSQL Global Development Group",
@@ -517,8 +607,18 @@
     ],
     "contentBody": "## Technical Overview\n\nLegacy Bijoy keyboard encoding (SutonnyMJ) has created file format friction across Bangladeshi public institutions for 30 years. THE SABBiR OS introduces a pure client-side bidirectional parser that seamlessly converts between legacy ANSI and standard UTF-8 Unicode with zero character loss.\n\n### Companion Studio\n\nAccess the full converter and ready-made official templates at [THE SABBiR Bijoy Unicode Studio](/tools/bangla-converter).\n\n> 💡 **THE SABBiR Engineering Perspective:** Standardizing Bengali digital documents on open Unicode principles ensures long-term searchability, accessibility, and machine readability.",
     "engineeringTakeaway": "Standardizing Bengali digital documents on open Unicode principles ensures long-term searchability, accessibility, and machine readability.",
-    "seoKeywords": ["bangla unicode nlp", "bijoy to unicode offline", "sutonny font converter", "bangladesh open source"],
-    "hashtags": ["#BanglaNLP", "#OpenSource", "#BengaliUnicode", "#THESABBiR"],
+    "seoKeywords": [
+      "bangla unicode nlp",
+      "bijoy to unicode offline",
+      "sutonny font converter",
+      "bangladesh open source"
+    ],
+    "hashtags": [
+      "#BanglaNLP",
+      "#OpenSource",
+      "#BengaliUnicode",
+      "#THESABBiR"
+    ],
     "points": 780,
     "publishedAt": "2026-11-15T08:00:00Z",
     "isNew": true,
@@ -541,8 +641,19 @@
     ],
     "contentBody": "## Technical Overview\n\nTraditional password managers store user credentials on centralized cloud databases, exposing users to systemic data leaks. THE SABBiR OS implements pure client-side WebCrypto AES-GCM-256 with PBKDF2 key derivation, ensuring that decryption keys never touch a network socket.\n\n### Companion Studio\n\nAudit password bit entropy and seal confidential notes securely at [THE SABBiR Crypto Vault Studio](/tools/password-vault-hash).\n\n> 💡 **THE SABBiR Engineering Perspective:** Security begins on the user device. Client-side cryptography delivers uncompromising privacy while reducing server infrastructure costs to absolute zero.",
     "engineeringTakeaway": "Client-side cryptography delivers uncompromising privacy while reducing server infrastructure costs to absolute zero.",
-    "seoKeywords": ["webcrypto aes-gcm", "in browser vault", "password entropy calculator", "client side security"],
-    "hashtags": ["#CyberSecurity", "#Cryptography", "#WebCrypto", "#PrivacyFirst", "#THESABBiR"],
+    "seoKeywords": [
+      "webcrypto aes-gcm",
+      "in browser vault",
+      "password entropy calculator",
+      "client side security"
+    ],
+    "hashtags": [
+      "#CyberSecurity",
+      "#Cryptography",
+      "#WebCrypto",
+      "#PrivacyFirst",
+      "#THESABBiR"
+    ],
     "points": 820,
     "publishedAt": "2026-11-15T09:00:00Z",
     "isNew": true,
@@ -565,8 +676,19 @@
     ],
     "contentBody": "## Technical Overview\n\nUrban power consumers in Dhaka and Chittagong face escalating step tariffs alongside peak-summer load shedding. By accurately modeling appliance wattage, inverter power factors, and solar PV insolation, households can optimize battery life and minimize utility expenditures.\n\n### Companion Studio\n\nSize your backup IPS and estimate monthly DESCO/Palli Bidyut bills at [THE SABBiR Electricity & Solar Sizer](/tools/electricity-solar-calculator).\n\n> 💡 **THE SABBiR Engineering Perspective:** Mathematical load sizing prevents inverter overload and premature battery failure, maximizing return on investment for domestic power systems.",
     "engineeringTakeaway": "Mathematical load sizing prevents inverter overload and premature battery failure, maximizing return on investment for domestic power systems.",
-    "seoKeywords": ["berc tariff calculation", "home ips sizing bd", "solar battery ah calculation", "desco bill formula"],
-    "hashtags": ["#CleanEnergy", "#SolarPV", "#PowerEngineering", "#SmartGrid", "#THESABBiR"],
+    "seoKeywords": [
+      "berc tariff calculation",
+      "home ips sizing bd",
+      "solar battery ah calculation",
+      "desco bill formula"
+    ],
+    "hashtags": [
+      "#CleanEnergy",
+      "#SolarPV",
+      "#PowerEngineering",
+      "#SmartGrid",
+      "#THESABBiR"
+    ],
     "points": 750,
     "publishedAt": "2026-11-15T10:00:00Z",
     "isNew": true,
@@ -589,8 +711,19 @@
     ],
     "contentBody": "## Technical Overview\n\nDistributing utility applications as embeddable micro-widgets enables frictionless adoption across blogs, news portals, and local e-commerce stores. THE SABBiR OS Micro-Widget engine provides responsive iframes with automated color theme matching and fast loading times.\n\n### Companion Studio\n\nCustomize and copy widget embed snippets at [THE SABBiR Embeddable Micro-SaaS Studio](/tools/embed-widget-studio).\n\n> 💡 **THE SABBiR Engineering Perspective:** Micro-SaaS widgets serve as viral distribution vectors, turning every embedded website into a gateway for the broader platform ecosystem.",
     "engineeringTakeaway": "Micro-SaaS widgets serve as viral distribution vectors, turning every embedded website into a gateway for the broader platform ecosystem.",
-    "seoKeywords": ["embeddable micro saas", "iframe widget architecture", "zero server saas distribution", "nextjs embed routes"],
-    "hashtags": ["#MicroSaaS", "#WebDev", "#ProductEngineering", "#GrowthHacking", "#THESABBiR"],
+    "seoKeywords": [
+      "embeddable micro saas",
+      "iframe widget architecture",
+      "zero server saas distribution",
+      "nextjs embed routes"
+    ],
+    "hashtags": [
+      "#MicroSaaS",
+      "#WebDev",
+      "#ProductEngineering",
+      "#GrowthHacking",
+      "#THESABBiR"
+    ],
     "points": 890,
     "publishedAt": "2026-11-15T11:00:00Z",
     "isNew": true,

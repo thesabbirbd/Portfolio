@@ -13,7 +13,7 @@ describe("News Portal Subsystem", () => {
       expect(story.source).toBeTruthy();
       expect(story.category).toBeTruthy();
       expect(story.summary).toBeTruthy();
-      expect(story.coverImage).toMatch(/^https?:\/\//);
+      expect(story.coverImage).toMatch(/^(https?:\/\/|\/assets\/)/);
       expect(story.engineeringTakeaway).toBeTruthy();
       expect(Array.isArray(story.executiveSummary)).toBe(true);
       expect(story.executiveSummary?.length).toBeGreaterThanOrEqual(3);
