@@ -62,11 +62,11 @@ describe("Stage 080: 24 Autonomous Domain Agents Registry Tests", () => {
   });
 });
 
-describe("Stage 080: 8 Multi-Agent Swarms Orchestrator Tests", () => {
-  it("contains exactly 8 multi-agent swarms with 3+ stages each", () => {
-    expect(SWARM_PIPELINES.length).toBe(8);
+describe("Stage 080: Multi-Agent Swarms Orchestrator Tests", () => {
+  it("contains 10 multi-agent swarms with 3+ stages each", () => {
+    expect(SWARM_PIPELINES.length).toBe(10);
     const swarmIds = new Set(SWARM_PIPELINES.map((s) => s.id));
-    expect(swarmIds.size).toBe(8);
+    expect(swarmIds.size).toBe(10);
 
     SWARM_PIPELINES.forEach((pipeline) => {
       expect(pipeline.stages.length).toBeGreaterThanOrEqual(3);

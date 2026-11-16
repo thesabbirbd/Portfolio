@@ -276,6 +276,66 @@ export const SWARM_PIPELINES: SwarmPipeline[] = [
       },
     ],
   },
+  {
+    id: "student-mess-life",
+    title: "Student & Mess Life Super-Swarm",
+    banglaTitle: "মেস ও ব্যাচেলর হিসাব সোয়ার্ম",
+    tagline: "Mess Splitter ➔ KhataVision OCR ➔ ChequeGuard",
+    description: "Calculates bachelor meal rates, reconciles individual member baki balances, and generates downloadable settlement sheets.",
+    category: "Family & Finance",
+    icon: "Utensils",
+    estimatedSec: 3,
+    stages: [
+      {
+        agentId: "bizdesk-bd",
+        stageName: "1. Bazar Total & Meal Ledger",
+        roleDescription: "Tallies total daily meal counts and bazar deposit vouchers.",
+        inputTransform: (_, input) => `Calculate meal rates and member deposits for mess: ${input}`,
+      },
+      {
+        agentId: "cheque-guard",
+        stageName: "2. Official Words & Voucher Print",
+        roleDescription: "Converts balance figures into Bangla words and stamps audit voucher.",
+        inputTransform: (prev, input) => `Format official mess settlement words for: ${input}`,
+      },
+      {
+        agentId: "privacyshield",
+        stageName: "3. Mess Member Privacy & Voucher Export",
+        roleDescription: "Sanitizes phone numbers and exports PDF/PNG printable settlement voucher.",
+        inputTransform: (prev, input) => `Sanitize and finalize mess settlement voucher: ${input}`,
+      },
+    ],
+  },
+  {
+    id: "govt-job-application",
+    title: "Govt Job Application Fast-Track Swarm",
+    banglaTitle: "সরকারি চাকরি আবেদন ফাস্ট-ট্র্যাক সোয়ার্ম",
+    tagline: "GovDoc 300x300 ➔ Signature 300x80 ➔ DocuShield Redactor",
+    description: "Standardizes BCS/Teletalk photo and signature dimensions, scrubs NID PII, and outputs an 8-copy 4R passport sheet.",
+    category: "Career & Global",
+    icon: "FileCheck",
+    estimatedSec: 4,
+    stages: [
+      {
+        agentId: "pixelforge",
+        stageName: "1. Portrait Matting & Background",
+        roleDescription: "Isolates clean face silhouette and enforces official background lighting.",
+        inputTransform: (_, input) => `Prepare official candidate portrait for: ${input}`,
+      },
+      {
+        agentId: "bizdesk-bd",
+        stageName: "2. Teletalk Sizing & Compliance",
+        roleDescription: "Encodes exact 300x300 and 300x80 JPEG bytes under strict Teletalk file size limits.",
+        inputTransform: (prev, input) => `Validate byte limits and 4R sheet for applicant: ${input}`,
+      },
+      {
+        agentId: "privacyshield",
+        stageName: "3. NID & Application PII Redaction",
+        roleDescription: "Redacts sensitive NID pin and prints compliant 8-copy 4R layout sheet.",
+        inputTransform: (prev, input) => `Redact PII and finalize 4R candidate sheet: ${input}`,
+      },
+    ],
+  },
 ];
 
 /**

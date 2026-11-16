@@ -28,12 +28,12 @@ describe("ExportAuthGateModal & Workplace Auth Flow", () => {
     );
 
     expect(screen.getByText(/Multi-Layer Image Editor/i)).toBeDefined();
-    expect(screen.getByText(/Claim Your Output & Earn Points/i)).toBeDefined();
-    expect(screen.getByRole("tab", { name: /Guest Export/i })).toBeDefined();
-    expect(screen.getByRole("tab", { name: /Full Account/i })).toBeDefined();
+    expect(screen.getByText(/ফাইলটি সেভ করুন ও XP অর্জন করুন/i)).toBeDefined();
+    expect(screen.getByRole("tab", { name: /পাসওয়ার্ড ছাড়া/i })).toBeDefined();
+    expect(screen.getByRole("tab", { name: /পাসওয়ার্ড লগইন/i })).toBeDefined();
   });
 
-  it("switches tabs between Guest Export and Full Account", () => {
+  it("switches tabs between Blank-Password and Password Login", () => {
     render(
       <WorkplaceAuthProvider>
         <ExportAuthGateModal
@@ -45,19 +45,19 @@ describe("ExportAuthGateModal & Workplace Auth Flow", () => {
       </WorkplaceAuthProvider>
     );
 
-    // Click Full Account tab
-    const fullAccountTab = screen.getByRole("tab", { name: /Full Account/i });
-    fireEvent.click(fullAccountTab);
+    // Click Password Login tab
+    const pwTab = screen.getByRole("tab", { name: /পাসওয়ার্ড লগইন/i });
+    fireEvent.click(pwTab);
 
-    expect(screen.getByText(/Display Name \*/i)).toBeDefined();
-    expect(screen.getByText(/Passcode \*/i)).toBeDefined();
+    expect(screen.getByText(/ইউজারনেম বা হ্যান্ডেল/i)).toBeDefined();
+    expect(screen.getByText(/^পাসওয়ার্ড$/i)).toBeDefined();
   });
 
   it("submits guest name, receives +25 welcome XP, and calls proceed callback", async () => {
     const proceedFn = vi.fn();
     const closeFn = vi.fn();
 
-    mockFetch.mockResolvedValueOnce({
+    mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({
         success: true,
@@ -66,10 +66,10 @@ describe("ExportAuthGateModal & Workplace Auth Flow", () => {
           handle: "rahim_creator",
           displayName: "Rahim Creator",
           role: "guest",
-          totalXp: 25,
+          xp: 25,
           exportsCount: 0,
         },
-        sessionToken: "mock.session.token",
+        token: "mock.session.token",
         welcomeBonus: 25,
       }),
     });
@@ -85,18 +85,18 @@ describe("ExportAuthGateModal & Workplace Auth Flow", () => {
       </WorkplaceAuthProvider>
     );
 
-    const input = screen.getByPlaceholderText(/e\.g\. Rahim Coder/i);
+    const input = screen.getByPlaceholderText(/tanvir_dev/i);
     fireEvent.change(input, { target: { value: "Rahim Creator" } });
 
-    const submitBtn = screen.getByRole("button", { name: /Download Now & Earn \+25 XP/i });
+    const submitBtn = screen.getByRole("button", { name: /সরাসরি ডাউনলোড করুন/i });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith(
-        "/api/workplace/auth",
+        "/api/auth/session",
         expect.objectContaining({
           method: "POST",
-          body: JSON.stringify({ action: "guest", displayName: "Rahim Creator" }),
+          body: JSON.stringify({ identifier: "Rahim Creator", password: "" }),
         })
       );
       expect(closeFn).toHaveBeenCalled();

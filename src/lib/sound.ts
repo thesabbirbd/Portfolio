@@ -324,6 +324,18 @@ export class SoundSystem {
     this.confirm();
   }
 
+  public complete() {
+    this.confirm();
+  }
+
+  public pop() {
+    this.click();
+  }
+
+  public alert() {
+    this.error();
+  }
+
   // ---------------------------------------------------------------- scroll soundscape
   // Never unlocks audio (gesture: false) and is throttled hard.
 

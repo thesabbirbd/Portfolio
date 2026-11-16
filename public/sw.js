@@ -1,5 +1,5 @@
-const CACHE_NAME = 'sabbir-os-v5.2.14';
-const STATIC_CACHE = 'sabbir-static-v5.2.14';
+const CACHE_NAME = 'sabbir-os-v5.2.15';
+const STATIC_CACHE = 'sabbir-static-v5.2.15';
 const OFFLINE_URL = '/';
 
 const STATIC_ASSETS = [

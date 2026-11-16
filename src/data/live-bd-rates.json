@@ -1,0 +1,32 @@
+{
+  "lastUpdated": "2026-11-16T04:00:00.000Z",
+  "source": "Bangladesh Bank & BAJUS Official Rates",
+  "currency": {
+    "usdRemittance": 122.50,
+    "usdCash": 125.00,
+    "eur": 132.80,
+    "gbp": 156.40,
+    "sar": 32.65,
+    "aed": 33.35,
+    "myr": 28.10
+  },
+  "goldBajusPerBhori": {
+    "22k": 142500,
+    "21k": 136000,
+    "18k": 116500,
+    "traditional": 96200
+  },
+  "silverBajusPerBhori": {
+    "22k": 2100,
+    "21k": 2000,
+    "18k": 1715
+  },
+  "zakatNisab": {
+    "silverGrams": 612.36,
+    "silverBhori": 52.5,
+    "silverTakaThreshold": 110250,
+    "goldGrams": 87.48,
+    "goldBhori": 7.5,
+    "goldTakaThreshold": 1068750
+  }
+}

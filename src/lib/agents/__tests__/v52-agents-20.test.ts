@@ -18,8 +18,8 @@ describe("THE SABBiR OS v5.2.13 Scale Verification (Stage 095)", () => {
     expect(ids).toContain("autonomous-curator");
   });
 
-  it("verifies exactly 8 Multi-Agent Swarm Pipelines", () => {
-    expect(SWARM_PIPELINES.length).toBe(8);
+  it("verifies 10 Multi-Agent Swarm Pipelines", () => {
+    expect(SWARM_PIPELINES.length).toBe(10);
 
     const swarmIds = SWARM_PIPELINES.map((s) => s.id);
     expect(swarmIds).toContain("freelancer-career");
@@ -30,10 +30,12 @@ describe("THE SABBiR OS v5.2.13 Scale Verification (Stage 095)", () => {
     expect(swarmIds).toContain("viral-creator");
     expect(swarmIds).toContain("family-wealth-audit");
     expect(swarmIds).toContain("autonomous-seo-viral");
+    expect(swarmIds).toContain("student-mess-life");
+    expect(swarmIds).toContain("govt-job-application");
   });
 
-  it("verifies 47 dedicated studios + 9 dev sandboxes = 56 total tools", () => {
-    expect(SUPER_TOOLS_CATALOG.length).toBe(47);
+  it("verifies 56 dedicated studios + 8 dev sandboxes = 64 total tools", () => {
+    expect(SUPER_TOOLS_CATALOG.length).toBe(56);
 
     const studioSlugs = SUPER_TOOLS_CATALOG.map((t) => t.slug);
     expect(studioSlugs).toContain("gov-photo-sizer");

@@ -28,12 +28,14 @@ import { useWorkplaceAuth } from "@/contexts/WorkplaceAuthContext";
 import { ShareContentModal } from "./ShareContentModal";
 
 export interface StudioWorkspaceShellProps {
-  slug: string;
-  title: string;
+  slug?: string;
+  toolSlug?: string;
+  title?: string;
+  toolTitle?: string;
   category: string;
   popularityScore?: number;
   lede?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   /** Optional custom mobile tab rendering or slots */
   controlsSlot?: React.ReactNode;
   exportSlot?: React.ReactNode;
@@ -41,11 +43,18 @@ export interface StudioWorkspaceShellProps {
   activeStep?: 1 | 2 | 3;
   getSharePayload?: () => Record<string, unknown>;
   previewDataUrl?: string;
+  inputSlot?: React.ReactNode;
+  previewSlot?: React.ReactNode;
+  summaryHighlights?: Array<{ label: string; value: string }>;
+  exportPayload?: Record<string, unknown>;
+  onLoadSample?: () => void;
 }
 
 export function StudioWorkspaceShell({
   slug,
+  toolSlug,
   title,
+  toolTitle,
   category,
   popularityScore = 95,
   lede,
@@ -56,7 +65,14 @@ export function StudioWorkspaceShell({
   activeStep = 1,
   getSharePayload,
   previewDataUrl,
+  inputSlot,
+  previewSlot,
+  summaryHighlights,
+  exportPayload,
+  onLoadSample,
 }: StudioWorkspaceShellProps) {
+  const resolvedSlug = slug || toolSlug || "studio";
+  const resolvedTitle = title || toolTitle || "Studio";
   const [pinned, setPinned] = useState(false);
   const [showShortcutHud, setShowShortcutHud] = useState(false);
   const [mobileTab, setMobileTab] = useState<"canvas" | "controls" | "export">("canvas");
@@ -67,16 +83,18 @@ export function StudioWorkspaceShell({
 
   const handleOpenShare = () => {
     sound.click();
-    const payload = getSharePayload ? getSharePayload() : { tool: slug, timestamp: Date.now() };
+    const payload = getSharePayload
+      ? getSharePayload()
+      : exportPayload || { tool: resolvedSlug, timestamp: Date.now() };
     setCachedPayload(payload);
     setIsShareModalOpen(true);
   };
 
   useEffect(() => {
-    recordToolVisit(slug);
-    setPinned(isToolPinned(slug));
+    recordToolVisit(resolvedSlug);
+    setPinned(isToolPinned(resolvedSlug));
 
-    const handleFavChange = () => setPinned(isToolPinned(slug));
+    const handleFavChange = () => setPinned(isToolPinned(resolvedSlug));
     window.addEventListener("sabbir_os_favorites_changed", handleFavChange);
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -99,11 +117,11 @@ export function StudioWorkspaceShell({
       window.removeEventListener("sabbir_os_favorites_changed", handleFavChange);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [slug]);
+  }, [resolvedSlug]);
 
   const handleTogglePin = () => {
     sound.toggleSwitch();
-    const nextState = toggleToolPin(slug);
+    const nextState = toggleToolPin(resolvedSlug);
     setPinned(nextState);
   };
 
@@ -169,13 +187,13 @@ export function StudioWorkspaceShell({
           </button>
 
           {/* Cross-Tool Pipeline Button */}
-          <StudioPipelineBridge currentSlug={slug} />
+          <StudioPipelineBridge currentSlug={resolvedSlug} />
 
           {/* Bangla Guide Modal Button */}
           <BanglaGuideModal topic="tools" />
 
           {/* Share 24h Link */}
-          {getSharePayload && (
+          {(getSharePayload || exportPayload) && (
             <button
               type="button"
               onClick={handleOpenShare}
@@ -416,12 +434,12 @@ export function StudioWorkspaceShell({
         document.body
       )}
       {/* Share Modal */}
-      {getSharePayload && (
+      {(getSharePayload || exportPayload) && (
         <ShareContentModal
           isOpen={isShareModalOpen}
           onClose={() => setIsShareModalOpen(false)}
-          toolSlug={slug}
-          toolName={title}
+          toolSlug={resolvedSlug}
+          toolName={resolvedTitle}
           payload={cachedPayload}
           previewDataUrl={previewDataUrl}
         />

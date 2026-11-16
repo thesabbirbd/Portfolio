@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit, inspectPayloadSecurity } from "@/lib/security/waf-shield";
 import { hashPassword, verifyPassword } from "@/lib/security/crypto-auth";
 import { createShare, getShare, revokeShare } from "@/lib/db/workplace-store";
+import { generateSvgDataUrl, extractHighlights } from "@/lib/share/visual-snapshot-generator";
 
 export async function POST(req: NextRequest) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
@@ -54,14 +55,27 @@ export async function POST(req: NextRequest) {
 
   try {
     const hashedPin = pinCode ? hashPassword(String(pinCode).trim()) : undefined;
+    const serializedPayload = typeof payloadJson === "string" ? payloadJson : JSON.stringify(payloadJson);
+    const safeCreator = String(creatorName || "Anonymous Creator").slice(0, 80);
+    const safeTitle = String(title || "Shared Studio Output").slice(0, 160);
+    const safeSlug = String(toolSlug).slice(0, 60);
+
+    const resolvedPreviewDataUrl = typeof previewDataUrl === "string" && previewDataUrl.length > 20
+      ? previewDataUrl.slice(0, 1_500_000)
+      : generateSvgDataUrl({
+          title: safeTitle,
+          toolSlug: safeSlug,
+          creatorName: safeCreator,
+          highlights: extractHighlights(serializedPayload),
+        });
 
     const result = await createShare({
-      creatorName: String(creatorName || "Anonymous Creator").slice(0, 80),
-      toolSlug: String(toolSlug).slice(0, 60),
-      title: String(title || "Shared Studio Output").slice(0, 160),
+      creatorName: safeCreator,
+      toolSlug: safeSlug,
+      title: safeTitle,
       contentType: String(contentType || "application/json").slice(0, 50),
-      payloadJson: typeof payloadJson === "string" ? payloadJson : JSON.stringify(payloadJson),
-      previewDataUrl: typeof previewDataUrl === "string" ? previewDataUrl.slice(0, 1_500_000) : undefined,
+      payloadJson: serializedPayload,
+      previewDataUrl: resolvedPreviewDataUrl,
       pinCode: hashedPin,
       maxViews: maxViews ? Math.max(1, parseInt(maxViews, 10)) : undefined,
       durationHours: durationHours ? Math.min(72, Math.max(1, parseInt(durationHours, 10))) : 24,

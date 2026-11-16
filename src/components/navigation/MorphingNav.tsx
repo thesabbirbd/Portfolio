@@ -17,7 +17,8 @@ import {
   Wrench,
   Bot,
   Trophy,
-  Sparkles
+  Sparkles,
+  LayoutDashboard,
 } from "lucide-react";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -45,10 +46,11 @@ type NavItem = {
 const NAV_ITEMS: NavItem[] = [
   { name: "About", href: "/#about", section: "about", route: "/about", icon: User, mobile: true },
   { name: "Work", href: "/#projects", section: "projects", route: "/projects", icon: FolderGit2, mobile: true },
-  { name: "Tools", href: "/tools", route: "/tools", icon: Wrench, mobile: true, badge: "56" },
+  { name: "Tools", href: "/tools", route: "/tools", icon: Wrench, mobile: true, badge: "64" },
+  { name: "Agents", href: "/agents", route: "/agents", icon: Bot, mobile: true, badge: "30" },
+  { name: "Dashboard", href: "/dashboard", route: "/dashboard", icon: LayoutDashboard, mobile: true, badge: "SaaS" },
   { name: "Hacks", href: "/hacks", route: "/hacks", icon: Sparkles, mobile: false, badge: "40" },
-  { name: "Agents", href: "/agents", route: "/agents", icon: Bot, mobile: false, badge: "24" },
-  { name: "Notes", href: "/notes", route: "/notes", icon: NotebookPen, mobile: true },
+  { name: "Notes", href: "/notes", route: "/notes", icon: NotebookPen, mobile: false },
   { name: "Explore", href: "/explore", route: "/explore", icon: Compass, mobile: true },
   { name: "Resume", href: "/resume", route: "/resume", icon: FileText, mobile: false },
 ];

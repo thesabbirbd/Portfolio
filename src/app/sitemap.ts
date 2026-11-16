@@ -65,6 +65,15 @@ const SUPER_TOOLS = [
   'password-vault-hash',
   'embed-widget-studio',
   'id-card-stitcher',
+  'mess-bazar-splitter',
+  'school-result-id-studio',
+  'prescription-health-pad',
+  'tailor-boutique-memo',
+  'marriage-biodata-maker',
+  'freelancer-proposal-contract',
+  'bd-emergency-courier-tracker',
+  'photo-collage-frame-studio',
+  'image-format-converter',
 ];
 
 const EMBED_SLUGS = [
@@ -123,6 +132,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry('/uses', 0.7, 'monthly'),
     entry('/tools', 0.9, 'weekly'),
     entry('/agents', 0.9, 'weekly'),
+    entry('/dashboard', 0.9, 'daily'),
     entry('/hacks', 0.85, 'weekly'),
     entry('/os-brain', 0.85, 'daily'),
     entry('/open-source', 0.85, 'weekly'),

@@ -128,8 +128,8 @@ describe("24 Domain Agents & 8 Swarms Integration Test (Stage 095)", () => {
     expect(res.artifact.content).toContain("--color-brand-600");
   });
 
-  it("contains exactly 8 curated multi-agent swarms with Swarm 06 (freelancer-career)", async () => {
-    expect(SWARM_PIPELINES.length).toBe(8);
+  it("contains 10 curated multi-agent swarms with Swarm 06 (freelancer-career)", async () => {
+    expect(SWARM_PIPELINES.length).toBe(10);
     const careerSwarm = SWARM_PIPELINES.find((s) => s.id === "freelancer-career");
     expect(careerSwarm).toBeDefined();
     expect(careerSwarm?.stages.length).toBe(3);

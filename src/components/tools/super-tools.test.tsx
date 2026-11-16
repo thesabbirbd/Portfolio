@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { SUPER_TOOLS_CATALOG } from "@/components/discover/Tools";
 
 describe("Everyday & Business Super-Tools Suite", () => {
-  it("contains catalogued super-tools (expanded to 47 dedicated studios in v5.2.14)", () => {
-    expect(SUPER_TOOLS_CATALOG.length).toBe(47);
+  it("contains catalogued super-tools (expanded to 56 dedicated studios in v5.2.15)", () => {
+    expect(SUPER_TOOLS_CATALOG.length).toBe(56);
   });
 
   it("ensures every tool has valid route, popularity score and agent reference", () => {

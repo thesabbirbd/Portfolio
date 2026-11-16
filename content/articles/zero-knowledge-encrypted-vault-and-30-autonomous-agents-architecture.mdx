@@ -1,0 +1,46 @@
+---
+title: "Zero-Knowledge Encrypted Public Vault and 30 Autonomous Agents Architecture"
+slug: "zero-knowledge-encrypted-vault-and-30-autonomous-agents-architecture"
+description: "How THE SABBiR OS runs 30 real-world autonomous agents, 12-hour automated dual backups to GitHub and Google Drive, and zero-knowledge AES-256-GCM vault security inside an entirely public GitHub repository."
+date: "2026-11-16"
+type: "article"
+category: "System Architecture & Security"
+difficulty: "Advanced"
+tags: ["Architecture", "Cryptography", "AES-256-GCM", "Autonomous Agents", "DevOps"]
+seoKeywords: ["zero knowledge vault architecture", "public github repo security", "aes-256-gcm envelope encryption", "30 autonomous agents", "the sabbir"]
+hashtags: ["#Architecture", "#Cryptography", "#Security", "#Agents", "#THESABBiR"]
+coverImage: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80"
+status: "published"
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## The Public Repository Paradox
+
+Building software in a **Public GitHub Repository** provides unprecedented transparency, open-source auditability, and seamless zero-cost CI/CD via GitHub Actions. However, hosting a live SaaS operating system with user profiles, ephemeral share links, job queues, and automated 12-hour backups inside a public repository introduces a fundamental challenge:
+
+> *How can an application store persistent operational state in git without public visitors ever being able to read user passwords, phone numbers, or private task artifacts?*
+
+## Zero-Knowledge Envelope Encryption (AES-256-GCM)
+
+**THE SABBiR OS** resolves this paradox using **military-grade envelope encryption**:
+
+1. **PBKDF2-SHA256 Key Derivation:** A private `VAULT_MASTER_SECRET` (never committed to git) is stretched across 100,000 iterations to derive a high-entropy 256-bit symmetric encryption key.
+2. **Authenticated Ciphertext Generation:** The complete runtime database snapshot (users, recovery hashes, jobs, shares, rates) is encrypted using **AES-256-GCM** with a random 12-byte initialization vector (IV) and a 16-byte authentication tag.
+3. **Public-Safe File Persistence:** The encrypted payload is serialized to disk at `data/vault/sabbir-os-state.vault.enc`. Even if an attacker clones the entire repository, the file contains zero readable bytes.
+4. **Automated Tamper Detection:** Any modification to a single byte of `.vault.enc` causes the AES-GCM tag verification to fail immediately, preventing corrupted state restoration.
+
+## 12-Hour Dual Automated Backup Engine
+
+Every 12 hours (`0 */12 * * *`), an automated workflow executes:
+- Snapshots platform state and computes a cryptographic SHA-256 integrity digest.
+- Commits the encrypted `.vault.enc` snapshot back to GitHub.
+- Dispatches the encrypted binary payload to an external **Google Drive Apps Script Webhook**, providing geographic redundancy across cloud providers.
+
+## The 30 Agentic Systems: Input-to-Action + Cloud Sync
+
+Rather than static conversational models, THE SABBiR OS operates **30 Real-World Agentic Systems**:
+- **Fleet A (15 Worker Agents):** User-triggered task processors for batch image conversion, OCR ledger extraction, PII blackout, legal contract generation, and Dockerfile hardening.
+- **Fleet B (15 Scheduled Bots):** Automated crons handling daily tech news harvesting, bank remittance rate sync, route health verification, and pre-commit secret leak protection.
+
+Explore the active fleet at [THE SABBiR OS Agents Studio](/agents) and inspect live backups in [SuperAdmin Console](/superadmin).

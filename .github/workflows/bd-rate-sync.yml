@@ -1,0 +1,50 @@
+name: THE SABBiR OS Autonomous BD Bank & BAJUS Rate Sync
+
+on:
+  schedule:
+    # Runs daily at 10:00 AM BST (04:00 UTC)
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bd-rate-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Execute BD Rate Sync Harvester
+        run: node scripts/autonomous/bd-rate-sync.mjs
+
+      - name: Commit & Push Daily Rates Update
+        run: |
+          git config --global user.name "THE SABBiR Rate Sentinel"
+          git config --global user.email "rates@sabbir.nav.bd"
+          git add src/data/live-bd-rates.json
+          if git diff --staged --quiet; then
+            echo "No rate changes detected."
+          else
+            git commit -m "chore(rates): daily USD remittance & BAJUS gold sync [skip ci]"
+            git pull --rebase origin main || true
+            git push origin main
+          fi

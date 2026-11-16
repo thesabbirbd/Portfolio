@@ -352,13 +352,22 @@ export const OS_DRAWER_APPS: DrawerAppItem[] = [
 
   // 3. Autonomous AI, Hacks, Architecture & Games
   {
-    name: "24 Autonomous AI Agents Hub",
-    banglaName: "২৪টি অটোনোমাস এআই এজেন্ট হাব",
+    name: "SaaS User Workspace & Dashboard",
+    banglaName: "ইউজার ড্যাশবোর্ড ও জব ট্র্যাকার",
+    href: "/dashboard",
+    category: "autonomous",
+    icon: "⚡",
+    isNew: true,
+    description: "১৫টি ইনপুট-টু-অ্যাকশন এজেন্ট জব ট্র্যাকিং, ভিজ্যুয়াল শেয়ার ও ক্যারিয়ার পাসপোর্ট।",
+  },
+  {
+    name: "30 Autonomous AI Agents Hub",
+    banglaName: "৩০টি অটোনোমাস এআই এজেন্ট হাব",
     href: "/agents",
     category: "autonomous",
     icon: "🤖",
     isPopular: true,
-    description: "লোকাল ফার্স্ট ও কোনো পেইড এপিআই ছাড়া স্বয়ংক্রিয় এআই রোবট।",
+    description: "১৫টি ওয়ার্কার এজেন্ট ও ১৫টি ক্লাউড ক্রন বট—সম্পূর্ণ ফ্রি।",
   },
   {
     name: "8 Multi-Agent Swarms Studio",

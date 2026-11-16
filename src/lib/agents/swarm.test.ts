@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { SWARM_PIPELINES, executeSwarmPipeline } from "./swarm-orchestrator";
 
 describe("Multi-Agent Autonomous Swarm Engine", () => {
-  it("contains exactly 8 curated multi-agent swarms", () => {
-    expect(SWARM_PIPELINES.length).toBe(8);
+  it("contains 10 curated multi-agent swarms", () => {
+    expect(SWARM_PIPELINES.length).toBe(10);
   });
 
   it("ensures every swarm has 3 sequential stages and valid agent bindings", () => {
