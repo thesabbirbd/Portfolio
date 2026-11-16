@@ -4,16 +4,13 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Layers, 
   Cpu, 
   Database, 
   Server, 
   ExternalLink, 
-  CheckCircle2, 
   Terminal, 
   Network,
-  Activity,
-  Maximize2
+  Activity
 } from "lucide-react";
 import { PROJECTS_DATA, projectHref } from "@/data/projects";
 import { GlassCard } from "@/components/ui/GlassCard";
