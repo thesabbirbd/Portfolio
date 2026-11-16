@@ -1,0 +1,42 @@
+---
+title: "MikroTik NOC Lab: BGP Peering, OSPF Interior Routing & FastTrack Queue"
+slug: "mikrotik-noc-packet-routing"
+description: "Hands-on network engineering observations configuring RouterOS v7 BGP multi-homing, OSPF routing loops prevention, and FastTrack hardware offload."
+date: "2026-10-30"
+type: "note"
+category: "Networking"
+tags: ["MikroTik", "BGP", "OSPF", "RouterOS v7", "NOC"]
+status: "published"
+featured: false
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## What Was I Trying to Do?
+
+In a Network Operations Center (NOC) environment, managing routing tables across multiple upstream carriers requires disciplined BGP route filtering and interior OSPF path cost tuning. With RouterOS v7 introducing an entirely redesigned routing engine, I set up a hardware-accelerated lab to stress-test BGP prefix filtering, route redistribution, and stateful firewall performance.
+
+## The Network Topology & Configuration
+
+1. **Edge BGP Multi-Homing:**
+   - Configured eBGP sessions to two upstream simulated transit providers.
+   - Applied inbound route filters using BGP Communities and AS-Path regex to reject private AS numbers and bogon subnets (`0.0.0.0/8`, `10.0.0.0/8`, `100.64.0.0/10`).
+   - Implemented BGP prepend on backup links to ensure deterministic traffic ingress.
+2. **OSPF Dynamic Core:**
+   - Established single-area OSPFv2/v3 across core switches with point-to-point interface types to bypass DR/BDR election overhead.
+   - Redistributed default gateway routes with Type-1 external metric for predictable cost calculation.
+3. **FastTrack Connection Offloading:**
+   - Configured firewall mangle and filter rules to bypass deep packet inspection on established TCP connections:
+   ```
+   /ip firewall filter add chain=forward action=fasttrack-connection connection-state=established,related
+   ```
+
+## Key Highlights & Performance
+
+- **Throughput:** Achieved **wire-speed 1 Gbps NAT forwarding** with CPU utilization remaining below 14% on a quad-core ARM network appliance.
+- **Failover Convergence:** BGP BFD (Bidirectional Forwarding Detection) reduced link failure detection and route convergence time from 90 seconds down to **280 milliseconds**.
+- **Memory Footprint:** Maintained complete active routing table with 12,000+ local routes consuming under 140 MB of RAM on RouterOS v7.
+
+## What I Learned
+
+In RouterOS v7, route filters are executed sequentially in named filter chains rather than legacy prefix lists. Omitting an explicit accept rule at the end of a chain will drop all prefixes by default. Testing filters in a sandboxed lab environment before production deployment is non-negotiable.

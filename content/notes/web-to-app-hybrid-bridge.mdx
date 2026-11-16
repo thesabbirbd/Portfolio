@@ -1,0 +1,43 @@
+---
+title: "Web-to-App Bridge: Trusted Web Activities (TWA) with Offline Asset Pre-caching"
+slug: "web-to-app-hybrid-bridge"
+description: "Architectural observations on packaging progressive web applications into native Android APKs using Trusted Web Activities and digital asset link verification."
+date: "2026-11-12"
+type: "note"
+category: "Systems"
+tags: ["PWA", "TWA", "Android", "Service Worker", "Mobile"]
+status: "published"
+featured: false
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## What Was I Trying to Do?
+
+Many small business web applications in Bangladesh need to be distributed as installable Android APKs because non-technical users are accustomed to downloading apps from links or local app stores rather than using browser "Add to Home Screen" menus. However, maintaining separate native Android codebases (Kotlin/Java) alongside a modern Next.js/React web app doubles engineering overhead.
+
+I built **Web-to-App Bridge** to wrap responsive web tools into high-performance Trusted Web Activities (TWA) with zero browser chrome, offline asset pre-caching, and native splash screens.
+
+## The TWA Engineering Process
+
+1. **Digital Asset Links Verification:**
+   - Generated SHA-256 fingerprint from the Android signing keystore and hosted the official verification JSON at:
+   ```
+   https://domain.com/.well-known/assetlinks.json
+   ```
+   - This cryptographic handshake proves domain ownership, instructing Android Chrome to render the app full-screen without displaying the browser URL bar.
+2. **Workbox Cache-First Strategy:**
+   - Configured a fine-tuned service worker to cache critical runtime bundles (`_next/static/chunks`), web fonts, and Lucide vector icons on initial launch.
+   - When users open the app in airplane mode or during rural cellular dead zones, the native app shell loads instantly in under 120ms.
+3. **Android Splash Screen Coordination:**
+   - Matched native Android splash background colors to the web app's theme background to eliminate white flashes during initial Chromium engine warmup.
+
+## Key Highlights & Performance
+
+- **App Binary Size:** The complete compiled native APK is only **1.8 MB** (compared to 45MB+ for traditional React Native or Flutter builds).
+- **Lighthouse Performance:** Achieved a **100/100 PWA Score** with full offline capability and responsive viewport adaptation.
+- **Single Source of Truth:** Any feature update deployed to the web app is instantly live inside the native Android app without requiring users to download APK updates.
+
+## What I Learned
+
+Always serve the `.well-known/assetlinks.json` file with `Content-Type: application/json` and verify that the web host does not return a redirect. A single 301/302 redirect on the assetlinks endpoint causes Android to fail domain validation and fall back to displaying the browser address bar.

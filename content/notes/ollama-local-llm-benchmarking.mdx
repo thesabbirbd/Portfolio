@@ -1,0 +1,45 @@
+---
+title: "Local LLM Inference: VRAM Math, Q4_K_M Quantization & CPU Offloading"
+slug: "ollama-local-llm-benchmarking"
+description: "Empirical benchmarks and VRAM calculations for running 7B-8B parameter language models on budget consumer NVIDIA GPUs using Ollama and llama.cpp."
+date: "2026-11-02"
+type: "note"
+category: "Local AI"
+tags: ["Ollama", "llama.cpp", "Quantization", "VRAM", "GPU"]
+status: "published"
+featured: true
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## What Was I Trying to Do?
+
+Cloud AI API costs add up rapidly when running autonomous agent loops or processing confidential documents. Running models locally is the ultimate solution for privacy, but most consumer laptops in Bangladesh have modest GPUs with 2GB to 6GB of VRAM (such as the NVIDIA MX350 or GTX 1650). 
+
+I ran systematic benchmarks to determine the exact boundary conditions where 7B and 8B parameter models (Llama 3.1, Qwen 2.5, DeepSeek) can run smoothly using Ollama and llama.cpp without crashing out-of-memory.
+
+## The VRAM Formula
+
+To predict whether a quantized model will fit inside GPU memory, I formulated the real footprint calculation:
+
+```
+Total VRAM Needed = Base Weights Footprint + KV Cache Footprint + CUDA Runtime Overhead (approx 350MB)
+
+Base Weights (GB) approx = (Parameters in Billions * Bits per Weight) / 8
+KV Cache (MB) approx = (2 * Layers * Attention Heads * Head Dimension * Context Window * 2 Bytes) / 1024^2
+```
+
+For an 8B parameter model at 4-bit quantization (Q4_K_M):
+- Weights = `(8 * 4.5) / 8` = ~4.5 GB.
+- At 2,048 context tokens, KV cache consumes ~220 MB.
+- Total footprint = ~5.1 GB VRAM.
+
+## Key Highlights & Performance
+
+- **Optimal Quantization:** `Q4_K_M` delivered the best trade-off between perplexity loss (under 0.08 delta vs FP16) and memory savings (68% smaller than FP16).
+- **Split Layer Offloading:** On machines with 2GB VRAM, offloading the first 8 layers to GPU and remaining 24 layers to system RAM yielded **11.4 tokens/second**, compared to 3.2 tokens/second on pure CPU.
+- **Context Truncation:** Restricting default context window from 32k down to 4,096 tokens prevented sudden CUDA allocation panics during multi-turn loops.
+
+## What I Learned
+
+The biggest silent bottleneck is not the model weights, but KV cache expansion during long conversations. Setting strict `num_ctx` bounds and enabling flash attention (`flash_attn=true` in llama.cpp) reduced context memory overhead by 45%.

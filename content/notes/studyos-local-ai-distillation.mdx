@@ -1,0 +1,39 @@
+---
+title: "StudyOS: Zero-Cloud Academic Syllabus Distillation & Local Flashcard Engine"
+slug: "studyos-local-ai-distillation"
+description: "Architectural observations on compiling National University and HSC academic curricula into local vector embeddings using in-browser SQLite WASM."
+date: "2026-11-06"
+type: "note"
+category: "Local AI"
+tags: ["EdTech", "Local AI", "Vector Store", "IndexedDB", "StudyOS"]
+status: "published"
+featured: false
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## What Was I Trying to Do?
+
+Students in Bangladesh preparing for board exams (HSC) or university degrees (National University, Dhaka University) often rely on heavy PDF guides and disjointed lecture notes. Many students study on cellular data packages where downloading cloud AI model responses consumes precious mobile data.
+
+I developed **StudyOS** as an offline-first learning system that parses academic textbook chapters into structured concept graphs, generating automated recall flashcards and spaced-repetition schedules stored entirely in client-side IndexedDB.
+
+## The Client-Side Pipeline
+
+1. **Chapter Chunking & Markdown Parsing:**
+   - Textbooks and syllabus outlines are ingested as hierarchical markdown structures, segmented by heading levels (H1: Chapter, H2: Topic, H3: Core Principle).
+2. **Deterministic Hash & Embedding Storage:**
+   - Used SQLite compiled to WebAssembly (WASM) running inside a Web Worker.
+   - Vector distances for concept retrieval are calculated using pure JavaScript cosine similarity routines over lightweight 384-dimensional quantized embeddings.
+3. **Spaced-Repetition Scheduler (SM-2 Algorithm):**
+   - Implemented an adaptation of the SuperMemo SM-2 algorithm to calculate optimal review intervals based on student recall ratings (1 to 5).
+
+## Key Highlights & Performance
+
+- **Zero Network Dependency:** Once a subject pack is downloaded, 100% of search, flashcard testing, and score tracking occurs offline with **zero HTTP requests**.
+- **Instant Query Latency:** Local vector search across 12,000 curriculum chunks completes in **under 42 milliseconds**.
+- **Storage Compactness:** An entire university course syllabus fits into under **8.4 MB of browser storage**.
+
+## What I Learned
+
+Running compute in a dedicated Web Worker prevents UI freezing while executing heavy similarity matrix calculations on low-tier smartphones. Local-first architecture transforms how students in developing regions access educational tooling.

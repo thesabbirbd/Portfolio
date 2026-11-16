@@ -1,0 +1,43 @@
+---
+title: "WA Reminder Companion: Headless Due Date & Baki Alert Bridge"
+slug: "wa-reminder-companion-headless"
+description: "Implementation notes on building a reliable, headless WhatsApp Web notification bridge with rate limiting and automated payment due reminders."
+date: "2026-11-10"
+type: "note"
+category: "Backend"
+tags: ["WhatsApp Web", "Puppeteer", "Headless", "Node.js", "SMS"]
+status: "published"
+featured: false
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## What Was I Trying to Do?
+
+Small grocery and wholesale businesses in Bangladesh lose thousands of Taka each month to forgotten customer credit (*বাকি*). While bulk SMS gateways exist, they charge high per-SMS fees (especially for Unicode Bengali text) and have low response rates. Most customers communicate actively on WhatsApp.
+
+I designed **WA Reminder Companion** as a self-hosted notification bridge that connects to WhatsApp Web via a headless browser instance, sending gentle, personalized payment reminders and PDF balance statements automatically.
+
+## Engineering Architecture & Rate Limiting
+
+```
+Due Ledger Database ➔ Date Threshold Filter ➔ Dynamic Bengali Message Templater ➔ Token Bucket Throttler (4-9s Jitter) ➔ Headless WhatsApp Client ➔ Delivery Confirmation
+```
+
+1. **Session Persistence Without Relogging:**
+   - Saved the authenticated Chromium profile directory (`userDataDir`) to persistent disk storage, allowing the service to restart or recover without requiring the business owner to re-scan QR codes.
+2. **Anti-Spam Token Bucket Throttler:**
+   - WhatsApp will quickly flag and ban accounts that send rapid sequential automated messages.
+   - I implemented randomized exponential delays between outbound messages (varying between 4.2s and 9.1s) and introduced realistic typing emulation (`delay` parameters during text insertion).
+3. **Template Personalization:**
+   - Messages dynamically interpolate customer name, exact remaining due balance, last payment date, and bKash/Nagad merchant payment numbers in natural Bengali prose.
+
+## Key Highlights & Performance
+
+- **Recovery Rate:** Participating retail test merchants reported an average **38% faster debt collection** within 48 hours of notification dispatch.
+- **Cost Efficiency:** Sent over 1,200 personalized ledger reminders per month with **zero third-party SMS API fees**.
+- **Delivery Stability:** Successfully maintained active WhatsApp Web sessions continuously for over 60 days without disconnection.
+
+## What I Learned
+
+Automated messaging must prioritize customer trust and platform safety above all else. Adding an opt-out mechanism ("যদি এই হিসাবটি ইতোমধ্যে পরিশোধ করে থাকেন...") and keeping dispatch rates slow and human-like prevents account bans and maintains warm merchant-customer relationships.

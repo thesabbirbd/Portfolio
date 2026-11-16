@@ -5,6 +5,7 @@ import { useDebounce } from '@/hooks/use-debounce';
 import { ContentItem } from '@/lib/content';
 import { ContentCard } from './ContentCard';
 import { Search, Sparkles, Terminal, Cpu, Network, FolderGit2 } from 'lucide-react';
+import { sound } from '@/lib/sound';
 
 
 const getCategoryStyle = (cat: string) => {
@@ -35,6 +36,15 @@ export function NotesBrowser({ notes }: { notes: ContentItem[] }) {
   const debouncedQuery = useDebounce(searchQuery, 300);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    notes.forEach(note => {
+      const cat = note.meta.category || 'General';
+      counts[cat] = (counts[cat] || 0) + 1;
+    });
+    return counts;
+  }, [notes]);
+
   const categories = useMemo(() => {
     const cats = new Set<string>();
     notes.forEach(note => {
@@ -55,36 +65,65 @@ export function NotesBrowser({ notes }: { notes: ContentItem[] }) {
 
   return (
     <div className="w-full">
-      <div className="flex flex-col md:flex-row gap-4 mb-8">
+      <div className="flex flex-col md:flex-row gap-4 mb-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input 
             type="text" 
-            placeholder="Search notes..." aria-label="Search notes" 
+            placeholder="Search notes by keyword, architecture, or tool..." aria-label="Search notes" 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-muted/50 border border-border/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm"
+            className="w-full pl-10 pr-4 py-2.5 bg-muted/50 border border-border/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm"
           />
         </div>
-        <div role="group" aria-label="Filter notes by category" className="flex flex-wrap gap-2">
+        <div role="group" aria-label="Filter notes by category" className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           <button 
             aria-pressed={selectedCategory === null}
-            onClick={() => setSelectedCategory(null)}
-            className={`px-4 py-2 text-sm rounded-xl transition-colors ${!selectedCategory ? 'bg-primary text-primary-foreground' : 'bg-muted/50 text-muted-foreground hover:bg-muted'}`}
+            onClick={() => {
+              setSelectedCategory(null);
+              sound.click();
+            }}
+            className={`px-3.5 py-1.5 text-xs font-mono font-medium rounded-xl transition-all ${
+              !selectedCategory
+                ? 'bg-primary text-primary-foreground shadow-sm font-bold'
+                : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-ink'
+            }`}
           >
-            All
+            All ({notes.length})
           </button>
           {categories.map(cat => (
             <button 
               key={cat}
               aria-pressed={selectedCategory === cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 text-sm rounded-xl transition-colors ${selectedCategory === cat ? 'bg-primary text-primary-foreground' : 'bg-muted/50 text-muted-foreground hover:bg-muted'}`}
+              onClick={() => {
+                setSelectedCategory(cat);
+                sound.click();
+              }}
+              className={`px-3.5 py-1.5 text-xs font-mono font-medium rounded-xl transition-all ${
+                selectedCategory === cat
+                  ? 'bg-primary text-primary-foreground shadow-sm font-bold'
+                  : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-ink'
+              }`}
             >
-              {cat}
+              {cat} ({categoryCounts[cat] || 0})
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="flex items-center justify-between text-xs font-mono text-muted-foreground mb-6 px-1">
+        <span>Showing {filteredNotes.length} of {notes.length} engineering work notes</span>
+        {selectedCategory && (
+          <button
+            onClick={() => {
+              setSelectedCategory(null);
+              sound.click();
+            }}
+            className="text-primary hover:underline"
+          >
+            Clear filter
+          </button>
+        )}
       </div>
       
       {filteredNotes.length === 0 ? (

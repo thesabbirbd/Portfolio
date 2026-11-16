@@ -1,0 +1,41 @@
+---
+title: "Custom UPS & Off-Grid Solar: 12V LiFePO4 Battery Pack with Zero-Jitter Relay"
+slug: "custom-ups-solar-hardware"
+description: "Field notes on assembling a custom 4S 12.8V LiFePO4 battery pack, BMS active balancing, and building an ultra-fast MOSFET transfer switch for home servers."
+date: "2026-10-27"
+type: "note"
+category: "Hardware"
+tags: ["LiFePO4", "Solar", "Hardware", "BMS", "UPS"]
+status: "published"
+featured: true
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## What Was I Trying to Do?
+
+Frequent power cuts and voltage fluctuations in Bangladesh can corrupt file systems on home Linux servers, NAS boxes, and optical network terminals (ONT). Off-the-shelf lead-acid commercial offline UPS units suffer from heavy battery degradation within 12 to 18 months, slow relay switching (10-15ms) that causes router reboots, and inefficient DC-AC-DC inversion losses.
+
+I built a dedicated **DC-to-DC Off-Grid Solar and LiFePO4 UPS** to power my network equipment and home server continuously with zero AC inverter losses.
+
+## The Hardware Assembly
+
+1. **Cell Selection & Configuration:**
+   - 4S configuration using Grade-A 3.2V 30Ah Lithium Iron Phosphate (LiFePO4) prismatic cells, yielding a nominal 12.8V and 384Wh capacity.
+2. **Battery Management System (BMS):**
+   - Installed a 4S 30A Smart BMS featuring low-temperature charging cutoff and active cell balancing (30mV cell delta threshold).
+3. **Dual-MOSFET Transfer Switch:**
+   - Replaced mechanical electromagnetic relays with dual P-channel power MOSFETs operating as an ideal diode OR-gate.
+   - Switching transition from mains DC power adapter to LiFePO4 battery occurs in **under 2.5 microseconds**, completely imperceptible to sensitive router capacitors.
+4. **Step-Down Buck Regulators:**
+   - Synchronous buck converters step down 12.8V to clean, noise-filtered 5V and 9V rails for microcontrollers and auxiliary fans.
+
+## Key Highlights & Performance
+
+- **Zero Inversion Loss:** Direct DC-to-DC powering delivers **91% overall system efficiency**, compared to ~60% on traditional lead-acid inverter UPS units.
+- **Continuous Runtime:** Delivers **8.5 hours of continuous runtime** for a multi-device setup (MikroTik router + ONU + mini-PC server pulling ~28W total).
+- **Longevity:** LiFePO4 chemistry provides 3,000+ full cycles (equivalent to 7 to 10 years of daily usage).
+
+## What I Learned
+
+Never omit cell pre-balancing before putting a series pack together. Connecting cells in parallel at 3.65V for 24 hours to top-balance them ensured the pack delivered full rated capacity without premature single-cell undervoltage cutoffs.

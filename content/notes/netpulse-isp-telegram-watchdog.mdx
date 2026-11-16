@@ -1,0 +1,43 @@
+---
+title: "NetPulse TG: Sub-Second MikroTik ISP Down Watchdog & Telegram Relay"
+slug: "netpulse-isp-telegram-watchdog"
+description: "Architecture notes on building a lightweight daemon for MikroTik RouterOS to detect link flaps, monitor BDIX vs International latency, and relay instant Telegram alerts."
+date: "2026-10-25"
+type: "note"
+category: "Networking"
+tags: ["MikroTik", "RouterOS", "Telegram Bot", "ISP Monitoring", "Python"]
+status: "published"
+featured: false
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## What Was I Trying to Do?
+
+Local ISP uplinks in Bangladesh can experience subtle partial failures: BDIX connectivity might remain healthy while upstream international transit through SEA-ME-WE 4/5 drops, or an optical fiber cut causes continuous link flapping. Standard ping monitors often fail to distinguish between total gateway failure and localized routing drops.
+
+I created **NetPulse TG** to run as a low-overhead monitoring daemon that polls RouterOS via API and ICMP sockets, classifying incident severity and sending instant Telegram markdown alerts.
+
+## The Watchdog Architecture
+
+```
+Dual Probe Cycle (BDIX & Global DNS) ➔ RouterOS REST/API Query ➔ Flap Damping Window (30s) ➔ Telegram Webhook Queue ➔ Metric Log
+```
+
+1. **Dual-Zone Probe Strategy:**
+   - Probe A: Pings primary local BDIX exchange nodes (e.g. Bangladesh Internet Exchange peering points) at 3-second intervals.
+   - Probe B: Pings upstream global resolvers (`1.1.1.1`, `8.8.8.8`) at 5-second intervals.
+2. **Anti-Flap Damping:**
+   - If an interface toggles state multiple times in under 30 seconds, alerts are throttled into a single consolidated incident report to avoid notification floods.
+3. **RouterOS Interface Diagnostic:**
+   - Upon confirmed packet loss, the daemon automatically queries MikroTik via API to capture optical SFP RX power, TX/RX error counters, and current PPPoE session uptime.
+
+## Key Highlights & Performance
+
+- **Detection Speed:** Detects complete link failures within **1.8 seconds**, triggering Telegram notifications in under 2.5 seconds.
+- **Resource Footprint:** Python monitoring service runs continuously on a headless Linux host using under **22 MB of RAM** and 0.4% CPU.
+- **Diagnostic Transparency:** Alerts include exact RX optical power levels (e.g., `-24.5 dBm`) so network administrators immediately know whether an issue is an optical fiber bend or an upstream BGP routing withdrawal.
+
+## What I Learned
+
+Raw ICMP pings alone can give false alarms during momentary packet burst queues. Combining socket-level timeouts with RouterOS interface statistics provides true operational insight without false outage alarms.

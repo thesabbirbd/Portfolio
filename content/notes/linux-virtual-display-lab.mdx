@@ -1,0 +1,45 @@
+---
+title: "Linux Virtual Display Lab: Headless Wayland/X11 Dummy Screens via EVDI"
+slug: "linux-virtual-display-lab"
+description: "Hands-on notes on creating headless virtual display adapters in Linux using EVDI and VKMS kernel drivers for remote desktop streaming."
+date: "2026-11-08"
+type: "note"
+category: "Systems"
+tags: ["Wayland", "X11", "Virtual Display", "EVDI", "Linux"]
+status: "published"
+featured: false
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## What Was I Trying to Do?
+
+When running headless Linux workstations or home servers without a physical monitor connected, modern desktop environments (especially Wayland-based compositors like GNOME Mutter and Hyprland) often disable GPU hardware acceleration or refuse to generate render buffers. Standard physical HDMI dummy plugs work, but they lock the system to a fixed resolution and consume physical display ports.
+
+I experimented with software-driven virtual display drivers to create custom virtual screens directly in the Linux kernel for remote streaming to tablets and laptops.
+
+## Kernel Modules & Methods
+
+1. **VKMS (Virtual Kernel Modesetting):**
+   - Built into mainline Linux kernels (`modprobe vkms`).
+   - Emulates a DRM/KMS device entirely in software, enabling basic frame generation without physical outputs.
+2. **EVDI (Extensible Virtual Display Interface):**
+   - Kernel module maintained by DisplayLink that provides virtual display creation with custom EDID injection.
+   - Allows dynamically spawning virtual outputs (e.g., `evdi-1`) at exact custom resolutions:
+   ```
+   1080x1920 @ 60Hz (Vertical mobile layout)
+   1920x1080 @ 60Hz (Standard 16:9)
+   1440x900 @ 60Hz (Secondary laptop screen)
+   ```
+3. **Capture & Streaming Loop:**
+   - Coupled the virtual framebuffer with Sunshine (open-source game stream host) using VAAPI / NVENC hardware encoding for ultra-low latency streaming to Moonlight clients over local 5GHz WiFi.
+
+## Key Highlights & Performance
+
+- **Stream Latency:** Achieved sub-14ms glass-to-glass latency over local network at 1080p 60 FPS.
+- **Dynamic Resolution:** Software virtual screens can be resized on the fly without physically unplugging cables or restarting the compositor.
+- **Port Independence:** Zero physical GPU display ports required, leaving hardware HDMI/DisplayPorts free.
+
+## What I Learned
+
+Wayland handles hotplugged virtual screens much more gracefully than legacy X11, but requires explicit KMS device node permissions (`/dev/dri/card*`). Adding the user to the `video` and `render` groups is mandatory to avoid permission denied errors during headless compositor startup.

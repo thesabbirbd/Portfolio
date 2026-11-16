@@ -1,3 +1,5 @@
+"use client";
+
 import Link from 'next/link';
 import { ContentItem } from '@/lib/content';
 import { formatContentDate } from '@/lib/content-date';
@@ -16,6 +18,15 @@ const COMPANION_TOOL_MAP: Record<string, { label: string; href: string }> = {
   "browser-web-audio-and-canvas-image-editing-architecture": { label: "Audio & Image DAW", href: "/tools/audio-editor" },
   "building-ephemeral-24h-sharing-and-saas-rbac-in-postgresql": { label: "24h Share Engine", href: "/explore" },
   "cidr-without-a-calculator": { label: "Subnet Calculator", href: "/tools" },
+  "khata2sheet-ocr-pipeline": { label: "Khata OCR Scanner", href: "/tools/khata-scanner" },
+  "bd-biz-normalizer-data-pipeline": { label: "Courier & Postcode Hub", href: "/tools/bd-emergency-courier-tracker" },
+  "custom-ups-solar-hardware": { label: "Electricity & Solar Sizer", href: "/tools/electricity-solar-calculator" },
+  "the-sabbir-os-vault-and-agents": { label: "30 Autonomous Agents", href: "/agents" },
+  "aiyaar-product-management-architecture": { label: "Aiyaar CPM Platform", href: "/aiyaar" },
+  "ollama-local-llm-benchmarking": { label: "API Load Simulator", href: "/tools/api-load-simulator" },
+  "wa-reminder-companion-headless": { label: "SMS & Campaign Studio", href: "/tools/sms-campaign-studio" },
+  "omnidesk-learning-architecture": { label: "Typing Arena & StudyOS", href: "/tools/typing-speed-arena" },
+  "sara-control-plane-architecture": { label: "SaaS SuperAdmin", href: "/superadmin" },
 };
 
 /**

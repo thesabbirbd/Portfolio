@@ -1,0 +1,44 @@
+---
+title: "Aiyaar CPM Architecture: Modular Multi-Tenant Workflows for Bangladesh SMEs"
+slug: "aiyaar-product-management-architecture"
+description: "Product management and systems architecture reflections as Chief Product Manager (CPM) at Aiyaar, building modular multi-tenant retail and supply chain SaaS for Bangladesh."
+date: "2026-11-14"
+type: "note"
+category: "Product"
+tags: ["Product Management", "Aiyaar", "Multi-Tenant", "CPM", "SaaS"]
+status: "published"
+featured: true
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## What Was I Trying to Do?
+
+As Chief Product Manager (CPM) at **Aiyaar**, my mandate is to architect a scalable, localized software platform that simplifies business operations for Bangladeshi SMEs—ranging from urban retail chains to regional agro-suppliers and pharmacies. Most international ERP systems (SAP, Odoo, QuickBooks) are too bloated, lack natural Bengali language workflows, and fail to accommodate local practices like Challan receipts, bKash merchant reconciliations, and flexible credit (*বাকি*).
+
+I set out to shape Aiyaar's product vision around extreme operational simplicity, modular multi-tenant architecture, and sub-second transaction speeds.
+
+## Product Strategy & Architectural Pillars
+
+```
+Unified Tenant Schema ➔ Real-Time POS Engine ➔ Localized Ledger (Mushak-6.3 & Challan) ➔ Mobile-First Warehouse Matrix ➔ Offline Resilient Sync
+```
+
+1. **Modular Product Architecture:**
+   - Designed modular micro-services for POS billing, multi-warehouse inventory, customer credit tracking, and automated SMS reminders.
+   - Businesses only activate the modules they need, keeping the user interface distraction-free.
+2. **Multi-Tenant Isolation & Speed:**
+   - Implemented tenant-scoped database partitioning with strict Row-Level Security (RLS) in PostgreSQL.
+   - Guaranteed that sales reports and customer directories remain strictly segregated while sharing unified cloud infrastructure.
+3. **Bangla-First UX & POS Design:**
+   - Conducted deep on-the-ground user interviews with shopkeepers in Rajshahi and Dhaka, transforming complex double-entry accounting into natural "টাকা জমা", "পণ্য বিক্রি", and "বাকি আদায়" flows.
+
+## Key Highlights & Product Impact
+
+- **Onboarding Acceleration:** Reduced new merchant setup and product catalog ingestion from **3 days down to 4 minutes**.
+- **POS Checkout Speed:** Barcode scanning and thermal receipt generation executes in **under 450 milliseconds** per transaction.
+- **Data Integrity:** Eliminated inventory synchronization mismatches across multiple retail branches using optimistic concurrency control.
+
+## What I Learned
+
+Product leadership in emerging markets requires ruthless empathy for the end-user. If a software feature requires a 20-page instruction manual, it will not be adopted in a busy Bangladeshi market. True product excellence is measured by how seamlessly software gets out of the shopkeeper's way during peak rush hours.

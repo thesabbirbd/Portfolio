@@ -1,0 +1,44 @@
+---
+title: "THE SABBiR OS: Public Repo Zero-Knowledge Vault & 30 Agentic Systems"
+slug: "the-sabbir-os-vault-and-agents"
+description: "Systems architecture notes on running a self-updating autonomous SaaS platform inside a public GitHub repository using AES-256-GCM envelope encryption and 30 autonomous agents."
+date: "2026-11-16"
+type: "note"
+category: "Architecture"
+tags: ["AES-256-GCM", "Zero Knowledge", "Autonomous Agents", "Next.js", "Security"]
+status: "published"
+featured: true
+author: "Md Sabbirul Islam Khan"
+brand: "THE SABBiR"
+---
+
+## What Was I Trying to Do?
+
+Hosting an entire personal brand and developer operating system—including user accounts, 24-hour ephemeral sharing, background task runners, and scheduled cron jobs—inside a completely **public GitHub repository** poses an architectural dilemma: How do you maintain 100% open-source transparency without exposing user databases, recovery hashes, or sensitive workflow state to visitors who clone the repo?
+
+I engineered the architecture of **THE SABBiR OS** to combine client-side WebAssembly tools with a zero-knowledge AES-256-GCM encrypted public vault and an autonomous 30-agent fleet.
+
+## Core Architectural Pillars
+
+```
+Runtime Platform State ➔ PBKDF2-SHA256 (100k Iterations) ➔ AES-256-GCM Envelope Cipher ➔ data/vault/*.vault.enc ➔ 12h GitHub & Google Drive Sync
+```
+
+1. **Zero-Knowledge Encrypted Public Vault:**
+   - The entire operational snapshot (users, recovery hashes, rate caches, ephemeral shares) is serialized into an encrypted binary blob at `data/vault/sabbir-os-state.vault.enc`.
+   - Even if the repository is cloned by millions, the file contains zero plaintext bytes. Any single-byte modification immediately fails the 16-byte authentication tag verification.
+2. **Dual-Fleet 30 Agentic Systems:**
+   - **Fleet A (15 Worker Agents):** On-demand user task processors executing in-browser (WASM/Canvas) or dispatching cloud tickets (`JOB-XXXX`) to GitHub Actions workers.
+   - **Fleet B (15 Scheduled Bots):** Automated cron bots maintaining tech news feeds, central bank currency rates, broken link health checks, and pre-commit secret leak shields.
+3. **Blank-Password Username Identity:**
+   - Eliminated traditional password friction: users claim an immortal identity using only their handle, with phone and city 2FA recovery and zero database passwords.
+
+## Key Highlights & Performance
+
+- **Zero API Ingestion Costs:** All 30 autonomous agentic workflows and 64 everyday studios operate on zero-cost serverless infrastructure.
+- **Cryptographic Rigor:** PBKDF2-SHA256 stretching over 100,000 iterations prevents brute-force dictionary attacks against derived encryption keys.
+- **Automated Redundancy:** State is backed up every 12 hours across both GitHub git history and external Google Drive storage.
+
+## What I Learned
+
+Security does not require hiding your codebase in private repositories. When cryptographic principles like authenticated envelope encryption (AES-GCM) and client-side processing (WASM) are designed into the core system from day one, public repositories can run full-scale production SaaS workflows with complete security.
