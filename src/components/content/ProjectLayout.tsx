@@ -1,6 +1,6 @@
 import { SignalDiagram } from '@/components/system/Signal';
 import Link from 'next/link';
-import { ContentItem, getContentBySlug } from '@/lib/content';
+import { ContentItem } from '@/lib/content';
 import { MDXContent } from './MDXContent';
 import { ConnectedKnowledge } from './ConnectedKnowledge';
 import { ExternalLink, ArrowLeft, ArrowRight, Code } from 'lucide-react';
