@@ -66,8 +66,9 @@ export function NotesBrowser({ notes }: { notes: ContentItem[] }) {
             className="w-full pl-10 pr-4 py-2 bg-muted/50 border border-border/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm"
           />
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div role="group" aria-label="Filter notes by category" className="flex flex-wrap gap-2">
           <button 
+            aria-pressed={selectedCategory === null}
             onClick={() => setSelectedCategory(null)}
             className={`px-4 py-2 text-sm rounded-xl transition-colors ${!selectedCategory ? 'bg-primary text-primary-foreground' : 'bg-muted/50 text-muted-foreground hover:bg-muted'}`}
           >
@@ -76,6 +77,7 @@ export function NotesBrowser({ notes }: { notes: ContentItem[] }) {
           {categories.map(cat => (
             <button 
               key={cat}
+              aria-pressed={selectedCategory === cat}
               onClick={() => setSelectedCategory(cat)}
               className={`px-4 py-2 text-sm rounded-xl transition-colors ${selectedCategory === cat ? 'bg-primary text-primary-foreground' : 'bg-muted/50 text-muted-foreground hover:bg-muted'}`}
             >
