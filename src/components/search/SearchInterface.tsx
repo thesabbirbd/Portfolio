@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useDebounce } from '@/hooks/use-debounce';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Search, X, Filter } from 'lucide-react';
 import { formatContentDate } from '@/lib/content-date';
@@ -19,10 +18,6 @@ type SearchItem = {
 };
 
 export function SearchInterface({ initialData }: { initialData: SearchItem[] }) {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
-
   const [query, setQuery] = useState('');
 
   // ⚡ Bolt: Debounce the search query to optimize performance
