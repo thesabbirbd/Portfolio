@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ContentItem } from '@/lib/content';
 import { MDXContent } from './MDXContent';
 import { ConnectedKnowledge } from './ConnectedKnowledge';
-import { ExternalLink, ArrowLeft, ArrowRight, Code } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { formatContentDate, isValidContentDate, lastModified } from '@/lib/content-date';
 import { articleJsonLd, breadcrumbJsonLd } from '@/lib/seo';
 import { JsonLd } from '@/components/system/JsonLd';
