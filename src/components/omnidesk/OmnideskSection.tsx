@@ -10,7 +10,7 @@ import {
   ExternalLink, 
   Terminal, 
   Network,
-  Activity
+  Activity,
 } from "lucide-react";
 import { PROJECTS_DATA, projectHref } from "@/data/projects";
 import { GlassCard } from "@/components/ui/GlassCard";
