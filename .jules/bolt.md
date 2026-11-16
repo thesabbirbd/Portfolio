@@ -28,3 +28,7 @@
 ## 2024-05-18 - Optimized Array Inclusion Checks in React Components
 **Learning:** Found nested O(N*M) checks (`array.includes()`) iterating over large `globalContent` arrays in `ConnectedKnowledge.tsx` to calculate implicit connections. Moving the source array into a `Set` outside the loop, and then checking `.has()` on that set against the dynamic iteration array, dramatically reduced calculation time by changing complexity from `O(N * (T_m * T_t))` to `O(T_m + N * T_t)`.
 **Action:** When performing inclusion checks between arrays inside loops that run frequently or over large datasets (like global content aggregators), extract the static side of the check into a `Set` initialized before the loop to leverage O(1) lookups.
+
+## 2024-05-24 - Optimizing getSlugs with EAFP and single loop
+**Learning:** Replacing LBYL (`fs.existsSync` then `fs.readdirSync`) with EAFP (`try/catch` around `fs.readdirSync`) saves synchronous file system I/O. Furthermore, condensing `.filter().map()` into a single `for` loop prevents the creation of intermediate arrays and reduces multiple passes over the dataset, which saves CPU cycles and garbage collection overhead.
+**Action:** When working on performance-sensitive Node.js backend logic, look for chained array methods and unnecessary I/O checks that can be optimized through single-pass iteration and EAFP exception handling.
