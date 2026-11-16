@@ -4,6 +4,9 @@ on:
   schedule:
     # Runs every 12 hours (00:00 and 12:00 UTC)
     - cron: '0 */12 * * *'
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -37,7 +40,7 @@ jobs:
         run: node scripts/autonomous-os-agent.mjs
 
       - name: Verify Content Integrity & Build Gates
-        run: npm run content:check && npx tsc --noEmit
+        run: pnpm run content:check && npx tsc --noEmit
 
       - name: Commit & Push Autonomous Discoveries
         run: |
@@ -48,5 +51,6 @@ jobs:
             echo "No new autonomous discoveries to commit."
           else
             git commit -m "chore(autonomous): self-evolving OS brain harvest & covers update [skip ci]"
+            git pull --rebase origin main || true
             git push origin main
           fi

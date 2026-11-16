@@ -4,6 +4,9 @@ on:
   schedule:
     # Runs everyday at 06:00 AM BST (00:00 UTC)
     - cron: '0 0 * * *'
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -48,5 +51,6 @@ jobs:
             echo "No changes in autonomous pulse."
           else
             git commit -m "chore(pulse): autonomous daily tech news & SEO update [skip ci]"
+            git pull --rebase origin main || true
             git push origin main
           fi
