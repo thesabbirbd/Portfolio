@@ -1,14 +1,14 @@
 {
-  "lastUpdated": "2026-11-16T04:00:00.000Z",
-  "source": "Bangladesh Bank & BAJUS Official Rates",
+  "lastUpdated": "2026-11-17T12:42:53.653Z",
+  "source": "Bangladesh Bank & BAJUS Official Rates (Auto-Synced)",
   "currency": {
-    "usdRemittance": 122.50,
-    "usdCash": 125.00,
-    "eur": 132.80,
-    "gbp": 156.40,
+    "usdRemittance": 122.5,
+    "usdCash": 125,
+    "eur": 132.8,
+    "gbp": 156.4,
     "sar": 32.65,
     "aed": 33.35,
-    "myr": 28.10
+    "myr": 28.1
   },
   "goldBajusPerBhori": {
     "22k": 142500,
