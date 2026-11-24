@@ -1,5 +1,14 @@
 [
   {
+    "timestamp": "2026-11-24T22:09:03.819Z",
+    "sha256": "01fb88297814f98546e6b1891b63f71909d0d32cbc260027298625e8e175ebfc",
+    "sizeBytes": 3286,
+    "usersCount": 3,
+    "jobsCount": 1,
+    "sharesCount": 1,
+    "googleDriveSynced": false
+  },
+  {
     "timestamp": "2026-11-24T09:12:54.683Z",
     "sha256": "e53e81ae5a74792cc1798c10d042ad10d9351e30fbb34378476d381fda13870f",
     "sizeBytes": 3286,
